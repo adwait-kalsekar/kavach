@@ -4,8 +4,8 @@ A minimal Turborepo starter for exploring and building Kavach.
 
 ## Prerequisites
 
-- Node.js 24 or newer
-- npm 11.9.0
+- Node.js 24 LTS (24.15.0+) or Node.js 26+
+- npm 12.2.0
 
 ## Get started
 
