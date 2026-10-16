@@ -1,0 +1,38 @@
+# Kavach documentation
+
+Start with the [visual product overview](product/overview.html). Download/open it in any browser; it is a standalone HTML document with no build, network, or API dependencies.
+
+## Index
+
+| Document | Purpose |
+| --- | --- |
+| [Architecture entry point](architecture/README.md) | Locked React/Vite + Hono + Firestore stack, GCP deployment and implementation order |
+| [GCP stack decision](architecture/stack-and-gcp.md) | Verified hosting support, database/identity choices and deployment topology |
+| [Contracts and provider boundaries](architecture/contracts-and-providers.md) | Public API, provenance, provider substitution and failure semantics |
+| [Implementation plan](architecture/implementation-plan.md) | Work packages, dependency order, acceptance gates and agent handoffs |
+| [Product overview / interactive screen concepts](product/overview.html) | Product story, farmer journey, screen concepts, scope and delivery sequence |
+| [Product specification](product/product-spec.md) | Intended behavior, inputs, acceptance criteria and open decisions |
+| [Comparable products](research/comparable-products.md) | Competitive evidence and positioning implications |
+| [Opportunity gap review](research/opportunity-gap-review.md) | Evidence-backed candidate gaps, competitive counterevidence and AI Builder Cup scope |
+| [Data sources and API register](research/data-sources.md) | Source selection, access constraints, data limitations and integration order |
+| [Original project brief](reference/original-project-brief.md) | Unmodified user-supplied starting point; its claims are not all verified |
+
+## Working instructions
+
+- `product/` contains intended behavior and design concepts. Screens are proposals, not implemented app features.
+- `research/` contains externally sourced findings. Keep source URLs, review dates, evidence limits and access status beside each claim. Documented availability is not a successful API integration.
+- `reference/` preserves supplied material. Record corrections in product/research documents rather than rewriting the original.
+- Update this index when adding a document. Link related documents with relative paths.
+- Label sample profiles, numbers, forecasts, recommendations and UI states as illustrative. Do not promote demo values into production rules.
+- Do not describe agronomic guidance as reviewed until a qualified reviewer and review date are recorded. Require an applicable source/page for each production recommendation.
+- Record model/data version, geography, observation period, publication time, retrieval time, units and quality flags in ingestion work.
+- Keep credentials and downloaded bulk datasets outside Git. Store only source definitions, schemas, processing instructions and appropriately licensed small fixtures.
+- These docs are independent of the `apps/docs` starter application. No app runtime changes are required to read them.
+
+## Sharing across worktrees
+
+These files are tracked on `main`. Existing feature worktrees do not update automatically after a push. From each feature worktree, fetch and merge/rebase `origin/main` according to the team's branch workflow. Avoid copying docs independently between worktrees.
+
+Research reviewed: 17 October 2026. Product scope remains a proposal pending implementation and agronomic validation.
+
+Architecture decision: [React/Vite + TanStack Router/Query, Hono/Node, Firestore and Cloud Run](architecture/README.md). Earlier Next.js and SQL suggestions are superseded for the initial application. Cloud setup remains deferred by user instruction.

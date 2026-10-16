@@ -2,6 +2,10 @@
 
 A minimal Turborepo starter for exploring and building Kavach.
 
+## Product and research
+
+Open the [visual product brief](docs/product/overview.html) in a browser for proposed screens and the farmer journey. The [documentation index](docs/README.md) links the product specification, source/API register, competitive review and original project brief.
+
 ## Prerequisites
 
 - Node.js 24 LTS (24.15.0+) or Node.js 26+
