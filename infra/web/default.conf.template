@@ -1,0 +1,22 @@
+server {
+  listen ${PORT};
+  server_name _;
+  root /usr/share/nginx/html;
+  server_tokens off;
+  add_header X-Content-Type-Options nosniff always;
+  add_header Referrer-Policy strict-origin-when-cross-origin always;
+  add_header X-Release-SHA "${RELEASE_SHA}" always;
+  add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src ${API_ORIGIN}; frame-ancestors 'none'; base-uri 'self'; object-src 'none'" always;
+  # Revalidate assets/config to avoid caching a stale API origin.
+  add_header Cache-Control "no-cache" always;
+  location = /runtime-config.js {
+    alias /etc/nginx/conf.d/runtime-config.js;
+    default_type application/javascript;
+  }
+  location = /healthz { access_log off; return 200 'ok'; }
+  location = /readyz { access_log off; return 200 'ready'; }
+  location /assets/ { try_files $uri =404; }
+  # This server has no API proxy and owns no backend resources.
+  location /api/ { return 404; }
+  location / { try_files $uri $uri/ /index.html; }
+}

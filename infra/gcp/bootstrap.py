@@ -17,6 +17,7 @@ def settings(path):
     c = json.loads(Path(path).read_text())
     patterns = {
         "project": r"[a-z][a-z0-9-]{4,28}[a-z0-9]", "region": r"[a-z]+-[a-z]+\d",
+        "webService": r"[a-z][a-z0-9-]{0,30}[a-z0-9]",
         "service": r"[a-z][a-z0-9-]{0,30}[a-z0-9]", "artifactRepository": r"[a-z][a-z0-9-]{0,61}[a-z0-9]",
         "githubRepository": r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", "githubRepositoryId": r"\d+", "githubOwnerId": r"\d+",
     }
@@ -25,6 +26,8 @@ def settings(path):
             raise ValueError(f"Invalid {key} in settings file")
     if c.get("database") != "(default)":
         raise ValueError("This bootstrap manages only the default Firestore database; review named-database rules/IAM separately.")
+    if c["service"] == c["webService"]:
+        raise ValueError("Web and API services must differ")
     return c
 
 
@@ -70,8 +73,9 @@ def apply(c, use_existing_database=False):
             "iam.googleapis.com", "iamcredentials.googleapis.com", "sts.googleapis.com", "cloudresourcemanager.googleapis.com", "serviceusage.googleapis.com"]
     call(["services", "enable", *apis, *common])
     runtime = f"kavach-runtime@{project}.iam.gserviceaccount.com"
+    web_runtime = f"kavach-web-runtime@{project}.iam.gserviceaccount.com"
     deploy = f"kavach-deploy@{project}.iam.gserviceaccount.com"
-    for name, email in [("kavach-runtime", runtime), ("kavach-deploy", deploy)]:
+    for name, email in [("kavach-runtime", runtime), ("kavach-deploy", deploy), ("kavach-web-runtime", web_runtime)]:
         if describe(["iam", "service-accounts", "describe", email, *common]) is None:
             call(["iam", "service-accounts", "create", name, *common, "--display-name", name])
     database = describe(["firestore", "databases", "describe", "--database=(default)", *common])
@@ -90,19 +94,20 @@ def apply(c, use_existing_database=False):
         raise RuntimeError("Artifact repository exists with a different format.")
     call(["artifacts", "repositories", "add-iam-policy-binding", repository, "--location", region, *common,
           "--member=serviceAccount:" + deploy, "--role=roles/artifactregistry.writer"])
-    call(["iam", "service-accounts", "add-iam-policy-binding", runtime, *common,
-          "--member=serviceAccount:" + deploy, "--role=roles/iam.serviceAccountUser", "--condition=None"])
-    # Reserve the service/URL privately so CI needs service-scoped deploy permission only.
-    service = describe(["run", "services", "describe", c["service"], "--region", region, *common])
-    if service is None:
-        call(["run", "deploy", c["service"], "--region", region, *common,
-              "--image=us-docker.pkg.dev/cloudrun/container/hello", "--service-account", runtime,
-              "--invoker-iam-check", "--no-allow-unauthenticated", "--min-instances=0", "--max-instances=3",
-              "--cpu=1", "--memory=512Mi", "--labels=kavach-managed=bootstrap"])
-    elif service.get("metadata", {}).get("labels", {}).get("kavach-managed") != "bootstrap":
-        raise RuntimeError("An unrecognized Cloud Run service already uses this name. Refusing to take it over.")
-    call(["run", "services", "add-iam-policy-binding", c["service"], "--region", region, *common,
-          "--member=serviceAccount:" + deploy, "--role=roles/run.developer", "--condition=None"])
+    for service_name, account in [(c["service"], runtime), (c["webService"], web_runtime)]:
+        call(["iam", "service-accounts", "add-iam-policy-binding", account, *common,
+              "--member=serviceAccount:" + deploy, "--role=roles/iam.serviceAccountUser", "--condition=None"])
+        # Reserve the service/URL privately so CI needs service-scoped deploy permission only.
+        service = describe(["run", "services", "describe", service_name, "--region", region, *common])
+        if service is None:
+            call(["run", "deploy", service_name, "--region", region, *common,
+                  "--image=us-docker.pkg.dev/cloudrun/container/hello", "--service-account", account,
+                  "--invoker-iam-check", "--no-allow-unauthenticated", "--min-instances=0", "--max-instances=3",
+                  "--cpu=1", "--memory=512Mi", "--labels=kavach-managed=bootstrap"])
+        elif service.get("metadata", {}).get("labels", {}).get("kavach-managed") != "bootstrap":
+            raise RuntimeError("An unrecognized Cloud Run service already uses this name. Refusing to take it over.")
+        call(["run", "services", "add-iam-policy-binding", service_name, "--region", region, *common,
+              "--member=serviceAccount:" + deploy, "--role=roles/run.developer", "--condition=None"])
     pool, provider = "kavach-github", "github"
     if describe(["iam", "workload-identity-pools", "describe", pool, "--location=global", *common]) is None:
         call(["iam", "workload-identity-pools", "create", pool, "--location=global", "--display-name=Kavach GitHub", *common])
@@ -150,17 +155,20 @@ def apply(c, use_existing_database=False):
     else:
         rules_request(project, token, "PATCH", "releases/cloud.firestore", {"release": release, "updateMask": "rulesetName"})
     # Only the bootstrap operator changes public IAM access. CI remains run.developer.
-    call(["run", "services", "update", c["service"], "--region", region, *common, "--no-invoker-iam-check"])
+    for name in [c["service"], c["webService"]]:
+        call(["run", "services", "update", name, "--region", region, *common, "--no-invoker-iam-check"])
     output = {
         "GCP_PROJECT_ID": project, "GCP_PROJECT_NUMBER": number, "GCP_REGION": region,
         "GCP_ARTIFACT_REPOSITORY": repository, "GCP_CLOUD_RUN_SERVICE": c["service"], "FIRESTORE_DATABASE_ID": "(default)",
         "GCP_RUNTIME_SERVICE_ACCOUNT": runtime, "GCP_DEPLOY_SERVICE_ACCOUNT": deploy,
         "GCP_WORKLOAD_IDENTITY_PROVIDER": f"projects/{number}/locations/global/workloadIdentityPools/{pool}/providers/{provider}",
-        "APP_ORIGIN": f"https://{c['service']}-{number}.{region}.run.app",
+        "APP_ORIGIN": f"https://{c['webService']}-{number}.{region}.run.app",
+        "API_ORIGIN": f"https://{c['service']}-{number}.{region}.run.app",
+        "GCP_WEB_SERVICE": c["webService"], "GCP_WEB_RUNTIME_SERVICE_ACCOUNT": web_runtime,
     }
     target = ROOT / "gcp-bootstrap-output.json"
     target.write_text(json.dumps(output, indent=2) + "\n")
-    print(f"Setup complete. Non-secret GitHub configuration saved to {target.name}. The URL currently shows the public Google bootstrap page until CI deploys the tested Kavach application.")
+    print(f"Setup complete. Non-secret GitHub configuration saved to {target.name}. The URLs currently show the public Google bootstrap page until CI deploys the tested Kavach application.")
     print(json.dumps(output, indent=2))
 
 
@@ -173,7 +181,7 @@ def main():
     c = settings(args.config)
     if not args.apply:
         print(json.dumps(c, indent=2))
-        print("PLAN ONLY: no commands or GCP requests made. --apply enables APIs, creates identities/registry/database if absent, reserves a Cloud Run service and deliberately enables its public bootstrap page after setup, configures scoped IAM/WIF, indexes/TTL and deny-client rules. No keys are created. Existing database region/type and WIF policy mismatches stop setup. Billing must already be linked. Budgets and public-access organization policy need console review.")
+        print("PLAN ONLY: no commands or GCP requests made. --apply enables APIs, creates identities/registry/database if absent, reserves independent web/API Cloud Run services and deliberately enables its public bootstrap page after setup, configures scoped IAM/WIF, indexes/TTL and deny-client rules. No keys are created. Existing database region/type and WIF policy mismatches stop setup. Billing must already be linked. Budgets and public-access organization policy need console review.")
         return
     apply(c, args.use_existing_database)
 

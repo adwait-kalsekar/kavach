@@ -6,5 +6,6 @@
   "database": "(default)",
   "githubRepository": "adwait-kalsekar/kavach",
   "githubRepositoryId": "1421988948",
-  "githubOwnerId": "61903060"
+  "githubOwnerId": "61903060",
+  "webService": "kavach-web"
 }

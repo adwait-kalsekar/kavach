@@ -1,146 +1,121 @@
 # GCP deployment and continuous delivery
 
-Researched 17 October 2026 against official Google documentation. The code-side pipeline, bootstrap, access checks and owner guide are now implemented. They have not provisioned or deployed live GCP resources. Project: `kavach-farmers-market-sense`; GCP identity and actual project setup remain pending. See [step-by-step setup](../deployment/gcp-setup.md). `infra/cloudbuild.yaml` remains an independent build-only template, not a second deploy controller.
+Decision updated 17 October 2026 following the owner's requirement for independent frontend/API serving. This supersedes the earlier combined Hono/static-assets topology. Code and local tests are distinct from live GCP verification: no cloud resources have been provisioned. Project: `kavach-farmers-market-sense`; preferred region: `asia-south1` (Mumbai). See [owner setup steps](../deployment/gcp-setup.md).
 
 ## Selected topology
 
-Deploy one application container to Cloud Run. React/Vite and Hono remain separate source/build units but ship in one revision. Hono serves web assets and all API calls on the same HTTPS origin. Firestore is persistent storage; local SQLite is prohibited in production. Keep the docs starter outside this image.
+Use **two Cloud Run services in the same project and region**. An instance belongs to one service; it is not a shared VM for both applications. Each service has its own image, ingress port, runtime identity, revisions, scaling and failure lifecycle.
+
+| Component | Serving process | Internal port | Public address |
+| --- | --- | --- | --- |
+| `kavach-web` | Unprivileged Nginx serving Vite output | 8081 | Its own HTTPS `run.app` URL; later `app.example.com` |
+| `kavach-api` | Hono with the Node adapter | 8080 | Its own HTTPS `run.app` URL; later `api.example.com` |
+
+Public connections use HTTPS **443** on both hostnames. Cloud Run terminates TLS and forwards to each configured internal port. Different public ports are unnecessary and are not how Cloud Run routes public services. Hono serves no React HTML/assets; Nginx has no API reverse proxy. Both `/api/*` on the web server and `/` on Hono return 404.
 
 ```mermaid
 flowchart LR
-  G[Push / merge to protected main] --> T[Verify: Turbo build, boundaries, types, tests]
-  T --> I[Build and smoke-test application image]
-  I --> A[Tested image artifact]
-  A --> D[Production deployment job]
-  W[GitHub OIDC] -->|WIF: trusted repo + main + workflow| D
-  D --> R[Artifact Registry: commit tag + immutable digest]
-  R --> C[Cloud Run revision: built web + Hono]
-  B[Public browser] -->|one HTTPS origin| C
-  C -->|runtime service account| F[Firestore]
+  B[Browser] -->|HTML / CSS / JS: HTTPS| W[Cloud Run kavach-web / Nginx :8081]
+  B -->|Typed HTTP / exact CORS: HTTPS| A[Cloud Run kavach-api / Hono :8080]
+  W -. public runtime config: API_ORIGIN .-> B
+  A -->|API runtime identity only| F[Firestore]
+  A --> P[Future server-only providers]
 ```
 
-An atomic application revision avoids deploying a frontend that expects a different API/RPC contract. Turbo is the build scheduler/cache, not the deployment platform. `npm run build:app` follows the workspace dependency graph, including the type-only API → client → UI dependency. Build all application dependencies on every main commit initially; caches can reuse unchanged outputs. Avoid selective path filters until cross-package changes and deployment ordering have explicit coverage.
+Cloud Run multi-container services have **one ingress container**, with sidecars reachable over localhost. Two containers on different local ports do not create two independently addressable public backends. A proxy could route them, but they would retain a shared instance/revision/scaling lifecycle. Independent services fit this application's boundary and recovery needs better. No Express migration, VM, Kubernetes or Docker Compose runtime is required.
 
-## Services required
+## Containers and builds
 
-| Service                            | Responsibility                                                     |
-| ---------------------------------- | ------------------------------------------------------------------ |
-| Cloud Run                          | HTTPS URL, application revisions, autoscaling and runtime identity |
-| Artifact Registry                  | Private container repository and immutable image digests           |
-| Firestore Standard / Native mode   | Farms, sessions, assessments, plans, idempotency and quotas        |
-| IAM / Workload Identity Federation | Short-lived GitHub deployment access; separate runtime identity    |
-| Cloud Logging / Monitoring         | Application logs, readiness/error metrics and uptime checks        |
-| Cloud Billing                      | Linked billing account, budget alerts and usage visibility         |
-| Secret Manager, later              | Server-side provider credentials, if needed                        |
-| Vertex AI, later                   | AI/model inference; not needed to deploy the health foundation     |
+Cloud Run runs containers. A handwritten Dockerfile is optional: `gcloud run deploy --source` uses a Dockerfile when present, otherwise Google Cloud buildpacks build a container. It still uses container images and a build service. Docker does not defeat Cloud Run's managed runtime; Google manages instances, TLS, scheduling and scaling after deployment.
 
-Default recommendation: dedicated Kavach project, Cloud Run/Artifact Registry/Firestore in `asia-south1` (Mumbai), subject to actual project availability and any existing database location. Firestore location cannot be changed after provisioning; inspect an existing database before creating anything. Cloud Run supports the current Node HTTP container and injected PORT; no Express migration or VM is required.
+We select explicit Dockerfiles for reproducible Node/npm versions, monorepo build boundaries and testing the exact deployed artifacts. `infra/Dockerfile.api --target builder` produces the shared Turbo build stage (`kavach-builder`); API and web runtime images are then built separately. The web image receives only static output plus Nginx configuration, with no Node backend/SDKs/credentials. The API image receives clean production dependencies and compiled API/contracts/domain, with no web output or development tooling. Both run unprivileged.
 
-Cloud Run supplies a managed HTTPS `run.app` URL. A custom domain, purchased certificate, load balancer and separate frontend hosting are unnecessary for the first public link. Use one canonical origin for sessions/CSRF. For a short service name such as `kavach-api`, Google's deterministic URL is `https://SERVICE_NAME-PROJECT_NUMBER.REGION.run.app`; confirm the service-reported URL before publishing. This lets the initial deploy configure exact APP_ORIGIN without weakening origin validation or introducing temporary permissive defaults.
+Turbo schedules the dependency graph; it does not deploy services. Keep the type-only Hono → client → web build dependency so shared contract changes rebuild the UI. Build both images on main initially rather than trying to infer deployability from changed paths. `apps/docs` is excluded.
 
-## Main-to-production pipeline
+The web image requires an explicit API_ORIGIN at startup. It loads `/runtime-config.js` before its module bundle. Nginx templates this non-secret API address at startup and sets `connect-src` to that exact origin. The image can move between environments without recompiling React. Config and HTML revalidate; no service key belongs there. The browser client uses credentials only on its configured API requests and validates response schemas.
 
-Extend the existing GitHub Actions workflow rather than adding a second independent deployment trigger:
+## Cross-origin security and domain rollout
 
-1. PRs and main run the existing verification job: pinned Node/npm, lockfile install, import and bundle boundaries, Turbo build/typecheck, API tests, OpenAPI drift, desktop/mobile/Hono-served browser tests, Firestore emulator parity and container smoke.
-2. The container builder now uses the same `npm run build:app` Turbo dependency graph, with required build tooling installed in the builder only. This replaces the former explicit workspace build sequence. Keep the clean production dependency stage.
-3. For a successful main run only, export the already smoke-tested image as a short-lived workflow artifact. A separate production job downloads/loads that exact image; do not rebuild an unverified image after tests.
-4. Production job alone receives `id-token: write` and exchanges GitHub OIDC through WIF for the deploy service account. The verification job has only read access and no cloud identity. Never use `pull_request_target` to execute contributor code with deployment access.
-5. Push the image to Artifact Registry, label/tag it with the source commit, and deploy its immutable `sha256` digest. Do not deploy a floating `latest` tag. Pin third-party action versions to reviewed commit SHAs.
-6. Use a GitHub `production` environment restricted to main. Allow automatic deployment after successful main verification as requested; a manual environment reviewer is optional, not required by this design.
-7. Serialize production deployments and reject stale SHAs before promotion, so an older slow build cannot replace a newer release. Don't cancel an in-flight traffic change. Record previous revision/digest and perform a final stale-commit check before moving traffic.
-8. Create the candidate revision with no production traffic, wait for readiness, then promote through the stable service URL. Run public desktop/mobile health checks and database readiness there, verifying the expected release SHA. The automatic live smoke creates no synthetic production records; guest/farm/assessment/plan persistence remains a separate first-deployment acceptance check. Roll back traffic to the previous revision if post-promotion checks fail.
+`APP_ORIGIN` on Hono is the **frontend origin**, not the API URL. Hono returns credentialed CORS only for that exact value, allows GET/POST/PATCH/DELETE with Content-Type/X-CSRF-Token/Idempotency-Key, and validates preflight requests. It retains CSRF, session ownership, quotas and strict input/output validation. It never uses wildcard CORS or reflects arbitrary origins. The frontend uses `credentials: include`; production cookies remain host-only, Secure, HttpOnly, SameSite=Lax, Path=/ (`__Host-kavach_session`). CORS is a browser permission, not authentication.
 
-A revision traffic-tag URL is an alternate origin. Our exact-origin CSRF checks will intentionally reject browser mutations there. Don't relax APP_ORIGIN for previews: candidate readiness can run before promotion, but full mutation journeys should use the canonical production URL after promotion, or a separate staging service with its own configured origin/database.
+The owner has deferred buying/configuring a domain. Therefore the **first two-URL deployment verifies health only**, which needs no session. Default service URLs have distinct sites under the Public Suffix List's `*.run.app` entry. Treating these as sibling cookie domains is incorrect. Hono permits exact-origin cross-site health/capabilities/OpenAPI, but rejects browser cross-site session/resource access. We deliberately do not switch to third-party cookies, expose session tokens to JavaScript or claim the farmer journey works on those default URLs.
 
-Infrastructure provisioning, database/index/TTL changes and IAM changes are reviewed bootstrap/infrastructure operations, not side effects of every application push. Application schema changes must remain compatible with the previous revision to make traffic rollback safe. Rollback does not undo Firestore data changes.
+Before releasing guest farms/plans, configure HTTPS sibling hosts such as `app.example.com` and `api.example.com` under the same registrable domain. Verify their same-site status using browser tests. Keep the session cookie host-only on the API; no shared Domain cookie is needed. Untrusted sibling subdomains still fail Hono's exact Origin/CSRF checks.
 
-Cloud Build repository triggers are a supported alternative. They are not selected here because this repo already has comprehensive GitHub Actions gates. Running a separate direct-to-Cloud-Run trigger could deploy a commit before those gates succeed. Cloud Build can remain a manual build option; don't enable two production deploy controllers.
+For Mumbai, plan a **global external Application Load Balancer with two serverless NEGs**, host rules, Google-managed certificates and DNS. Each host routes to its own Cloud Run service/port; the load balancer does not serve the React build through Hono. Google's direct Cloud Run domain mappings are limited-region preview functionality, explicitly not recommended for production, and Mumbai is not in their listed regions. Domain purchase, DNS, certificates and load-balancer provisioning remain a later infrastructure batch with separate recurring costs. Do not move the app's region merely to use preview domain mapping.
 
-## Identities and permissions
+When that batch is ready, validate certificates and routing, update APP_ORIGIN/API_ORIGIN, then deploy both services and test real secure-cookie guest → farm → plan persistence on desktop/mobile before exposing those screens. If restricting service ingress to the load balancer later, use Cloud Run's internal-and-cloud-load-balancing setting and update probes/smoke accordingly; the current health foundation intentionally uses direct public ingress.
 
-| Identity                               | Scope / permissions                                                                                                                                                                                                                                                                                        |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| One-time bootstrap operator            | Enable APIs; create registry/database/accounts/WIF; configure IAM, public access, indexes/TTL and budgets. Use an existing authorized project admin or reviewed bootstrap script; do not make application CI an Owner/Editor.                                                                              |
-| GitHub deployment service account      | `roles/artifactregistry.writer` on the application repository; `roles/run.developer` on the existing service; `roles/iam.serviceAccountUser` on the runtime account. Writer includes image read access needed for deployment. Initial resource creation/public-access changes remain bootstrap operations. |
-| Trusted GitHub WIF principal           | `roles/iam.workloadIdentityUser` on the deployment account, restricted to this repository and branch/workflow.                                                                                                                                                                                             |
-| Cloud Run runtime service account      | `roles/datastore.user` for application data in the dedicated project/database scope. No deploy, IAM or registry-write rights. Future Secret Manager access is limited to particular required secrets.                                                                                                      |
-| Google-managed Cloud Run service agent | Platform-managed image-pull/runtime service-agent duties; don't confuse it with the application's runtime account or grant its role to GitHub.                                                                                                                                                             |
+## Main-to-production delivery
 
-Use numeric GitHub repository and owner IDs in WIF conditions to prevent deleted-name reuse. Also bind `refs/heads/main`, the expected workflow and intended environment/issuer/audience. The IAM provider and GitHub environment must agree on the token claims; naming a GitHub environment alone does not establish cloud trust.
+```mermaid
+flowchart TD
+  M[Trusted push / merge to main] --> V[Verify contracts, browser boundary, types, API + emulator tests]
+  V --> I[Build and browser-smoke both runtime images]
+  I --> T[Transfer exact tested images as short-lived workflow artifact]
+  T --> D[Serialized production job / GitHub OIDC + WIF]
+  D --> R[Push both images / resolve immutable digests]
+  R --> C[Create API + web candidate revisions / no traffic]
+  C --> Q[Both candidates Ready / main SHA still current]
+  Q --> A[Promote API first / keep previous web compatible]
+  A --> W[Promote web]
+  W --> S[Desktop/mobile direct API health / both release SHAs / storage readiness]
+  S -->|failure| X[Restore web then API previous traffic / report failures]
+```
 
-Cloud Run uses its attached runtime service identity and Application Default Credentials. Do not ship GOOGLE_APPLICATION_CREDENTIALS files, service-account JSON keys or CI OIDC credentials in the image. Existing production validation rejects local credential-file configuration. Current weather-disabled/AI-unavailable deployment needs no model or third-party API key.
+PR checks have read-only GitHub access and no cloud identity. The deploy job runs only after verification on trusted main, with `GCP_DEPLOY_ENABLED=true`, in the main-restricted `production` environment. Actions are pinned by commit SHA. OIDC trust binds numeric repo/owner IDs, main, exact workflow, event and production subject; no service-account key is stored. Production jobs serialize without cancelling in-flight promotions. Superseded commits cannot promote.
 
-Public browser access must be configured deliberately during bootstrap. Google currently recommends disabling the service's Invoker IAM check for a public site, where organization policy permits it; `allUsers` + Run Invoker is another supported route. Check organization constraints first. Public transport access does not remove Hono session/CSRF/ownership checks on private records.
+Each service must already have public access configured by bootstrap and one known previous revision receiving 100% traffic. The deployer refuses to overwrite a traffic split or change IAM. It pushes the already tested images, resolves sha256 digests and stages both no-traffic revisions. Startup probes gate candidates. The final main check occurs before traffic changes. The API promotes first; old UI/new API compatibility is mandatory. Live smoke checks both release headers, direct cross-origin API health, the two-origin network allowlist, responsive layout and API storage readiness without creating production records.
 
-## Inputs needed from the owner
+**Two-service rollout is not atomic.** On failure, restore the web and then API traffic, attempt every restoration even if another fails, and report manual recovery details if rollback fails. A lost promotion response still triggers restoration. Keep contracts and data formats compatible with current and previous releases; use additive changes and expand/migrate/contract when schema evolution arrives. A browser tab can retain an older UI after a deployment; that remains another reason to keep API compatibility. No retained-old-static-asset storage is implemented yet: future lazy-loaded routes need an asset-retention/versioning strategy before rollout. Traffic rollback never undoes Firestore writes.
 
-Safe to share in chat:
+`infra/cloudbuild.yaml` is a build/push-only alternative. Do not activate an independent deploy trigger that bypasses GitHub verification.
 
-| Input                                         | Default / reason                                                                      |
-| --------------------------------------------- | ------------------------------------------------------------------------------------- |
-| GCP project ID                                | Required; the project number can be looked up after authorized access                 |
-| Billing enabled / attached                    | Required for provisioning and usage; don't share payment details                      |
-| Region and any existing Firestore location    | Recommend `asia-south1`; preserve existing location constraints                       |
-| Public access allowed                         | Needed for a link judges can open without Google IAM login                            |
-| Monthly budget target and alert recipient     | Defines alerts and initial operating limits                                           |
-| GitHub repository administration availability | Needed to configure WIF-related variables, production environment and main protection |
+## Failure and recovery behavior
 
-No custom domain is required; service/repository names can use the documented defaults. If the project is organization-managed, the owner should identify an administrator who can resolve public-access or federation policy restrictions.
+| Failure | Behavior / limit |
+| --- | --- |
+| Web process exits or liveness repeatedly fails | Cloud Run terminates/replaces that service's instance; API service is independent |
+| API process exits or liveness repeatedly fails | Cloud Run replaces the API instance; frontend remains accessible and shows API failure/retry |
+| Candidate cannot start or access Firestore | Startup/readiness checks prevent promotion; previous production revisions retain traffic |
+| Web promotion/live check fails | Pipeline restores previous web/API traffic; failed restorations require operator recovery |
+| Firestore/provider outage after a successful release | API reports unavailable/failure; liveness stays process-only to avoid restart storms; monitoring/operator response is needed |
+| New release becomes faulty later | Cloud Run does not automatically infer application regressions and roll back; use alerts and the recorded manual rollback procedure |
+| Container replacement / scaling to zero | Firestore survives; local disk does not. SQLite is rejected in production |
+| Mutation response is lost | Server idempotency supports replay with the same operation key; UI must not invent a new key for a retry |
 
-Generated non-secret GitHub environment variables will be:
+The API /readyz storage endpoint is used for startup gating and live checks; a continuous Cloud Run readiness probe is not configured. Liveness remains process-only.
 
-- GCP_PROJECT_ID, GCP_PROJECT_NUMBER, GCP_REGION
-- GCP_WORKLOAD_IDENTITY_PROVIDER (full provider resource name)
-- GCP_DEPLOY_SERVICE_ACCOUNT, GCP_RUNTIME_SERVICE_ACCOUNT
-- GCP_ARTIFACT_REPOSITORY, GCP_CLOUD_RUN_SERVICE
-- APP_ORIGIN, FIRESTORE_DATABASE_ID
+Hono handles SIGTERM, stops accepting requests and closes its store within an eight-second deadline. Nginx handles its own shutdown. Min instances 0 permits cold starts; max 3 per service, 1 CPU/512 MiB and concurrency 20 are initial POC limits, not measured capacity or cost guarantees. A warm instance can be considered after measurement. Cloud Run replacement is not zero-downtime proof; interrupted/in-flight requests can fail.
 
-These are configuration identifiers, not credentials. The WIF trust policy supplies authorization. Future provider secrets belong in Secret Manager, not chat, GitHub variables or Vite settings.
+Provision logging/uptime/error alerts and budget notifications as operational acceptance work; these are not created by the current bootstrap. Alerts-only budgets do not cap spend; spend-cap budget support has eligibility restrictions. Retain active/previous registry digests deliberately. Backup/PITR and disaster-recovery objectives remain a later database operations decision.
 
-## Codex cloud computer access
+## Identities and provisioning
 
-Observed 17 October 2026: this session's environment status reports **no GCP outbound identity, runtime variables or secrets**, and no identity manifest is configured. The official gcloud 589.0.0 CLI is now installed outside the repo; its project check fails with no active account. Existing GitHub code access is working; it does not grant Google Cloud access. A GitHub environment-update request returned 403 Resource not accessible by integration, so the owner guide includes manual environment/variable steps.
+- Bootstrap operator: authorized project administrator for API enablement, IAM, registry, Firestore/rules/indexes/TTL, services and public access. Never grant that scope to CI.
+- `kavach-runtime`: API runtime, Firestore data access only in the dedicated app project; future secrets scoped individually.
+- `kavach-web-runtime`: separate web runtime with **no project data/provider permissions**.
+- `kavach-deploy`: registry writer, Run Developer on both existing services and Service Account User on both runtime identities. No service IAM-policy editing.
+- Google-managed Cloud Run service agent: platform image-pull/runtime duties; distinct from application identities.
 
-Preferred setup paths:
+Bootstrap defaults to an offline plan. Cloud Shell or an authorized managed GCP identity is needed for --apply. The current Codex environment has no GCP identity/secrets; gcloud is installed but unauthenticated. GitHub code access does not grant GCP access, and the current integration cannot administer GitHub environments (403). The owner guide includes manual steps.
 
-1. Configure an authorized GCP outbound identity/connection in the Codex cloud environment, if that option is available to the owner. Select a dedicated bootstrap/deployment identity, review its scope, and let the environment report it ready. Use the installed CLI with its provided profile/credential selectors normally. Never paste tokens or private keys into chat.
-2. If no GCP connection is available, the owner runs a reviewed one-time bootstrap script in Google Cloud Shell under their existing authorized login. It configures GCP/WIF and produces only non-secret IDs for the repository settings. After that, GitHub Actions can build/deploy on main without any GCP credential stored on the Codex computer. This path is sufficient for automatic delivery.
+Non-secret GitHub settings are the previous ten plus `GCP_WEB_SERVICE`, `GCP_WEB_RUNTIME_SERVICE_ACCOUNT`, `API_ORIGIN` (13 total). Default APP_ORIGIN is the web service URL; API_ORIGIN is the API URL. WIF supplies authorization; these identifiers do not. Domain changes will be deliberate configuration updates after routing is provisioned. Never put credentials in chat, browser config, images or Vite variables.
 
-Do not request a long-lived service-account JSON key as the default fallback. A configured Codex identity and GitHub OIDC federation are separate access paths; one does not automatically establish the other.
+## Official research sources
 
-## Bootstrap and acceptance checklist
+Reviewed 17 October 2026:
 
-- Confirm project/billing, location, quotas and policy permissions. Enable Cloud Run, Artifact Registry, Firestore, IAM Credentials, Security Token Service and required IAM APIs; add Secret Manager/Vertex AI when those features are enabled.
-- Create the regional registry and Firestore Native database; apply deny-client rules, required indexes and TTL policies. Wait for indexes to become ready. Admin SDK access is governed by IAM, not Firestore client rules.
-- Create separate runtime/deploy identities and constrained GitHub federation; record settings in a production environment. Limit its deployable branch to main and enable main branch protection with required CI checks.
-- Provision the Cloud Run service, canonical origin, public-access policy and initial image. Keep min instances 0, initial max instances 3, 1 vCPU/512 MiB and request-based billing as a small POC starting point, subject to measured memory/startup/concurrency needs. These settings are not load-tested guarantees.
-- Configure budget alerts, registry cleanup policy and basic uptime/error monitoring. Alerts-only budgets do not cap spend. Google's newer spend-cap budgets have service/account support restrictions; check eligibility separately instead of assuming a universal hard cap. Scaling limits also do not cap total cost.
-- Verify URL/HTML/static assets and real typed health in a browser; secure cookies, exact Origin, cross-owner denial, plan persistence across revisions and graceful shutdown. Confirm no frontend cloud SDK or secret is present.
-- Merge a harmless main change, verify the new commit/digest/revision reaches the same URL only after CI passes, then exercise rollback. Record the final service URL and operating instructions in docs.
-
-## Official sources
-
-- [Cloud Run container contract](https://docs.cloud.google.com/run/docs/container-contract)
-- [Cloud Run HTTPS and deterministic URLs](https://docs.cloud.google.com/run/docs/triggering/https-request)
-- [Public access and Invoker IAM check](https://docs.cloud.google.com/run/docs/authenticating/public)
-- [Deployment roles and image access](https://docs.cloud.google.com/run/docs/deploying)
-- [GitHub/deployment pipeline Workload Identity Federation](https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines)
-- [Cloud Run service identity](https://docs.cloud.google.com/run/docs/securing/service-identity)
+- [Container contract: one ingress container, PORT, TLS and shutdown](https://docs.cloud.google.com/run/docs/container-contract)
+- [Multiple containers and sidecar localhost communication](https://docs.cloud.google.com/run/docs/deploying#sidecars)
+- [Source deployment: Dockerfiles or buildpacks](https://docs.cloud.google.com/run/docs/deploying-source-code)
+- [Custom domains: load balancer recommendation and domain-mapping limits](https://docs.cloud.google.com/run/docs/mapping-custom-domains)
+- [Public Suffix List: `*.run.app`](https://publicsuffix.org/list/public_suffix_list.dat)
+- [Health checks and liveness recovery](https://docs.cloud.google.com/run/docs/configuring/healthchecks)
+- [Traffic migration and rollback](https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration)
+- [Public access](https://docs.cloud.google.com/run/docs/authenticating/public)
+- [Deployment roles](https://docs.cloud.google.com/run/docs/deploying)
+- [Deployment pipeline federation](https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines)
+- [Service identity](https://docs.cloud.google.com/run/docs/securing/service-identity)
 - [Firestore locations](https://docs.cloud.google.com/firestore/native/docs/locations)
-- [Firestore server IAM](https://docs.cloud.google.com/firestore/native/docs/security/iam)
-- [Cloud Run traffic migration and rollback](https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration)
-- [Cloud Run repository deployment alternatives](https://docs.cloud.google.com/run/docs/continuous-deployment)
-- [Secret Manager integration](https://docs.cloud.google.com/run/docs/configuring/services/secrets)
-- [Billing settings](https://docs.cloud.google.com/run/docs/configuring/billing-settings)
-- [Budgets and alert/spend-cap distinctions](https://docs.cloud.google.com/billing/docs/how-to/budgets)
-
-## Implemented code-side handoff
-
-- Workflow uses a main-only enable switch, tested-image artifact transfer, separate WIF deploy job and serialized promotions. Deployment helpers reject stale commits, invalid digests, unready candidates and existing traffic splits, and restore prior traffic after failed live checks.
-- Bootstrap applies named resources with no service-account keys, reserves the service with a private Google hello container, then the bootstrap operator enables public access when setup finishes. The temporary public hello page is replaced by the first tested app rollout; this avoids giving CI IAM-policy editing rights. The deployer remains Run Developer on the existing service.
-- Access diagnostic, non-secret GitHub configuration helper and minimal Cloud Shell upload bundle support setup without authenticating the private GitHub repo in Cloud Shell.
-- `npm run test:deploy` covers 12 deployment/rollback conditions and five bootstrap/validation guards. These are deterministic mocked-command tests, not proof of GCP permissions, WIF token exchange or successful provisioning.
-- Full project IAM/index/public-access and canonical-URL tests must run after the owner completes bootstrap. Deployment remains disabled until then.
-
-The expanded builder uses the full pinned root development toolchain to run the exact Turbo build command; its npm audit currently reports 10 development-tool advisories (four moderate, six high). The clean runtime dependency stage reports zero. Build tooling is not copied to the runtime image; remediation of inherited tooling advisories remains a separate dependency-maintenance task.
+- [Billing budgets](https://docs.cloud.google.com/billing/docs/how-to/budgets)

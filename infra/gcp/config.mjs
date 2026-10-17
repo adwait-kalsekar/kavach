@@ -35,11 +35,45 @@ export function deploymentConfig(env) {
     throw new Error(
       "Service name is too long for a deterministic Cloud Run URL.",
     );
-  const origin = `https://${service}-${number}.${region}.run.app`;
-  if (env.APP_ORIGIN !== origin)
+  const webService = required(
+    env,
+    "GCP_WEB_SERVICE",
+    /^[a-z][a-z0-9-]{0,47}[a-z0-9]$/,
+  );
+  if (webService === service)
+    throw new Error("Web and API require distinct Cloud Run services.");
+  const webRuntime = required(
+    env,
+    "GCP_WEB_RUNTIME_SERVICE_ACCOUNT",
+    /^[a-z][a-z0-9-]+@[a-z][a-z0-9-]+\.iam\.gserviceaccount\.com$/,
+  );
+  if (
+    !webRuntime.endsWith(`@${project}.iam.gserviceaccount.com`) ||
+    webRuntime === runtime
+  )
     throw new Error(
-      "APP_ORIGIN must match the canonical deterministic service URL.",
+      "Web runtime must be a separate identity in the selected project.",
     );
+  for (const name of [service, webService])
+    if (`${name}-${number}`.length > 63)
+      throw new Error("Service name is too long.");
+  function originSetting(key) {
+    const value = env[key];
+    const url = new URL(value || "invalid");
+    if (
+      url.protocol !== "https:" ||
+      url.origin !== value ||
+      url.username ||
+      url.password ||
+      /^(localhost|127\.|\[::1\])/.test(url.hostname)
+    )
+      throw new Error(`${key} must be an exact public HTTPS origin.`);
+    return value;
+  }
+  const origin = originSetting("APP_ORIGIN");
+  const apiOrigin = originSetting("API_ORIGIN");
+  if (origin === apiOrigin)
+    throw new Error("Web and API must have different origins.");
   const database = env.FIRESTORE_DATABASE_ID || "(default)";
   if (!/^(\(default\)|[a-z][a-z0-9-]{2,61}[a-z0-9])$/.test(database))
     throw new Error("Invalid FIRESTORE_DATABASE_ID.");
@@ -47,13 +81,16 @@ export function deploymentConfig(env) {
   const runId = required(env, "GITHUB_RUN_ID", /^\d{1,20}$/);
   const attempt = required(env, "GITHUB_RUN_ATTEMPT", /^\d{1,5}$/);
   const suffix = `r${sha.slice(0, 10)}-${runId}-${attempt}`;
-  if (`${service}-${suffix}`.length > 63)
+  if ([service, webService].some((name) => `${name}-${suffix}`.length > 63))
     throw new Error("Revision name is too long.");
   return {
     project,
     number,
     region,
     service,
+    webService,
+    webRuntime,
+    apiOrigin,
     repository,
     runtime,
     origin,

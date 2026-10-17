@@ -12,7 +12,11 @@ const env = {
   GCP_ARTIFACT_REPOSITORY: "kavach",
   GCP_RUNTIME_SERVICE_ACCOUNT:
     "kavach-runtime@kavach-farmers-market-sense.iam.gserviceaccount.com",
-  APP_ORIGIN: "https://kavach-api-123456789012.asia-south1.run.app",
+  APP_ORIGIN: "https://kavach-web-123456789012.asia-south1.run.app",
+  API_ORIGIN: "https://kavach-api-123456789012.asia-south1.run.app",
+  GCP_WEB_SERVICE: "kavach-web",
+  GCP_WEB_RUNTIME_SERVICE_ACCOUNT:
+    "kavach-web-runtime@kavach-farmers-market-sense.iam.gserviceaccount.com",
   GITHUB_SHA: sha,
   GITHUB_RUN_ID: "123",
   GITHUB_RUN_ATTEMPT: "1",
@@ -35,7 +39,7 @@ function harness(options = {}) {
     if (text.startsWith("run services describe"))
       return JSON.stringify({
         metadata: {
-          name: "kavach-api",
+          name: args[3],
           annotations: {
             "run.googleapis.com/invoker-iam-disabled": String(
               options.wasPublic !== false,
@@ -67,8 +71,8 @@ function harness(options = {}) {
       throw new Error("rollback denied");
     return "";
   };
-  const smoke = async (origin, commit) => {
-    calls.push(["smoke", origin, commit]);
+  const smoke = async (origin, commit, apiOrigin) => {
+    calls.push(["smoke", origin, commit, apiOrigin]);
     if (options.failSmoke) throw new Error("live UI failed");
   };
   return { calls, run, smoke };
@@ -77,8 +81,8 @@ const traffic = (calls) => calls.filter((c) => c.includes("update-traffic"));
 test("config refuses incomplete/misdirected production settings", () => {
   assert.throws(() => deploymentConfig({}), /GCP_PROJECT_ID/);
   assert.throws(
-    () => deploymentConfig({ ...env, APP_ORIGIN: "https://evil.example" }),
-    /canonical/,
+    () => deploymentConfig({ ...env, APP_ORIGIN: "https://evil.example/path" }),
+    /exact public/,
   );
   assert.throws(
     () =>
@@ -98,7 +102,8 @@ test("trusted main deploys immutable tested image, ready candidate, then checks 
   const h = harness();
   const result = await deployApplication({ ...h, env });
   assert.equal(result.status, "deployed");
-  assert.equal(result.previousRevision, "old");
+  assert.equal(result.services.length, 2);
+  assert.ok(result.services.every((s) => s.previousRevision === "old"));
   const deploy = h.calls.find((c) => c.includes("deploy"));
   assert.ok(deploy.includes("--no-traffic"));
   assert.ok(deploy.some((v) => v.includes("@sha256:")));
@@ -106,7 +111,12 @@ test("trusted main deploys immutable tested image, ready candidate, then checks 
     h.calls.findIndex((c) => c.includes("revisions")) <
       h.calls.findIndex((c) => c.includes("update-traffic")),
   );
-  assert.deepEqual(h.calls.at(-1), ["smoke", env.APP_ORIGIN, sha]);
+  assert.deepEqual(h.calls.at(-1), [
+    "smoke",
+    env.APP_ORIGIN,
+    sha,
+    env.API_ORIGIN,
+  ]);
 });
 test("PR/foreign branch cannot reach any cloud command", async () => {
   const h = harness();
@@ -176,4 +186,35 @@ test("existing traffic split is preserved rather than overwritten", async () => 
   const h = harness({ split: true });
   await assert.rejects(() => deployApplication({ ...h, env }), /split rollout/);
   assert.equal(traffic(h.calls).length, 0);
+});
+
+test("web promotion failure restores both services in reverse order", async () => {
+  const h = harness();
+  const original = h.run;
+  h.run = (command, args) => {
+    const result = original(command, args);
+    if (
+      args[3] === "kavach-web" &&
+      args.some((a) => a.startsWith("--to-revisions=kavach-web-r"))
+    )
+      throw new Error("web promotion failed");
+    return result;
+  };
+  await assert.rejects(() => deployApplication({ ...h, env }), /restored/);
+  assert.deepEqual(
+    traffic(h.calls).map((c) => c[4]),
+    ["kavach-api", "kavach-web", "kavach-web", "kavach-api"],
+  );
+});
+
+test("rollback attempts API restoration even if web restoration fails", async () => {
+  const h = harness({ failSmoke: true, failRollback: true });
+  await assert.rejects(
+    () => deployApplication({ ...h, env }),
+    /rollback failed/,
+  );
+  assert.equal(
+    traffic(h.calls).filter((c) => c.includes("--to-revisions=old=100")).length,
+    2,
+  );
 });

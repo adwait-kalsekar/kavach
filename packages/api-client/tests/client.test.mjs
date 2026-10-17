@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createApiClient, KavachApiError } from "../dist/index.js";
+import {
+  createApiClient,
+  createRpcClient,
+  KavachApiError,
+} from "../dist/index.js";
 test("client uses only relative Hono URL and HTTP-only cookie transport", async () => {
   let seen;
   const client = createApiClient(async (url, options) => {
@@ -50,4 +54,44 @@ test("structured API failures preserve status and request ID", async () => {
       e.status === 401 &&
       e.payload.error.requestId === requestId,
   );
+});
+
+test("both transports target the exact configured Hono origin with credentialed cookies", async () => {
+  const seen = [];
+  const fetcher = async (url, options) => {
+    seen.push({ url: String(url), credentials: options.credentials });
+    return Response.json({
+      data: {
+        status: "ok",
+        service: "kavach-api",
+        apiVersion: "v1",
+        checkedAt: "2026-10-17T00:00:00.000Z",
+      },
+      meta: { requestId: crypto.randomUUID() },
+    });
+  };
+  await createApiClient(fetcher, "https://api.example.com").request(
+    "health",
+    {},
+  );
+  await createRpcClient(
+    fetcher,
+    "https://api.example.com",
+  ).api.v1.health.$get();
+  assert.deepEqual(
+    seen,
+    Array(2).fill({
+      url: "https://api.example.com/api/v1/health",
+      credentials: "include",
+    }),
+  );
+  for (const bad of [
+    "https://api.example.com/path",
+    "https://api.example.com/",
+    "https://user:password@api.example.com",
+    "javascript:alert(1)",
+  ]) {
+    assert.throws(() => createApiClient(fetcher, bad));
+    assert.throws(() => createRpcClient(fetcher, bad));
+  }
 });

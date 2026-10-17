@@ -20,25 +20,19 @@ The frontend is a browser application. It connects only to the Hono application 
 
 ## Deployment topology
 
-```text
-Browser
-  └─ HTTPS + HTTP-only session cookie: one Hono/Cloud Run origin
-       ├─ /assets/* and frontend GET routes → built Vite assets
-       ├─ /api/v1/* → Hono API (server session validation + ownership)
-       ├─ /healthz → process liveness
-       └─ /readyz → bounded readiness checks
-                ├─ Firestore: sessions, profiles, plans, evidence metadata
-                ├─ Vertex AI: Gemini
-                └─ External public-data adapters: weather etc.
+```mermaid
+flowchart LR
+  B[Browser] --> W[Cloud Run web: Nginx :8081 / Vite assets]
+  B -->|HTTPS API / exact CORS| A[Cloud Run API: Hono :8080]
+  A --> F[Firestore]
+  A --> P[Server-only providers]
 ```
 
-Separate apps in the repository, one deployable container initially. Build Vite assets and compiled backend independently, then copy outputs into a small non-root Node runtime image. The Hono server serves the frontend artifacts. Local Vite proxies `/api` to the backend; production uses the same relative API URL. This avoids a second deployment and cross-origin session configuration for the POC.
+The owner explicitly changed the topology to independent frontend/API serving. Use two services in the same GCP project, each with its own HTTPS hostname and public port 443. Hono must not serve React assets; the web server must not proxy API requests. See [active deployment decision](gcp-deployment.md) for Cloud Run's one-ingress-container limit, Docker/buildpack tradeoffs, per-service identities and coordinated recovery.
 
-Register API routes and API JSON 404/error handling before frontend handling. Missing assets must return 404, never `index.html`. Only eligible frontend GET/HEAD routes with an HTML accept header receive the SPA fallback. Non-GET unknown paths remain 404/405. Hash-named assets can be immutable; `index.html`, identity responses and personal API responses must not be publicly cached.
+Default service URLs enable direct health checks. Guest cookie journeys require same-site custom sibling domains, deferred by the owner. Local Vite serves assets on 3000 and the browser calls Hono on 8080 with exact credentialed CORS. Production Nginx serves static assets on internal 8081. No VM or Kubernetes is required. A global external Application Load Balancer with host routing is planned for custom domains in Mumbai later; direct domain mapping is not selected.
 
-The browser-facing origin remains Hono under the user's boundary requirement. Static hosting separation would require an explicit future architecture change; it is not the default growth step. No Kubernetes, Redis, load balancer, separate worker service or API Gateway is required for the initial flow.
-
-All application data/file/audio requests go through Hono: no direct Firebase SDK calls, Vertex/Gemini clients, weather URLs, signed GCS upload/download URLs, remote telemetry or realtime database subscriptions in the browser. Self-host fonts/icons and frontend assets. Set CSP `connect-src 'self'` and other resource directives consistent with the same-origin boundary; use blob media only for locally recorded/generated playback where needed. Source references may be rendered as text; an in-app evidence view is fetched through Hono. A document fetch must resolve a server-approved source ID, not proxy an arbitrary user URL.
+All application data/file/audio requests go through Hono: no direct Firebase SDK calls, Vertex/Gemini clients, weather URLs, signed GCS upload/download URLs, remote telemetry or realtime database subscriptions in the browser. Self-host fonts/icons and frontend assets. Set frontend CSP `connect-src` to the exact API origin and allow only self-hosted assets; use blob media only for locally recorded/generated playback where needed. Source references may be rendered as text; an in-app evidence view is fetched through Hono. A document fetch must resolve a server-approved source ID, not proxy an arbitrary user URL.
 
 ## Database: Firestore Standard / Native mode
 

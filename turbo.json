@@ -26,7 +26,8 @@
       "cache": false,
       "persistent": true,
       "dependsOn": ["^build"],
-      "interruptible": true
+      "interruptible": true,
+      "passThroughEnv": ["API_ORIGIN"]
     }
   }
 }

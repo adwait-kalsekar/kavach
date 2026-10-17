@@ -12,7 +12,7 @@ npm run build:api
 npm run start:api
 ```
 
-The API listens on `http://localhost:8080`. Defaults use a durable `.data/kavach.sqlite` file under the repo root and disable external weather/AI requests. No cloud credentials or auth account are required. For configuration, copy [apps/api/.env.example](../../apps/api/.env.example) to `apps/api/.env`; paths are relative to the repository root. `npm run dev:api` runs TypeScript through tsx and rebuilds shared dependencies through Turbo watch. `npm run dev` starts the UI too. Use APP_ORIGIN=http://localhost:3000 for the Vite proxy, or http://localhost:8080 for the built Hono-served UI.
+The API listens on `http://localhost:8080`. Defaults use a durable `.data/kavach.sqlite` file under the repo root and disable external weather/AI requests. No cloud credentials or auth account are required. For configuration, copy [apps/api/.env.example](../../apps/api/.env.example) to `apps/api/.env`; paths are relative to the repository root. `npm run dev:api` runs TypeScript through tsx and rebuilds shared dependencies through Turbo watch. `npm run dev` starts the UI too. Use APP_ORIGIN=http://localhost:3000 for the independently served Vite UI; the browser calls Hono directly on 8080.
 
 - `GET /api/v1/health`: public runtime-validated RPC liveness response (`status`, `service`, `apiVersion`, `checkedAt`) in the normal envelope. No guest session is required or created. This proves API reachability, not database readiness.
 - `GET /healthz`: process liveness.
@@ -112,4 +112,4 @@ To regenerate the specification after contract changes: `npm run openapi -w @kav
 
 Firestore parity: Java 21 and Firebase CLI are development dependencies/tooling; `npm run test:firestore` starts the official emulator using `demo-kavach` and runs the same API journey tests against isolated emulator databases. It does not require a real GCP project or use cloud credentials. The emulator does not enforce production composite indexes or IAM, so those remain explicit deployment checks.
 
-For UI integration, set local `APP_ORIGIN` to the frontend origin and proxy `/api` through the Vite dev server. Production must stay same-origin with Hono. Do not expose emulator endpoints, cloud credentials or service SDKs to frontend code.
+For UI integration, set `APP_ORIGIN` to the exact frontend origin. The independently served React app calls the configured Hono API origin directly with credentialed CORS; it never uses an API proxy. Default Cloud Run URLs support health only; guest sessions need same-site sibling custom domains. Do not expose emulator endpoints, cloud credentials or service SDKs to frontend code.

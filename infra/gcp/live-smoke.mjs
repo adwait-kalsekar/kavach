@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { pathToFileURL } from "node:url";
 
-export async function liveSmoke(origin, sha) {
+export async function liveSmoke(origin, sha, apiOrigin) {
   const { chromium } = await import("playwright");
   const browser = await chromium.launch();
   try {
@@ -14,17 +14,21 @@ export async function liveSmoke(origin, sha) {
       const unexpected = [];
       const errors = [];
       page.on("request", (r) => {
-        if (new URL(r.url()).origin !== origin) unexpected.push(r.url());
+        if (![origin, apiOrigin].includes(new URL(r.url()).origin))
+          unexpected.push(r.url());
       });
       page.on("pageerror", (e) => errors.push(e.message));
       const healthPromise = page.waitForResponse(
         (r) => new URL(r.url()).pathname === "/api/v1/health",
         { timeout: 20000 },
       );
-      const [, health] = await Promise.all([
+      const [document, health] = await Promise.all([
         page.goto(origin, { waitUntil: "domcontentloaded", timeout: 30000 }),
         healthPromise,
       ]);
+      assert.equal(document.status(), 200);
+      assert.equal(document.headers()["x-release-sha"], sha);
+      assert.equal(new URL(health.url()).origin, apiOrigin);
       assert.equal(health.status(), 200);
       assert.equal(health.headers()["x-release-sha"], sha);
       const payload = await health.json();
@@ -32,7 +36,7 @@ export async function liveSmoke(origin, sha) {
       await page
         .getByRole("heading", { name: "API reachable", exact: true })
         .waitFor({ timeout: 20000 });
-      const ready = await context.request.get(origin + "/readyz", {
+      const ready = await context.request.get(apiOrigin + "/readyz", {
         timeout: 10000,
       });
       assert.equal(ready.status(), 200);
@@ -56,13 +60,15 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  const [origin, sha] = process.argv.slice(2);
+  const [origin, sha, apiOrigin] = process.argv.slice(2);
   if (
-    !/^https:\/\/[a-z0-9.-]+\.run\.app$/.test(origin || "") ||
+    ![origin, apiOrigin].every((v) =>
+      /^https:\/\/[a-z0-9.-]+$/.test(v || ""),
+    ) ||
     !/^[a-f0-9]{40}$/.test(sha || "")
   )
     throw new Error(
-      "Supply the canonical HTTPS Cloud Run origin and expected commit SHA.",
+      "Supply the web HTTPS origin, expected commit SHA and API HTTPS origin.",
     );
-  await liveSmoke(origin, sha);
+  await liveSmoke(origin, sha, apiOrigin);
 }

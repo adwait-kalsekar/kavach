@@ -34,66 +34,13 @@ export async function deployApplication({
     ]).trim();
   if (head() !== c.sha) return { status: "superseded" };
   const base = ["--project", c.project, "--region", c.region, "--quiet"];
-  const previous = JSON.parse(
-    run("gcloud", [
-      "run",
-      "services",
-      "describe",
-      c.service,
-      ...base,
-      "--format=json",
-    ]),
-  );
-  if (previous.metadata?.name !== c.service)
-    throw new Error("Bootstrap the selected Cloud Run service first.");
-  const traffic = (previous.status?.traffic || []).filter((t) => t.percent > 0);
-  if (
-    traffic.length !== 1 ||
-    traffic[0].percent !== 100 ||
-    !traffic[0].revisionName
-  )
-    throw new Error(
-      "Expected one previous revision at 100% traffic; refusing to overwrite a split rollout.",
-    );
-  const priorRevision = traffic[0].revisionName;
-  const wasPublic =
-    previous.metadata?.annotations?.[
-      "run.googleapis.com/invoker-iam-disabled"
-    ] === "true";
-  if (!wasPublic)
-    throw new Error(
-      "Bootstrap must configure public access first; CI deliberately has no service IAM policy permission.",
-    );
-  const temp = mkdtempSync(join(tmpdir(), "kavach-deploy-"));
-  let promoted = false;
-  try {
-    run("gcloud", [
-      "auth",
-      "configure-docker",
-      `${c.region}-docker.pkg.dev`,
-      "--quiet",
-    ]);
-    run("docker", ["tag", "kavach-api:ci", c.image]);
-    run("docker", ["push", c.image]);
-    const digest = run("gcloud", [
-      "artifacts",
-      "docker",
-      "images",
-      "describe",
-      c.image,
-      "--project",
-      c.project,
-      "--format=value(image_summary.digest)",
-    ]).trim();
-    if (!/^sha256:[a-f0-9]{64}$/.test(digest))
-      throw new Error(
-        "Registry did not return a valid immutable image digest.",
-      );
-    const immutable = c.image.slice(0, c.image.lastIndexOf(":")) + "@" + digest;
-    const vars = join(temp, "environment.json");
-    writeFileSync(
-      vars,
-      JSON.stringify({
+  const services = [
+    {
+      name: c.service,
+      runtime: c.runtime,
+      port: 8080,
+      localImage: "kavach-api:ci",
+      vars: {
         APP_ENV: "production",
         STORAGE_BACKEND: "firestore",
         GOOGLE_CLOUD_PROJECT: c.project,
@@ -101,101 +48,183 @@ export async function deployApplication({
         FIRESTORE_DATABASE_ID: c.database,
         WEATHER_PROVIDER: "disabled",
         RELEASE_SHA: c.sha,
-      }),
-      { mode: 0o600 },
-    );
-    run("gcloud", [
-      "run",
-      "deploy",
-      c.service,
-      ...base,
-      "--image",
-      immutable,
-      "--service-account",
-      c.runtime,
-      "--env-vars-file",
-      vars,
-      "--revision-suffix",
-      c.suffix,
-      "--no-traffic",
-      "--port=8080",
-      "--min-instances=0",
-      "--max-instances=3",
-      "--concurrency=20",
-      "--cpu=1",
-      "--memory=512Mi",
-      "--timeout=60",
-      "--cpu-throttling",
-      "--ingress=all",
-      "--startup-probe=httpGet.path=/readyz,httpGet.port=8080,periodSeconds=5,failureThreshold=12",
-      "--liveness-probe=httpGet.path=/healthz,httpGet.port=8080,periodSeconds=30",
-    ]);
-    const revision = JSON.parse(
+      },
+    },
+    {
+      name: c.webService,
+      runtime: c.webRuntime,
+      port: 8081,
+      localImage: "kavach-web:ci",
+      vars: { API_ORIGIN: c.apiOrigin, RELEASE_SHA: c.sha },
+    },
+  ];
+  for (const s of services) {
+    const previous = JSON.parse(
       run("gcloud", [
         "run",
-        "revisions",
+        "services",
         "describe",
-        c.revision,
+        s.name,
         ...base,
         "--format=json",
       ]),
     );
+    if (previous.metadata?.name !== s.name)
+      throw new Error("Bootstrap the selected Cloud Run services first.");
+    const traffic = (previous.status?.traffic || []).filter(
+      (t) => t.percent > 0,
+    );
     if (
-      !revision.status?.conditions?.some(
-        (v) => v.type === "Ready" && v.status === "True",
-      )
+      traffic.length !== 1 ||
+      traffic[0].percent !== 100 ||
+      !traffic[0].revisionName
     )
       throw new Error(
-        "Candidate revision is not ready; production traffic is unchanged.",
+        "Expected one previous revision at 100% traffic; refusing to overwrite a split rollout.",
       );
-    if (head() !== c.sha) return { status: "superseded", revision: c.revision };
-    // Mark before the command: if the response fails after GCP accepted it, still restore traffic.
-    promoted = true;
+    s.previous = traffic[0].revisionName;
+    if (
+      previous.metadata?.annotations?.[
+        "run.googleapis.com/invoker-iam-disabled"
+      ] !== "true"
+    )
+      throw new Error(
+        "Bootstrap must configure public access first; CI deliberately has no service IAM policy permission.",
+      );
+  }
+  const temp = mkdtempSync(join(tmpdir(), "kavach-deploy-"));
+  const promoted = [];
+  try {
     run("gcloud", [
-      "run",
-      "services",
-      "update-traffic",
-      c.service,
-      ...base,
-      `--to-revisions=${c.revision}=100`,
+      "auth",
+      "configure-docker",
+      `${c.region}-docker.pkg.dev`,
+      "--quiet",
     ]);
-
-    await smoke(c.origin, c.sha);
+    for (const s of services) {
+      const image = `${c.region}-docker.pkg.dev/${c.project}/${c.repository}/${s.name}:${c.sha}`;
+      run("docker", ["tag", s.localImage, image]);
+      run("docker", ["push", image]);
+      const digest = run("gcloud", [
+        "artifacts",
+        "docker",
+        "images",
+        "describe",
+        image,
+        "--project",
+        c.project,
+        "--format=value(image_summary.digest)",
+      ]).trim();
+      if (!/^sha256:[a-f0-9]{64}$/.test(digest))
+        throw new Error(
+          "Registry did not return a valid immutable image digest.",
+        );
+      s.immutable = image.slice(0, image.lastIndexOf(":")) + "@" + digest;
+      s.revision = `${s.name}-${c.suffix}`;
+      const vars = join(temp, `${s.name}.json`);
+      writeFileSync(vars, JSON.stringify(s.vars), { mode: 0o600 });
+      run("gcloud", [
+        "run",
+        "deploy",
+        s.name,
+        ...base,
+        "--image",
+        s.immutable,
+        "--service-account",
+        s.runtime,
+        "--env-vars-file",
+        vars,
+        "--revision-suffix",
+        c.suffix,
+        "--no-traffic",
+        `--port=${s.port}`,
+        "--min-instances=0",
+        "--max-instances=3",
+        "--concurrency=20",
+        "--cpu=1",
+        "--memory=512Mi",
+        "--timeout=60",
+        "--cpu-throttling",
+        "--ingress=all",
+        `--startup-probe=httpGet.path=/readyz,httpGet.port=${s.port},periodSeconds=5,failureThreshold=12`,
+        `--liveness-probe=httpGet.path=/healthz,httpGet.port=${s.port},periodSeconds=30`,
+      ]);
+      const revision = JSON.parse(
+        run("gcloud", [
+          "run",
+          "revisions",
+          "describe",
+          s.revision,
+          ...base,
+          "--format=json",
+        ]),
+      );
+      if (
+        !revision.status?.conditions?.some(
+          (v) => v.type === "Ready" && v.status === "True",
+        )
+      )
+        throw new Error(
+          "Candidate revision is not ready; production traffic is unchanged.",
+        );
+    }
+    if (head() !== c.sha) return { status: "superseded" };
+    // API first: it MUST remain compatible with the previous web release.
+    for (const s of services) {
+      // Track before the request: a lost response may still mean promotion succeeded.
+      promoted.push(s);
+      run("gcloud", [
+        "run",
+        "services",
+        "update-traffic",
+        s.name,
+        ...base,
+        `--to-revisions=${s.revision}=100`,
+      ]);
+    }
+    await smoke(c.origin, c.sha, c.apiOrigin);
     const result = {
       status: "deployed",
       origin: c.origin,
-      revision: c.revision,
-      digest,
+      apiOrigin: c.apiOrigin,
       sha: c.sha,
-      previousRevision: priorRevision,
+      services: services.map((s) => ({
+        name: s.name,
+        revision: s.revision,
+        image: s.immutable,
+        previousRevision: s.previous,
+      })),
     };
     if (env.GITHUB_STEP_SUMMARY)
       appendFileSync(
         env.GITHUB_STEP_SUMMARY,
-        `\nDeployment: ${c.origin}\n\nCommit: ${c.sha}\n\nRevision: ${c.revision}\n\nImage: ${immutable}\n\nPrevious revision: ${priorRevision}\n`,
+        `\nDeployment:\n\n\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\`\n`,
       );
     return result;
   } catch (error) {
-    if (promoted) {
+    const failures = [];
+    // Restore web first. Always attempt both restorations, even if one fails.
+    for (const s of promoted.reverse()) {
       try {
         run("gcloud", [
           "run",
           "services",
           "update-traffic",
-          c.service,
+          s.name,
           ...base,
-          `--to-revisions=${priorRevision}=100`,
+          `--to-revisions=${s.previous}=100`,
         ]);
       } catch (rollback) {
-        throw new AggregateError(
-          [error, rollback],
-          `Deployment and rollback failed. Restore ${priorRevision} in Cloud Run immediately.`,
-        );
+        failures.push({ s, rollback });
       }
     }
-    // Avoid echoing command stderr or environment data through generic error logging.
+    if (failures.length)
+      throw new AggregateError(
+        [error, ...failures.map((f) => f.rollback)],
+        `Deployment and rollback failed. Restore ${failures.map((f) => `${f.s.name}: ${f.s.previous}`).join(", ")} in Cloud Run immediately.`,
+      );
     throw new Error(
-      `Deployment failed${promoted ? "; previous traffic restored" : "; production traffic unchanged"}: ${error instanceof Error ? error.message.split("\n")[0] : "unknown failure"}`,
+      `Deployment failed${promoted.length ? "; previous traffic restored" : "; production traffic unchanged"}: ${error instanceof Error ? error.message.split("\n")[0] : "unknown failure"}`,
     );
   } finally {
     rmSync(temp, { recursive: true, force: true });

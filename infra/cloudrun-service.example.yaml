@@ -9,7 +9,7 @@ spec:
       annotations:
         autoscaling.knative.dev/maxScale: "3"
     spec:
-      serviceAccountName: kavach-api@REPLACE_PROJECT_ID.iam.gserviceaccount.com
+      serviceAccountName: kavach-runtime@REPLACE_PROJECT_ID.iam.gserviceaccount.com
       containerConcurrency: 20
       timeoutSeconds: 60
       containers:
@@ -19,7 +19,7 @@ spec:
             - { name: APP_ENV, value: production }
             - { name: STORAGE_BACKEND, value: firestore }
             - { name: GOOGLE_CLOUD_PROJECT, value: REPLACE_PROJECT_ID }
-            - { name: APP_ORIGIN, value: "https://REPLACE_CLOUD_RUN_HOST" }
+            - { name: APP_ORIGIN, value: "https://REPLACE_WEB_SERVICE_HOST" }
             - { name: WEATHER_PROVIDER, value: disabled }
           resources:
             limits: { cpu: "1", memory: 512Mi }

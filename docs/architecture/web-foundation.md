@@ -6,19 +6,19 @@ Updated 17 October 2026. Backend foundation merged through PR #1. This batch rep
 
 ```mermaid
 flowchart LR
-  B[Browser] -->|dev: same-origin /api| V[Vite :3000]
-  V -->|server proxy| H[Hono :8080]
-  B2[Browser on GCP] -->|one HTTPS origin| R[Cloud Run: Hono + built Vite assets]
-  R --> F[Firestore via workload identity]
-  R --> P[Future server-only providers]
+  B[Local browser] --> V[Vite :3000 / React assets]
+  B -->|Direct API / exact CORS| H[Hono :8080]
+  B2[GCP browser] --> W[Cloud Run web / Nginx :8081]
+  B2 -->|Direct API / exact CORS| A[Cloud Run API / Hono :8080]
+  A --> F[Firestore via API identity]
   H --> S[Local SQLite / optional emulator]
 ```
 
-The web and API have separate packages and build commands. The POC deploys them together as one Cloud Run container: Node listens on PORT, Hono serves `apps/web/dist` and `/api/v1/*`, and production persistence remains Firestore. No second browser-facing service, CORS wildcard, cloud SDK or direct database path is introduced. `apps/docs` is excluded from the application image.
+Frontend and API are independently served. Hono serves no web output; its root returns 404. Nginx serves the web build, has no API proxy, and `/api/*` there returns 404. Public HTTPS uses port 443 for each hostname. See [deployment decision](gcp-deployment.md) for why Cloud Run sidecars cannot expose two independent ingress ports.
 
-`infra/Dockerfile.api` builds both packages, then installs only production API dependencies in a clean stage. The runtime receives those dependencies, compiled API/contracts/domain and static web assets. It runs as a non-root user. Production startup rejects missing web assets and still requires valid project/HTTPS-origin/Firestore settings. Provisioning and live deployment remain deferred until a GCP project is selected.
+The API image receives compiled API/contracts/domain and clean production dependencies. The web image receives only static web output and Nginx configuration. Both are non-root; docs/build tools/server SDKs are absent from the web runtime. `infra/Dockerfile.web` consumes the separately built `kavach-builder` stage. Its `/runtime-config.js` contains only API_ORIGIN; Nginx templates this at startup, so React can use a new API address without rebuilding. Config/HTML revalidate. CSP permits self-hosted scripts/styles/images and connections only to the configured API origin, without inline/eval. API responses retain strict JSON CSP.
 
-API responses retain restrictive JSON CSP. HTML/assets allow only same-origin scripts/styles/images/connections, prohibit frames and objects, and do not allow inline scripts or eval. Frontend fonts/assets are local. Unknown API paths remain JSON errors, never the SPA document. Add explicit UI route namespaces to `apps/api/src/web.ts` as new screens are built.
+Default Cloud Run URLs support the health screen without cookies. Full guest ownership requires same-site sibling custom domains; cross-site session/resource requests are rejected. The owner deferred the domain. Do not treat health-only deployment as farmer-journey acceptance.
 
 ## Hono RPC without runtime coupling
 
@@ -28,7 +28,7 @@ flowchart TD
   Z[packages/contracts: Zod + OpenAPI] --> A
   Z --> C
   C --> U[React Query feature module]
-  U -->|relative HTTP request| A
+  U -->|configured Hono origin| A
   A --> S[Server services / adapters]
 ```
 
@@ -38,14 +38,14 @@ Keep route definitions chained in `createApp`; mutating a Hono instance behind a
 
 ```ts
 import { createRpcClient, readRpcResponse } from "@kavach/api-client";
-const rpc = createRpcClient();
+const rpc = createRpcClient(fetch, "http://localhost:8080");
 const health = await readRpcResponse("health", await rpc.api.v1.health.$get());
 
 // Other routes expose JSON, path and header completion. Mutations require
 // X-CSRF-Token and creations also require Idempotency-Key in the header input.
 ```
 
-The existing schema-driven `createApiClient().request(...)` remains supported for transport-independent callers. Both clients use relative paths and same-origin cookies. The browser automatically sends Origin on mutations; keep CSRF/idempotency tokens in request headers and derive ownership only on the server. Never place cloud credentials in Vite variables.
+The existing schema-driven `createApiClient().request(...)` remains supported for transport-independent callers. Both clients accept an optional exact API origin as their second argument (`createRpcClient(fetch, apiOrigin)` / `createApiClient(fetch, apiOrigin)`). Configured-origin requests use credentials: include; relative mode remains available for non-UI callers. The browser automatically sends Origin on mutations; keep CSRF/idempotency tokens in request headers and derive ownership only on the server. Never place cloud credentials in Vite variables.
 
 Security checks:
 
@@ -62,9 +62,9 @@ cp apps/api/.env.example apps/api/.env
 npm run dev
 ```
 
-Open http://localhost:3000. Vite uses a fixed port and proxies `/api` to 127.0.0.1:8080. API configuration and secrets stay under `apps/api`; there is no frontend service URL/key configuration. Keep APP_ORIGIN=http://localhost:3000 for mutations through this proxy. Turbo watch rebuilds shared packages and restarts dependents; tsx/Vite handle API/UI source edits. Ports 3000 and 8080 must be free.
+Open http://localhost:3000. Vite serves only the UI and its public runtime configuration; the browser calls Hono directly on http://localhost:8080. Keep APP_ORIGIN=http://localhost:3000 on the API. Vite's optional server-side API_ORIGIN overrides the local default; no secrets go there. There is no Vite API proxy. The API uses exact CORS, HttpOnly cookies and CSRF. Turbo watch rebuilds dependencies; tsx/Vite handle source changes. The docs starter remains `npm run dev:docs`.
 
-For the same-origin production serving path locally, run `npm run build:app`, set APP_ORIGIN=http://localhost:8080, then `npm run start:api`. SQLite remains explicit local mode; this is not a production GCP test. The original docs starter is available separately with `npm run dev:docs`.
+Build with `npm run build:app`; `npm run start:api` starts only the API. `npm run preview --workspace=web` is a local asset preview, not a production server. Production uses Nginx; see [infra commands](../../infra/README.md). SQLite remains local tooling only.
 
 ## Health screen and verification
 
@@ -84,13 +84,9 @@ npx playwright install chromium
 npm run test:e2e
 docker build -f infra/Dockerfile.api -t kavach-api .
 node infra/tests/container-smoke.mjs kavach-api
+docker build -f infra/Dockerfile.api --target builder -t kavach-builder .
+docker build -f infra/Dockerfile.web -t kavach-web .
+node infra/gcp/test-live-smoke.mjs kavach-api kavach-web
 ```
 
-Playwright starts isolated API/Vite processes and runs desktop/mobile proxy and built Hono journeys. Tests assert real health responses, fresh request IDs after retry, loading/failure/recovery, malformed-response rejection, no horizontal overflow and same-origin network requests. Container smoke verifies HTML/assets, CSP, typed health and saved-record persistence across restart.
-
-## Batch review
-
-- Web build, lint and typecheck pass, including negative RPC type checks and import guards. A deliberate server import was rejected by the guard and removed.
-- Nine browser checks pass across desktop/mobile and built Hono serving. Desktop/mobile screenshots were inspected; the normal `npm run dev` path also returned a real API response.
-- Final local review passed: 29 contract/domain/client/API/infrastructure tests, 11 Firestore emulator tests, nine browser tests, scoped build/lint/typecheck and OpenAPI drift. The complete application container built with its clean production dependency stage (zero audit advisories reported there); HTML/assets/CSP/health and record persistence across restart passed. Runtime inspection confirmed TypeScript, Vite, ESLint and Playwright are absent. CI repeats these gates; live GCP deployment remains unverified.
-- Dependency review found four high-severity development advisories inherited through the existing shared Next ESLint plugin (`braces`/`micromatch`/`fast-glob`). These are not frontend runtime modules or production API dependencies; the clean runtime dependency install excludes build/lint tooling. No forced downgrade of the unrelated Next docs tooling is included.
+Playwright starts isolated API and Vite/preview processes. Desktop/mobile direct-origin and built-web tests cover health refresh, loading/failure/recovery, malformed responses, the exact two-origin network allowlist, no horizontal overflow, credentialed guest bootstrap/creation and wrong-CSRF denial. Container smoke verifies API workflow persistence; two-container browser smoke checks API pause/recovery with the web still available, real Nginx CSP/runtime config, independent ports, absence of API proxy/static serving in Hono, and both release SHAs. Live GCP IAM/WIF/routing remain unverified.

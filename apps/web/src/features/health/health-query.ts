@@ -1,7 +1,12 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createRpcClient, readRpcResponse } from "@kavach/api-client";
 
-const api = createRpcClient();
+declare global {
+  interface Window {
+    __KAVACH_CONFIG__?: { apiOrigin?: string };
+  }
+}
+const api = createRpcClient(fetch, window.__KAVACH_CONFIG__?.apiOrigin);
 export const healthQueryOptions = queryOptions({
   queryKey: ["system", "health"],
   queryFn: async ({ signal }) => {

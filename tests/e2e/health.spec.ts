@@ -33,7 +33,15 @@ test("real UI → Hono health request, validated response and manual refresh", a
   await expect(
     page.getByText(`Request ID: ${second.meta.requestId}`),
   ).toBeVisible();
-  expect(requests.every((url) => new URL(url).origin === baseURL)).toBe(true);
+  const apiOrigin = baseURL?.endsWith(":8081")
+    ? "http://localhost:8082"
+    : "http://localhost:8080";
+  expect(
+    requests.every((url) => [baseURL, apiOrigin].includes(new URL(url).origin)),
+  ).toBe(true);
+  expect(
+    requests.some((url) => url.startsWith(apiOrigin + "/api/v1/health")),
+  ).toBe(true);
   expect(errors).toEqual([]);
   expect(
     await page.evaluate(
@@ -83,4 +91,41 @@ test("an invalid successful payload is never presented as a healthy API", async 
   await expect(
     page.getByRole("heading", { name: "API unreachable" }),
   ).toBeVisible();
+});
+
+test("cross-origin guest cookies and CSRF work without exposing cookies to JavaScript", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const result = await page.evaluate(async () => {
+    const origin = (
+      window as Window & { __KAVACH_CONFIG__?: { apiOrigin: string } }
+    ).__KAVACH_CONFIG__?.apiOrigin;
+    const bootstrap = await fetch(origin + "/api/v1/session", {
+      credentials: "include",
+    });
+    const payload = await bootstrap.json();
+    const response = await fetch(origin + "/api/v1/session", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": payload.data.csrfToken,
+      },
+      body: "{}",
+    });
+    const rejected = await fetch(origin + "/api/v1/session", {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "X-CSRF-Token": "wrong" },
+    });
+    return {
+      status: response.status,
+      rejected: rejected.status,
+      cookie: document.cookie,
+    };
+  });
+  expect(result.status).toBe(201);
+  expect(result.rejected).toBe(403);
+  expect(result.cookie).not.toContain("kavach_session");
 });

@@ -12,17 +12,11 @@ cp apps/api/.env.example apps/api/.env
 npm run dev
 ```
 
-Open **http://localhost:3000**. The responsive workspace calls Hono's real `/api/v1/health` endpoint, displays response timing, and lets you retry. `npm run dev` starts Vite and Hono together and rebuilds shared packages when they change. Vite proxies `/api` to Hono on port 8080; the browser makes no direct service requests.
+Open **http://localhost:3000**. The responsive workspace calls Hono directly on **http://localhost:8080/api/v1/health**, validates the response and lets you retry. `npm run dev` starts independent Vite and Hono processes and rebuilds shared packages. Keep API APP_ORIGIN=http://localhost:3000; exact CORS and CSRF protect requests.
 
-To test the built app on one Hono origin:
+`npm run build:app` builds both packages. `npm run start:api` starts only Hono, which serves no frontend assets. Production uses separate Cloud Run services: Nginx web on internal 8081 and Hono API on 8080, each with its own HTTPS hostname. See [web/RPC architecture](docs/architecture/web-foundation.md), [deployment decision](docs/architecture/gcp-deployment.md) and [container commands](infra/README.md).
 
-```sh
-npm run build:app
-# Set APP_ORIGIN=http://localhost:8080 in apps/api/.env for this mode.
-npm run start:api
-```
-
-Then open **http://localhost:8080**. The GCP container uses this same serving structure, with production Firestore configuration. See [web/RPC architecture](docs/architecture/web-foundation.md), [API guide](docs/api/README.md) and [environment example](apps/api/.env.example).
+The first default-URL deployment supports health only. Full guest journeys require sibling custom domains for reliable secure cookies; domain setup is deferred.
 
 Implemented: guest ownership, farm context, immutable assessments, hypothetical comparisons, saved-plan tracking, optional weather adapter and SQLite/Firestore persistence. Workflow checks are explicitly unreviewed. Account login, AI conversations, reviewed agronomic advice and live GCP deployment are deferred.
 

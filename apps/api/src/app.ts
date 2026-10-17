@@ -118,10 +118,7 @@ export function createApp({
     c.header("Referrer-Policy", "same-origin");
     c.header(
       "Content-Security-Policy",
-      c.req.path.startsWith("/api/") ||
-        ["/healthz", "/readyz"].includes(c.req.path)
-        ? "default-src 'none'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'"
-        : "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
+      "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
     );
     await next();
   });
@@ -187,15 +184,50 @@ export function createApp({
 
   app.use("/api/v1/*", async (c, next) => {
     const origin = c.req.header("origin");
+    const healthOnly = [
+      "/api/v1/health",
+      "/api/v1/capabilities",
+      "/api/v1/openapi.json",
+    ].includes(c.req.path);
     if (
       (origin && origin !== config.origin) ||
-      c.req.header("sec-fetch-site") === "cross-site"
+      (!healthOnly && c.req.header("sec-fetch-site") === "cross-site")
     )
       throw new ServiceError(
         403,
         "FORBIDDEN",
-        "Only same-origin application requests are accepted.",
+        "Only the configured application origin is accepted. Cross-site guest cookies require sibling custom domains.",
       );
+    if (origin === config.origin) {
+      c.header("Access-Control-Allow-Origin", config.origin);
+      c.header("Access-Control-Allow-Credentials", "true");
+      c.header("Access-Control-Expose-Headers", "X-Request-ID, X-Release-SHA");
+      c.header("Vary", "Origin");
+    }
+    if (c.req.method === "OPTIONS") {
+      const method = c.req.header("access-control-request-method");
+      const headers = (c.req.header("access-control-request-headers") || "")
+        .toLowerCase()
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
+      if (
+        origin !== config.origin ||
+        !method ||
+        !["GET", "POST", "PATCH", "DELETE"].includes(method) ||
+        headers.some(
+          (h) =>
+            !["content-type", "x-csrf-token", "idempotency-key"].includes(h),
+        )
+      )
+        throw new ServiceError(403, "FORBIDDEN", "Preflight is not permitted.");
+      c.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+      c.header(
+        "Access-Control-Allow-Headers",
+        "Content-Type, X-CSRF-Token, Idempotency-Key",
+      );
+      return c.body(null, 204);
+    }
     const session = await sessions.resolve(getCookie(c, config.cookieName));
     const path = c.req.path;
     const publicPath =

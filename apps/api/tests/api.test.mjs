@@ -506,3 +506,66 @@ test("public typed health contract and RPC routes match the OpenAPI endpoint reg
     await h.store.close();
   }
 });
+
+test("CORS permits only the UI origin; cross-site health is public but guest cookies stay blocked", async () => {
+  const h = await harness({ APP_ORIGIN: "https://app.example.com" });
+  try {
+    const headers = {
+      Origin: "https://app.example.com",
+      "Sec-Fetch-Site": "same-site",
+    };
+    const allowed = await h.app.request("/api/v1/health", { headers });
+    assert.equal(
+      allowed.headers.get("access-control-allow-origin"),
+      headers.Origin,
+    );
+    assert.equal(
+      allowed.headers.get("access-control-allow-credentials"),
+      "true",
+    );
+    const preflight = await h.app.request("/api/v1/session", {
+      method: "OPTIONS",
+      headers: {
+        ...headers,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "content-type,x-csrf-token",
+      },
+    });
+    assert.equal(preflight.status, 204);
+    for (const origin of ["https://evil.example", "null"]) {
+      const denied = await h.app.request("/api/v1/health", {
+        headers: { Origin: origin },
+      });
+      assert.equal(denied.status, 403);
+      assert.equal(denied.headers.get("access-control-allow-origin"), null);
+    }
+    const badHeader = await h.app.request("/api/v1/session", {
+      method: "OPTIONS",
+      headers: {
+        ...headers,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization",
+      },
+    });
+    assert.equal(badHeader.status, 403);
+    assert.equal(
+      (
+        await h.app.request("/api/v1/health", {
+          headers: { ...headers, "Sec-Fetch-Site": "cross-site" },
+        })
+      ).status,
+      200,
+    );
+    assert.equal(
+      (
+        await h.app.request("/api/v1/session", {
+          headers: { ...headers, "Sec-Fetch-Site": "cross-site" },
+        })
+      ).status,
+      403,
+    );
+    assert.equal((await h.app.request("/")).status, 404);
+  } finally {
+    await h.store.close();
+  }
+});

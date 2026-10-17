@@ -29,7 +29,7 @@ jobs:
       - name: Deployment and rollback guard tests
         run: npm run test:deploy
       - run: npx playwright install --with-deps chromium
-      - name: Desktop, mobile and Hono-served browser journeys
+      - name: Desktop, mobile and built web browser journeys
         run: npm run test:e2e
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
@@ -37,15 +37,19 @@ jobs:
           java-version: "21"
       - name: Firestore emulator contract parity (no GCP account)
         run: npm run test:firestore
-      - name: Container build
-        run: docker build -f infra/Dockerfile.api -t kavach-api:ci .
+      - name: Build shared Turbo builder
+        run: docker build -f infra/Dockerfile.api --target builder -t kavach-builder .
+      - name: Independent API and static web images
+        run: |
+          docker build -f infra/Dockerfile.api -t kavach-api:ci .
+          docker build -f infra/Dockerfile.web -t kavach-web:ci .
       - name: Container HTTP workflow and restart persistence
         run: node infra/tests/container-smoke.mjs kavach-api:ci
       - name: Verify deployment smoke against the real container
-        run: node infra/gcp/test-live-smoke.mjs kavach-api:ci
+        run: node infra/gcp/test-live-smoke.mjs kavach-api:ci kavach-web:ci
       - name: Export the exact tested image for main deployment
         if: github.ref == 'refs/heads/main' && vars.GCP_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        run: docker save kavach-api:ci | gzip > kavach-image.tar.gz
+        run: docker save kavach-api:ci kavach-web:ci | gzip > kavach-image.tar.gz
       - name: Transfer tested image
         if: github.ref == 'refs/heads/main' && vars.GCP_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -76,6 +80,9 @@ jobs:
       GCP_RUNTIME_SERVICE_ACCOUNT: ${{ vars.GCP_RUNTIME_SERVICE_ACCOUNT }}
       FIRESTORE_DATABASE_ID: ${{ vars.FIRESTORE_DATABASE_ID }}
       APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+      API_ORIGIN: ${{ vars.API_ORIGIN }}
+      GCP_WEB_SERVICE: ${{ vars.GCP_WEB_SERVICE }}
+      GCP_WEB_RUNTIME_SERVICE_ACCOUNT: ${{ vars.GCP_WEB_RUNTIME_SERVICE_ACCOUNT }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

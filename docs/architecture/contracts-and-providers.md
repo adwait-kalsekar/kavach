@@ -25,7 +25,7 @@ apps/web/src/
   features/assessments/
   features/conversation/
   features/plans/
-  lib/api/                # Same-origin HTTP client, cookie session + CSRF
+  lib/api/                # Configured Hono-origin HTTP client, cookie session + CSRF
   lib/query/              # Query keys/options, invalidation rules
 
 apps/api/src/
@@ -52,7 +52,7 @@ All private operations derive ownership from a server-validated opaque cookie se
 
 | Operation                                 | Intended behavior                                                                                                |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `GET /api/v1/session`                     | Resolve current session and issue a same-origin CSRF bootstrap token; no private cache                           |
+| `GET /api/v1/session`                     | Resolve current session and issue a origin-bound CSRF bootstrap token; no private cache                           |
 | `POST /api/v1/session`                    | Validate origin/CSRF bootstrap, create guest owner/session and set HTTP-only cookie                              |
 | `DELETE /api/v1/session`                  | Validate origin/CSRF, revoke session and clear cookie                                                            |
 | `GET /api/v1/capabilities`                | Supported district/crop combinations and public capabilities; no credentials                                     |
@@ -143,4 +143,4 @@ Use the Firestore emulator and real Hono session endpoints for integration work.
 
 ## Browser network boundary
 
-Every application connection targets Hono. This includes session creation, conversation streams, model output, source retrieval, weather, media uploads and downloads. No client SDK or direct/signed URL can bypass that policy. Frontend Vite proxying is for local development only; production uses relative same-origin endpoints and restrictive CSP. Server-side adapters remain the only outbound service clients. Include a browser network assertion in end-to-end tests, not only a code-review convention.
+Every application connection targets Hono. This includes session creation, conversation streams, model output, source retrieval, weather, media uploads and downloads. No client SDK or direct/signed URL can bypass that policy. Frontend assets are served independently, and the browser uses the configured API origin with exact credentialed CORS and restrictive CSP. Guest cookies require same-site sibling domains; default run.app URLs support health only. Server-side adapters remain the only outbound service clients. Include a browser network assertion in end-to-end tests, not only a code-review convention.

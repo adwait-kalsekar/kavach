@@ -4,7 +4,7 @@ Decision date: 17 October 2026. Status: backend and web/health foundations imple
 
 Read in order:
 
-- [GCP deployment and continuous delivery](gcp-deployment.md): researched hosting/pipeline plan, keyless access, required owner inputs and acceptance gates. Deployment automation is not configured yet.
+- [GCP deployment and continuous delivery](gcp-deployment.md): researched hosting/pipeline plan, keyless access, required owner inputs and acceptance gates. Automation is prepared; live GCP access/setup is pending.
 
 - [Web foundation and Hono RPC](web-foundation.md): current React/Vite setup, browser boundaries, GCP packaging and verification.
 
@@ -22,12 +22,12 @@ These decisions supersede earlier suggestions to retain Next.js or use PostgreSQ
 - Hono with the Node.js adapter; Node.js 24 LTS baseline, pinned consistently in development, CI and container build.
 - Firestore Standard edition in Native mode for operational document data; backend-only database access.
 - Gemini through Vertex AI using the service identity of the GCP workload, subject to model availability/quota verification.
-- One Cloud Run service for the POC, packaging separately built frontend assets and backend code; `/api/v1/*` is the stable API boundary.
+- Two independent Cloud Run services for web static hosting and Hono, each with its own hostname; `/api/v1/*` is the stable API boundary.
 - Hono-managed guest sessions for low-friction saved-plan ownership; opaque HTTP-only cookies and server-derived owner IDs. No browser Firebase/Auth/Firestore/model SDK or direct service connection.
 - Keep the existing npm/Turborepo setup. Do not add another package manager or deploy to another cloud.
 
-GCP project, region and account setup were explicitly deferred by the user. Work locally with SQLite, optional emulators and explicitly labeled test fixtures until those details are supplied. Do not describe emulator verification as live GCP verification.
+GCP project is kavach-farmers-market-sense; preferred region is Mumbai. Account setup and a custom domain remain pending. Work locally with SQLite, optional emulators and explicitly labeled test fixtures until those details are supplied. Do not describe emulator verification as live GCP verification.
 
 ## Required browser boundary
 
-User requirement: the browser communicates only with the Hono application origin. Hono serves the frontend and proxies/mediates every application service interaction. No direct auth, database, AI, weather, object-storage, telemetry or signed-upload connection is permitted from frontend code. This requirement supersedes the earlier browser-side Firebase Authentication suggestion.
+User requirement: all browser service/API requests go to Hono. React assets come from an independent Nginx web service; Hono never serves the frontend. No direct auth, database, AI, weather, object-storage, telemetry or signed-upload connection is permitted from frontend code. This requirement supersedes the earlier browser-side Firebase Authentication suggestion.

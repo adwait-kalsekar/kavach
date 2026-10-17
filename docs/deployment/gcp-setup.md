@@ -2,6 +2,8 @@
 
 Project: **kavach-farmers-market-sense**. Region: **asia-south1 (Mumbai)**. Deployment code is prepared; actual provisioning and the first public Kavach rollout require authorized GCP access. No live project changes have been made by Codex.
 
+**Updated for independent web/API services. Discard the earlier combined-service setup ZIP and regenerate/download the current bundle.** The first deployment on two default Cloud Run URLs supports health only. The owner deferred the domain: guest farms/plans require later HTTPS sibling custom domains. Read [the serving and recovery decision](../architecture/gcp-deployment.md).
+
 Use **Google Cloud Shell** for one-time setup. It already has gcloud and uses your Google login. After that, GitHub Actions uses short-lived federation; you need no service-account JSON key and no GCP credential on the Codex computer.
 
 ## 1. Select your project and enable billing
@@ -57,9 +59,9 @@ The script:
 
 - Enables required APIs.
 - Creates Firestore Standard/Native in Mumbai if absent, with deletion protection, the plan index, large-field exclusions, expiry policies and deny-all browser/client rules.
-- Creates separate runtime/deploy accounts. Runtime gets Firestore data access in this dedicated project. Deploy gets registry write, Run Developer on this service and permission to use this runtime account.
+- Creates separate API-runtime, web-runtime and deploy accounts. Only API runtime gets Firestore data access in this dedicated project. Web runtime gets no project data/provider permissions. Deploy gets registry write, Run Developer on both services and permission to attach both runtime identities.
 - Creates GitHub OIDC federation restricted to the exact repository/owner numeric IDs, main, this workflow and the production environment. No service-account keys are created.
-- Reserves the Cloud Run service privately with Google's hello container. At successful setup completion, the bootstrap operator deliberately enables public access. The URL initially shows Google's placeholder page, **not Kavach**. The first tested CI rollout replaces it. CI has no IAM-policy editing permission.
+- Reserves two Cloud Run services privately with Google's hello container. At successful setup completion, the bootstrap operator deliberately enables public access. Each URL initially shows Google's placeholder page, **not Kavach**. The first tested CI rollout replaces it. CI has no IAM-policy editing permission.
 - Writes **gcp-bootstrap-output.json** with only non-secret identifiers needed by GitHub.
 
 Index/TTL operations can take several minutes. Keep Cloud Shell open. If setup fails, stop and share the error text with Codex. Do not give the runtime/deployer broad admin roles to make it pass. Never share tokens, key JSON or credential debug dumps.
@@ -89,12 +91,12 @@ The current Codex GitHub connection can push workflow code, but a tested environ
 1. Open https://github.com/adwait-kalsekar/kavach/settings/environments while signed in as the repository owner.
 2. Click **New environment**, enter **production**, and click **Configure environment**.
 3. Under **Deployment branches and tags**, choose **Selected branches and tags**. Add a **branch** rule named exactly **main**. Add no tag rule or wildcard. Do not select **No restriction**.
-4. In this environment, find **Environment variables → Add environment variable**. For each of the ten keys in `gcp-bootstrap-output.json`, add the name and its corresponding value. These are variables, not secrets. Keep the JSON handy; it contains the exact generated project number, identity/provider IDs and APP_ORIGIN.
+4. In this environment, find **Environment variables → Add environment variable**. For each of the 13 keys in `gcp-bootstrap-output.json`, add the name and its corresponding value. These are variables, not secrets. Keep the JSON handy; it contains the exact generated project number, identity/provider IDs and APP_ORIGIN.
 5. Open https://github.com/adwait-kalsekar/kavach/settings/variables/actions → **New repository variable**. Name it **GCP_DEPLOY_ENABLED**, value **true**, only after bootstrap completes and the deployment code is merged to main. Keep it absent or false until then.
 6. Optional: add environment reviewers if you want manual deployment approval. For automatic main deployments, leave that manual gate unset.
 7. If GitHub says your private-repository plan does not support environments, stop and tell Codex. This design must be adjusted deliberately; do not make the repository public or weaken WIF trust as a workaround.
 
-The ten environment variable names are: GCP_PROJECT_ID, GCP_PROJECT_NUMBER, GCP_REGION, GCP_CLOUD_RUN_SERVICE, GCP_ARTIFACT_REPOSITORY, GCP_RUNTIME_SERVICE_ACCOUNT, GCP_DEPLOY_SERVICE_ACCOUNT, GCP_WORKLOAD_IDENTITY_PROVIDER, FIRESTORE_DATABASE_ID and APP_ORIGIN. Do not put GCP_DEPLOY_ENABLED only in the environment: its gate must be readable as a repository variable.
+The 13 environment variable names are: GCP_PROJECT_ID, GCP_PROJECT_NUMBER, GCP_REGION, GCP_CLOUD_RUN_SERVICE, GCP_ARTIFACT_REPOSITORY, GCP_RUNTIME_SERVICE_ACCOUNT, GCP_DEPLOY_SERVICE_ACCOUNT, GCP_WORKLOAD_IDENTITY_PROVIDER, FIRESTORE_DATABASE_ID, APP_ORIGIN, API_ORIGIN, GCP_WEB_SERVICE and GCP_WEB_RUNTIME_SERVICE_ACCOUNT. APP_ORIGIN is the web address; API_ORIGIN is Hono. Do not put GCP_DEPLOY_ENABLED only in the environment: its gate must be readable as a repository variable.
 
 ### Optional CLI helper with sufficient GitHub access
 
@@ -118,22 +120,22 @@ In GitHub, inspect **Settings → Environments → production** and **Settings �
 
 Once the code is merged to main, open **Actions → Application contracts and integration → Run workflow → main**. Later pushes/merges to main deploy after checks pass. Manual dispatch retries the current main; arbitrary branches and superseded commits cannot promote.
 
-The workflow summary provides the public URL, commit, image digest, new revision and previous revision. Open the URL and confirm Kavach displays **API reachable**. This checks a validated API response; `/readyz` separately checks database readiness. The automated live smoke creates no synthetic production records. Owned-plan persistence across real revisions remains a first-deployment acceptance check.
+The workflow summary provides the public URL, commit, image digest, new revision and previous revision. Open the URL and confirm Kavach displays **API reachable**. This checks a validated API response; `/readyz` separately checks database readiness. The automated live smoke creates no synthetic production records. Owned-plan persistence across real revisions remains a separate acceptance check after sibling custom domains are configured. Default run.app URLs are distinct sites; cross-site guest endpoints intentionally reject requests instead of relying on third-party cookies.
 
 ## 6. Budget and operations
 
 1. Open **Billing → Budgets & alerts → Create budget**.
 2. Scope it to this project, choose a monthly amount you are comfortable with, and add alert thresholds such as 50%, 90% and 100%.
 3. Check the notification recipients. Alerts-only budgets do not stop spending. Newer spend-cap budgets have service/account restrictions; do not assume a universal hard cap.
-4. Open **Cloud Run → kavach-api → Revisions** for image/traffic history and **Logs** for runtime/request failures.
-5. Initial settings are min instances 0, max 3, 1 CPU/512 MiB and request-based CPU billing. These are POC defaults, not measured cost guarantees; Firestore, images and logs have separate costs.
+4. Open **Cloud Run → kavach-web / kavach-api → Revisions** for image/traffic history and **Logs** for runtime/request failures.
+5. Initial settings per service are min instances 0, max 3, 1 CPU/512 MiB and request-based CPU billing. These are POC defaults, not measured cost guarantees; Firestore, images and logs have separate costs.
 6. Configure Artifact Registry cleanup after reviewing rollback retention. Keep active and previous known-good digests available.
 
 ## Rollback and common errors
 
-A candidate must become ready before it gets production traffic. Live checks then verify the actual desktop/mobile UI, expected release header, same-origin requests and database readiness. Failure restores the old revision's traffic and fails the job. Data changes are not rolled back.
+A candidate must become ready before it gets production traffic. Live checks then verify the actual desktop/mobile UI, expected release header, the exact web/API origin pair and database readiness. Failure restores the previous web and API revisions, attempting both restorations even if one fails. It fails the job and reports any manual recovery required. Two-service promotion/restoration is not atomic. Data changes are not rolled back.
 
-For manual recovery: **Cloud Run → kavach-api → Revisions → Manage traffic**, assign 100% to the last known-good revision from the previous successful workflow summary, and save. The initial Google hello revision is not a known-good application release.
+For manual recovery, restore web first and then API: **Cloud Run → kavach-web / kavach-api → Revisions → Manage traffic**, assign 100% to each recorded last known-good revision from the previous successful workflow summary, and save. The initial Google hello revision is not a known-good application release.
 
 - **No active gcloud account:** authorize Cloud Shell using the right Google account or configure a managed Codex GCP identity.
 - **Billing disabled:** link billing in the console, then rerun.
@@ -152,3 +154,9 @@ If Codex environment settings expose a **GCP connection/outbound identity**, con
 With general environment secrets alone, a project ID or API key does not authorize deployment. `GOOGLE_APPLICATION_CREDENTIALS` expects a file path, not raw JSON, and ADC settings do not always configure gcloud's active account. Prefer managed short-lived credentials/profile configuration. Do not create a long-lived service-account key for this setup: Cloud Shell + GitHub WIF needs none.
 
 The runtime uses its attached Cloud Run identity; GitHub has a separate short-lived deploy identity. No credentials belong in Vite settings, source control, browser bundles or image layers.
+
+## Later: custom sibling domains
+
+Keep both default run.app URLs for the health foundation. When you own a domain, plan `app.yourdomain` and `api.yourdomain` using a global external Application Load Balancer, two serverless NEGs, host rules and Google-managed certificates. Mumbai is not supported by preview direct Cloud Run domain mapping, which Google does not recommend for production. Load-balancer/DNS/certificate resources are not created by this bootstrap and have their own costs. No domain purchase or DNS changes are needed now.
+
+After routing/certificates are verified, change the production APP_ORIGIN and API_ORIGIN variables to these exact HTTPS origins and deploy both services. Test Secure/HttpOnly/host-only guest cookies, valid and invalid CSRF, cross-owner denial and plan persistence in real desktop/mobile browsers before enabling farmer-facing forms. This remains a separate infrastructure acceptance batch.

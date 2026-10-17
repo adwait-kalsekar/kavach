@@ -113,7 +113,7 @@ export function HealthPage() {
         </dl>
         <div className="card-bottom">
           <p>
-            <span aria-hidden="true">↳</span> Same origin. Typed request.
+            <span aria-hidden="true">↳</span> Direct API call. Typed request.
             Validated response.
           </p>
           <button
