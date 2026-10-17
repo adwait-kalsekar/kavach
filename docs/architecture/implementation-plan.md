@@ -6,13 +6,16 @@ The user deferred cloud project setup. Complete local build, emulator-backed flo
 
 ## Current repository state
 
-- Turborepo/npm workspace with `apps/web` and `apps/docs` Next.js starters and shared packages.
-- Product HTML and indexed research exist in root `docs/`; they are independent of the `apps/docs` starter.
-- A provisional Next Route Handler/domain/weather/AI sketch exists under `apps/web`. It was created before the user paused implementation. It has not been validated as the proposed robust solution and is not a submission-ready backend.
-- The large frontend replacement attempted earlier did not apply; the main web UI is still the starter.
-- Existing documentation and sketches were not successfully pushed to main; do not assume other worktrees have them.
+- Backend-first scope and completed batch gates are recorded in [backend foundation](backend-foundation.md); that document takes precedence over the migration-first sequence below.
+- Hono API, strict shared contracts, typed client, pure decision module, SQLite/Firestore adapters, tests and deployment templates are implemented.
+- `apps/web` and `apps/docs` remain Next.js starters. React/Vite migration is deferred until the API foundation is merged.
+- The provisional Next API sketch was removed from the application tree; it is not part of the backend implementation.
+- Original product/research/architecture docs were published on main at `599ab97`. Feature worktrees must fetch and merge/rebase main to receive them.
+- Account login, reviewed agronomic guidance, AI conversations and live GCP deployment remain future work.
 
-Preserve useful source references and use the sketch only as input to the migration. Audit it for current contracts, auth, provenance, failure behavior and scientific applicability rather than moving it wholesale. Earlier direct Gemini API-key wiring is superseded by Vertex AI workload identity for the deployed target.
+## Original delivery sequence (remaining roadmap)
+
+The steps below retain the broader target and acceptance criteria. They do not report current completion; use the active foundation review log and [API guide](../api/README.md) for actual implemented routes and payloads.
 
 ## Delivery order
 

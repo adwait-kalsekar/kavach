@@ -36,3 +36,10 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Local backend state and emulator output
+.data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*-debug.log

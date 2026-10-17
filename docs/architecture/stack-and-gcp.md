@@ -2,6 +2,8 @@
 
 Selected 17 October 2026. This is the implementation target, not a claim that it has been built or deployed. See [implementation plan](implementation-plan.md).
 
+Current implementation status: [backend foundation](backend-foundation.md) and [API guide](../api/README.md). The backend is implemented; the frontend/AI sections below remain targets. Local development defaults to durable SQLite with an optional Firestore emulator; production remains Firestore. Account login is deferred behind Hono-managed guest ownership. The generated [OpenAPI specification](../api/openapi.json) is authoritative for current HTTP payloads.
+
 ## API framework: Hono on Node.js
 
 Both Hono and Express are deployable to Cloud Run. Google documents an Express-based Node deployment, and Hono documents its own Cloud Run deployment using the Node adapter. Cloud Run accepts a compatible HTTP container; it does not require Express. [Google Node quickstart](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service), [Hono Cloud Run guide](https://hono.dev/docs/getting-started/google-cloud-run).
@@ -46,18 +48,18 @@ This choice supports expansion while the access patterns remain suitable. Large 
 
 ### Initial collections
 
-| Collection | Purpose and access pattern |
-| --- | --- |
-| `sessions` | Hashed opaque session token, server-derived owner, expiry and revocation |
-| `farms` | Owner-scoped confirmed context, schema version and revision |
-| `assessments` | Immutable context/evidence/rule snapshot; owner + creation-time listing |
-| `plans` | Owner-scoped saved assessment reference and mutable task-state revision |
-| `conversations` | Owner, confirmed farm/assessment context and timestamps |
-| `messages` | Separate bounded records by conversation, owner and creation time |
-| `evidence` | Immutable normalized evidence metadata and bounded values; source/product versions |
-| `regionPacks` | Published immutable crop/district guidance version metadata |
-| `providerCache` | Bounded reusable provider result keyed by request, source/version and expiry |
-| `operations` | Owner-scoped idempotency/reservation records for side-effectful requests |
+| Collection      | Purpose and access pattern                                                         |
+| --------------- | ---------------------------------------------------------------------------------- |
+| `sessions`      | Hashed opaque session token, server-derived owner, expiry and revocation           |
+| `farms`         | Owner-scoped confirmed context, schema version and revision                        |
+| `assessments`   | Immutable context/evidence/rule snapshot; owner + creation-time listing            |
+| `plans`         | Owner-scoped saved assessment reference and mutable task-state revision            |
+| `conversations` | Owner, confirmed farm/assessment context and timestamps                            |
+| `messages`      | Separate bounded records by conversation, owner and creation time                  |
+| `evidence`      | Immutable normalized evidence metadata and bounded values; source/product versions |
+| `regionPacks`   | Published immutable crop/district guidance version metadata                        |
+| `providerCache` | Bounded reusable provider result keyed by request, source/version and expiry       |
+| `operations`    | Owner-scoped idempotency/reservation records for side-effectful requests           |
 
 Use generated IDs, bounded/paginated queries and committed composite indexes for implemented access patterns. Store long text, transcripts and evidence payloads without unnecessary automatic indexes. Keep each document bounded; no ever-growing conversation arrays. Respect the documented 1 MiB document maximum. Store large licensed artifacts in Cloud Storage when needed and reference them. [Firestore limits](https://firebase.google.com/docs/firestore/quotas).
 
@@ -75,15 +77,15 @@ Validate exact allowed Origin and a CSRF token on mutating browser requests, inc
 
 ## GCP service inventory
 
-| Service | Initial responsibility |
-| --- | --- |
-| Cloud Run | Web assets and Hono API container |
-| Artifact Registry | Versioned container images |
-| Cloud Build | Build/verification/publish pipeline once project setup exists |
-| Firestore Standard / Native | Operational data |
-| Vertex AI | Gemini inference with workload credentials |
-| Cloud Logging / Monitoring | Structured operational visibility |
-| Secret Manager | Only provider credentials that actually need stored secrets |
+| Service                     | Initial responsibility                                        |
+| --------------------------- | ------------------------------------------------------------- |
+| Cloud Run                   | Web assets and Hono API container                             |
+| Artifact Registry           | Versioned container images                                    |
+| Cloud Build                 | Build/verification/publish pipeline once project setup exists |
+| Firestore Standard / Native | Operational data                                              |
+| Vertex AI                   | Gemini inference with workload credentials                    |
+| Cloud Logging / Monitoring  | Structured operational visibility                             |
+| Secret Manager              | Only provider credentials that actually need stored secrets   |
 
 Use SDK Application Default Credentials for Vertex AI. Keep model ID/location configurable and verify actual project access, supported structured output/tools and quota before selecting the model. No downloaded service-account key should be committed or baked into the image. [Google AI authentication](https://cloud.google.com/vertex-ai/generative-ai/docs/start/gcp-auth), [Cloud Run secret integration](https://cloud.google.com/run/docs/configuring/services/secrets).
 

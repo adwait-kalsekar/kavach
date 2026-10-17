@@ -1,0 +1,15 @@
+.git
+**/node_modules
+**/dist
+**/.next
+.turbo
+.data
+**/*.sqlite*
+**/.env
+**/.env.*
+!**/.env.example
+**/*debug.log
+.aws
+.codex
+.agents
+library-files

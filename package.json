@@ -2,6 +2,13 @@
   "name": "kavach",
   "private": true,
   "scripts": {
+    "build:api": "turbo run build --filter=@kavach/api... --filter=@kavach/api-client...",
+    "check:api": "turbo run check-types --filter=@kavach/api... --filter=@kavach/api-client...",
+    "test:api": "turbo run test --filter=@kavach/api... --filter=@kavach/api-client...",
+    "test:firestore": "node node_modules/firebase-tools/lib/bin/firebase.js emulators:exec --config infra/firebase.json --project demo-kavach --only firestore \"node apps/api/tests/firestore-run.mjs\"",
+    "start:api": "node --env-file-if-exists=apps/api/.env apps/api/dist/server.js",
+    "dev:api": "node --env-file-if-exists=apps/api/.env --watch apps/api/dist/server.js",
+    "openapi:check": "node packages/contracts/scripts/openapi.mjs --check",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
@@ -9,6 +16,7 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "firebase-tools": "15.34.0",
     "prettier": "3.9.10",
     "turbo": "2.11.8",
     "typescript": "7.0.2"

@@ -4,18 +4,23 @@ Start with the [visual product overview](product/overview.html). Download/open i
 
 ## Index
 
-| Document | Purpose |
-| --- | --- |
-| [Architecture entry point](architecture/README.md) | Locked React/Vite + Hono + Firestore stack, GCP deployment and implementation order |
-| [GCP stack decision](architecture/stack-and-gcp.md) | Verified hosting support, database/identity choices and deployment topology |
-| [Contracts and provider boundaries](architecture/contracts-and-providers.md) | Public API, provenance, provider substitution and failure semantics |
-| [Implementation plan](architecture/implementation-plan.md) | Work packages, dependency order, acceptance gates and agent handoffs |
-| [Product overview / interactive screen concepts](product/overview.html) | Product story, farmer journey, screen concepts, scope and delivery sequence |
-| [Product specification](product/product-spec.md) | Intended behavior, inputs, acceptance criteria and open decisions |
-| [Comparable products](research/comparable-products.md) | Competitive evidence and positioning implications |
-| [Opportunity gap review](research/opportunity-gap-review.md) | Evidence-backed candidate gaps, competitive counterevidence and AI Builder Cup scope |
-| [Data sources and API register](research/data-sources.md) | Source selection, access constraints, data limitations and integration order |
-| [Original project brief](reference/original-project-brief.md) | Unmodified user-supplied starting point; its claims are not all verified |
+| Document                                                                     | Purpose                                                                              |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [API integration guide](api/README.md)                                       | Local quickstart, session flow, typed client and current API semantics               |
+| [Generated OpenAPI](api/openapi.json)                                        | Versioned machine-readable request and response contracts                            |
+| [Infrastructure templates](../infra/README.md)                               | Container, emulator and deferred GCP deployment setup                                |
+| [Authentication follow-up](research/authentication.md)                       | Provider comparison and deferred account-login boundary                              |
+| [Active backend batches](architecture/backend-foundation.md)                 | Current implementation scope, local/GCP configuration and batch reviews              |
+| [Architecture entry point](architecture/README.md)                           | Locked React/Vite + Hono + Firestore stack, GCP deployment and implementation order  |
+| [GCP stack decision](architecture/stack-and-gcp.md)                          | Verified hosting support, database/identity choices and deployment topology          |
+| [Contracts and provider boundaries](architecture/contracts-and-providers.md) | Public API, provenance, provider substitution and failure semantics                  |
+| [Implementation plan](architecture/implementation-plan.md)                   | Work packages, dependency order, acceptance gates and agent handoffs                 |
+| [Product overview / interactive screen concepts](product/overview.html)      | Product story, farmer journey, screen concepts, scope and delivery sequence          |
+| [Product specification](product/product-spec.md)                             | Intended behavior, inputs, acceptance criteria and open decisions                    |
+| [Comparable products](research/comparable-products.md)                       | Competitive evidence and positioning implications                                    |
+| [Opportunity gap review](research/opportunity-gap-review.md)                 | Evidence-backed candidate gaps, competitive counterevidence and AI Builder Cup scope |
+| [Data sources and API register](research/data-sources.md)                    | Source selection, access constraints, data limitations and integration order         |
+| [Original project brief](reference/original-project-brief.md)                | Unmodified user-supplied starting point; its claims are not all verified             |
 
 ## Working instructions
 
