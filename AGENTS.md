@@ -14,13 +14,15 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 ## Read first
 
 - `docs/README.md` indexes the project; `docs/architecture/README.md` records the selected stack.
-- Follow `docs/architecture/backend-foundation.md` for the active backend batches and implemented API scope.
+- Read `docs/architecture/backend-foundation.md` for the implemented backend and `docs/architecture/web-foundation.md` for the active web/API setup.
 - Keep architecture documents, Mermaid diagrams, API contracts/examples and actual implementation status synchronized in the same change. Do not describe planned capabilities as implemented.
 
 ## Boundaries
 
 - Browser → Hono only. No browser cloud/auth/AI/weather/storage SDK, service connection, signed upload URL or external telemetry. Serve/proxy assets, sessions, evidence and media through Hono.
-- Target React/Vite + TanStack Router/Query for future UI. This backend batch does not build UI or migrate the existing frontend starter.
+- `apps/web` uses React/Vite + TanStack Router/Query. Follow `docs/architecture/web-foundation.md` for local development, Hono RPC and GCP packaging. `apps/docs` remains a separate Next starter.
+- Browser code imports only `@kavach/api-client` and public contracts, never API implementations. Only `packages/api-client` may import `@kavach/api/rpc` with `import type`; this export has no runtime entry. Keep route chains typed, require mutation headers and run the negative RPC type checks.
+- Run `npm run check:boundaries`; the Vite bundle guard also rejects API/domain/cloud SDK modules. Do not weaken these guards to make a build pass. No service credentials or secrets belong in Vite variables.
 - Keep public Zod contracts in `packages/contracts`, pure decision logic in `packages/domain`, browser-safe HTTP client in `packages/api-client`, and SDKs/config/secrets in `apps/api`.
 - Hono owns validation, sessions and transport; services own orchestration; adapters own provider integration. Validate outgoing as well as incoming payloads.
 - No frontend-owned `ownerId`; derive ownership from validated server session. Enforce ownership for every resource read/write and linked-resource reference.
@@ -37,6 +39,7 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 ## Work and review
 
 - Plan a bounded batch, implement it, run appropriate checks, review failures and update `docs/architecture/backend-foundation.md` before starting the next batch.
+- For web/API changes, run `npm run build:app`, `npm run check:app` and `npm run test:e2e` (install Chromium first). Browser tests cover local proxy and built Hono serving; retain same-origin request assertions and CSP.
 - Test contracts, cross-owner denial, CSRF/expiry, optimistic concurrency, idempotency and failure states. Use deterministic clocks/provider fixtures where useful.
 - Keep one integration owner for lockfile/root workspace/deployment changes. Do not delegate unless the user or an applicable instruction explicitly requests it.
 - Use the repository's required npm version (12.2.0); no extra package manager. Read installed framework docs before relying on changing APIs.

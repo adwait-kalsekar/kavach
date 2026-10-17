@@ -13,3 +13,6 @@
 .codex
 .agents
 library-files
+
+/test-results
+/playwright-report

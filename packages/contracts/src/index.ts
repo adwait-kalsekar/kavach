@@ -203,7 +203,20 @@ export const listQuerySchema = z.strictObject({
   cursor: z.string().min(1).max(512).optional(),
 });
 
+export const healthSchema = z.strictObject({
+  status: z.literal("ok"),
+  service: z.literal("kavach-api"),
+  apiVersion: z.literal("v1"),
+  checkedAt: dateTimeSchema,
+});
+
 export const endpoints = {
+  health: {
+    method: "GET",
+    path: "/api/v1/health",
+    response: envelope(healthSchema),
+    status: 200,
+  },
   capabilities: {
     method: "GET",
     path: "/api/v1/capabilities",
@@ -360,7 +373,10 @@ export function openApiDocument() {
         },
       );
     const publicOp =
-      name === "capabilities" || name === "session" || name === "createSession";
+      name === "health" ||
+      name === "capabilities" ||
+      name === "session" ||
+      name === "createSession";
     const responses: Record<string, unknown> = {
       [endpoint.status]: {
         description: "Successful response",

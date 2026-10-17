@@ -1,17 +1,23 @@
 # syntax=docker/dockerfile:1
-FROM node:24.19.0-bookworm-slim AS builder
+FROM node:24.19.0-bookworm-slim AS build-base
 RUN --mount=type=secret,id=npm_ca \
     if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
     npm install --global npm@12.2.0
 WORKDIR /app
+
+FROM build-base AS builder
 COPY package.json package-lock.json ./
 COPY apps/api ./apps/api
+COPY apps/web ./apps/web
+COPY packages/api-client ./packages/api-client
+COPY packages/eslint-config ./packages/eslint-config
+COPY scripts/check-browser-boundary.mjs ./scripts/check-browser-boundary.mjs
 COPY packages/contracts ./packages/contracts
 COPY packages/domain ./packages/domain
 COPY packages/typescript-config ./packages/typescript-config
 RUN --mount=type=secret,id=npm_ca \
     if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
-    npm ci --workspace @kavach/api --include-workspace-root=false --ignore-scripts
+    npm ci --workspace @kavach/api --workspace web --include-workspace-root=false --ignore-scripts
 RUN --mount=type=secret,id=npm_ca \
     if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
     npm run build --workspace @kavach/contracts
@@ -23,18 +29,28 @@ RUN --mount=type=secret,id=npm_ca \
     npm run build --workspace @kavach/api
 RUN --mount=type=secret,id=npm_ca \
     if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
-    npm prune --omit=dev --workspace @kavach/api --include-workspace-root=false --ignore-scripts
+    npm run build --workspace @kavach/api-client && node scripts/check-browser-boundary.mjs && npm run build --workspace web
+# Install runtime dependencies from scratch; build/lint/browser tooling stays out.
+FROM build-base AS production-deps
+COPY package.json package-lock.json ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY packages/contracts/package.json ./packages/contracts/package.json
+COPY packages/domain/package.json ./packages/domain/package.json
+RUN --mount=type=secret,id=npm_ca \
+    if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
+    npm ci --omit=dev --workspace @kavach/api --include-workspace-root=false --ignore-scripts
 
 FROM node:24.19.0-bookworm-slim AS runtime
 ENV NODE_ENV=production APP_ENV=production PORT=8080 STORAGE_BACKEND=firestore
 WORKDIR /app
-COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=production-deps --chown=node:node /app/node_modules ./node_modules
 COPY --from=builder --chown=node:node /app/apps/api/package.json ./apps/api/package.json
 COPY --from=builder --chown=node:node /app/apps/api/dist ./apps/api/dist
 COPY --from=builder --chown=node:node /app/packages/contracts/package.json ./packages/contracts/package.json
 COPY --from=builder --chown=node:node /app/packages/contracts/dist ./packages/contracts/dist
 COPY --from=builder --chown=node:node /app/packages/domain/package.json ./packages/domain/package.json
 COPY --from=builder --chown=node:node /app/packages/domain/dist ./packages/domain/dist
+COPY --from=builder --chown=node:node /app/apps/web/dist ./apps/web/dist
 USER node
 EXPOSE 8080
 CMD ["node", "apps/api/dist/server.js"]

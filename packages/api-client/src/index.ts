@@ -78,3 +78,27 @@ export function createApiClient(fetcher: typeof fetch = fetch) {
     },
   };
 }
+
+/** Type-only server schema: SDKs/configuration never become browser imports. */
+import type { AppType } from "@kavach/api/rpc";
+import { hc } from "hono/client";
+
+export function createRpcClient(fetcher: typeof fetch = fetch) {
+  return hc<AppType>("/", {
+    fetch: (
+      input: Parameters<typeof fetch>[0],
+      init?: Parameters<typeof fetch>[1],
+    ) => fetcher(input, { ...init, credentials: "same-origin" }),
+  });
+}
+
+/** RPC supplies compile-time completion; Zod still checks the actual wire payload. */
+export async function readRpcResponse<K extends Operation>(
+  operation: K,
+  response: Response,
+): Promise<ResponseBody<K>> {
+  const payload: unknown = await response.json();
+  if (!response.ok)
+    throw new KavachApiError(response.status, errorSchema.parse(payload));
+  return endpoints[operation].response.parse(payload) as ResponseBody<K>;
+}

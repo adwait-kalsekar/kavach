@@ -7,19 +7,26 @@
     "test:api": "turbo run test --filter=@kavach/api... --filter=@kavach/api-client...",
     "test:firestore": "node node_modules/firebase-tools/lib/bin/firebase.js emulators:exec --config infra/firebase.json --project demo-kavach --only firestore \"node apps/api/tests/firestore-run.mjs\"",
     "start:api": "node --env-file-if-exists=apps/api/.env apps/api/dist/server.js",
-    "dev:api": "node --env-file-if-exists=apps/api/.env --watch apps/api/dist/server.js",
+    "dev:api": "turbo watch dev --filter=@kavach/api",
     "openapi:check": "node packages/contracts/scripts/openapi.mjs --check",
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo watch dev --filter=web --filter=@kavach/api",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "check-types": "turbo run check-types",
+    "dev:docs": "npm run dev --workspace=docs",
+    "build:app": "npm run check:boundaries && turbo run build --filter=web... --filter=@kavach/api...",
+    "check:app": "npm run check:boundaries && turbo run check-types lint --filter=web... --filter=@kavach/api...",
+    "test:e2e": "npm run build:app && playwright test",
+    "check:boundaries": "node scripts/check-browser-boundary.mjs"
   },
   "devDependencies": {
     "firebase-tools": "15.34.0",
     "prettier": "3.9.10",
     "turbo": "2.11.8",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "@playwright/test": "1.64.1",
+    "@babel/parser": "8.0.7"
   },
   "engines": {
     "node": "^24.15.0 || >=26.0.0"

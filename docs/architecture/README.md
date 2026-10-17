@@ -1,8 +1,10 @@
 # Architecture and implementation entry point
 
-Decision date: 17 October 2026. Status: backend foundation implemented and locally verified; frontend, AI and live deployment remain planned. No cloud resources have been provisioned.
+Decision date: 17 October 2026. Status: backend and web/health foundations implemented; farmer-facing screens, AI and live deployment remain planned. No cloud resources have been provisioned.
 
 Read in order:
+
+- [Web foundation and Hono RPC](web-foundation.md): current React/Vite setup, browser boundaries, GCP packaging and verification.
 
 0. [Active backend foundation](backend-foundation.md): current batch scope, diagrams, local SQLite refinement and review status. Backend/contracts precede UI migration by latest user instruction.
 

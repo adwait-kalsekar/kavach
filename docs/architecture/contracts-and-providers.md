@@ -2,7 +2,7 @@
 
 Implementation target, 17 October 2026. Read [stack decision](stack-and-gcp.md) first.
 
-Current implementation status: [backend foundation](backend-foundation.md) and [API guide](../api/README.md). The backend is implemented; the frontend/AI sections below remain targets. Local development defaults to durable SQLite with an optional Firestore emulator; production remains Firestore. Account login is deferred behind Hono-managed guest ownership. The generated [OpenAPI specification](../api/openapi.json) is authoritative for current HTTP payloads.
+Current implementation status: [backend foundation](backend-foundation.md) and [API guide](../api/README.md). The backend and React/Vite health screen are implemented; farmer-facing screens and AI remain targets. [Web/RPC setup](web-foundation.md) defines the type-only server contract exception to the general ban on browser imports from API modules. Local development defaults to durable SQLite with an optional Firestore emulator; production remains Firestore. Account login is deferred behind Hono-managed guest ownership. The generated [OpenAPI specification](../api/openapi.json) is authoritative for current HTTP payloads.
 
 ## Dependency rules
 

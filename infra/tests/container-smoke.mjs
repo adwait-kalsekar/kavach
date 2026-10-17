@@ -43,6 +43,21 @@ try {
     throw new Error("Packaged API did not become ready");
   }
   await ready();
+  const web = await fetch(origin + "/");
+  assert.equal(web.status, 200);
+  assert.match(web.headers.get("content-security-policy"), /script-src 'self'/);
+  const html = await web.text();
+  assert.match(html, /<title>Kavach/);
+  const asset = html.match(/src="([^"]+\.js)"/)[1];
+  const js = await fetch(origin + asset);
+  assert.equal(js.status, 200);
+  assert.match(js.headers.get("content-type"), /javascript/);
+  const health = await (await fetch(origin + "/api/v1/health")).json();
+  assert.equal(health.data.service, "kavach-api");
+  assert.notEqual(
+    (await fetch(origin + "/api/v1/nonexistent")).headers.get("content-type"),
+    "text/html",
+  );
   assert.equal((await fetch(origin + "/healthz")).status, 200);
   let cookie;
   let csrf;

@@ -481,3 +481,27 @@ test("Hono test interface supports health, readiness, OpenAPI and structured API
     await h.store.close();
   }
 });
+
+test("public typed health contract and RPC routes match the OpenAPI endpoint registry", async () => {
+  const h = await harness();
+  try {
+    const response = await h.app.request("/api/v1/health");
+    assert.equal(response.status, 200);
+    const body = endpoints.health.response.parse(await response.json());
+    assert.equal(body.data.service, "kavach-api");
+    assert.equal(body.data.status, "ok");
+    assert.equal(response.headers.get("set-cookie"), null);
+    for (const endpoint of Object.values(endpoints)) {
+      assert.ok(
+        h.app.routes.some(
+          (route) =>
+            route.method === endpoint.method &&
+            route.path === endpoint.path.replace("{id}", ":id"),
+        ),
+        `${endpoint.method} ${endpoint.path} missing from the typed route chain`,
+      );
+    }
+  } finally {
+    await h.store.close();
+  }
+});

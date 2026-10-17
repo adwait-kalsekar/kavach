@@ -1,4 +1,4 @@
-name: Backend contracts and integration
+name: Application contracts and integration
 on:
   pull_request:
   push:
@@ -17,10 +17,13 @@ jobs:
           package-manager-cache: false
       - run: npm install --global npm@12.2.0
       - run: npm ci
-      - run: npm run build:api
-      - run: npm run check:api
+      - run: npm run build:app
+      - run: npm run check:app
       - run: npm run test:api
       - run: npm run openapi:check
+      - run: npx playwright install --with-deps chromium
+      - name: Desktop, mobile and Hono-served browser journeys
+        run: npm run test:e2e
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin

@@ -1,7 +1,14 @@
 import { serve } from "@hono/node-server";
+import { fileURLToPath } from "node:url";
+import { mountWeb } from "./web.js";
 import { compose } from "./composition.js";
 
 const { app, config, store } = await compose();
+mountWeb(
+  app,
+  fileURLToPath(new URL("../../web/dist/", import.meta.url)),
+  config.environment === "production",
+);
 const server = serve(
   { fetch: app.fetch, hostname: "0.0.0.0", port: config.port },
   () => {

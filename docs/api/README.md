@@ -1,6 +1,6 @@
 # API integration guide
 
-The backend foundation is independent of UI and needs no GCP project in local mode. The existing frontend is still the untouched Next.js starter; React/Vite migration comes later.
+The backend foundation is independent of UI and needs no GCP project in local mode. The React/Vite workspace now calls the typed public health endpoint. See [web/RPC architecture](../architecture/web-foundation.md) for UI setup and browser boundaries.
 
 ## Start locally
 
@@ -12,8 +12,9 @@ npm run build:api
 npm run start:api
 ```
 
-The API listens on `http://localhost:8080`. Defaults use a durable `.data/kavach.sqlite` file under the repo root and disable external weather/AI requests. No cloud credentials or auth account are required. For configuration, copy [apps/api/.env.example](../../apps/api/.env.example) to `apps/api/.env`; paths are relative to the repository root. Rebuild after TypeScript edits; `npm run dev:api` restarts on compiled-file changes.
+The API listens on `http://localhost:8080`. Defaults use a durable `.data/kavach.sqlite` file under the repo root and disable external weather/AI requests. No cloud credentials or auth account are required. For configuration, copy [apps/api/.env.example](../../apps/api/.env.example) to `apps/api/.env`; paths are relative to the repository root. `npm run dev:api` runs TypeScript through tsx and rebuilds shared dependencies through Turbo watch. `npm run dev` starts the UI too. Use APP_ORIGIN=http://localhost:3000 for the Vite proxy, or http://localhost:8080 for the built Hono-served UI.
 
+- `GET /api/v1/health`: public runtime-validated RPC liveness response (`status`, `service`, `apiVersion`, `checkedAt`) in the normal envelope. No guest session is required or created. This proves API reachability, not database readiness.
 - `GET /healthz`: process liveness.
 - `GET /readyz`: database readiness (bounded check).
 - `GET /api/v1/openapi.json`: generated OpenAPI 3.1 contract.
@@ -96,7 +97,7 @@ Available weather includes units in field names and product/source/coverage/retr
 
 Implemented: guest sessions; capabilities; farm create/read/update; immutable assessment create/read/compare; saved-plan create/read/update/paginated history; strict contracts; local SQLite and Firestore adapters; optional Open-Meteo; structured failures.
 
-Deferred: recoverable accounts, Gemini/Vertex inference, conversation endpoints, speech, frontend migration, satellite/seasonal ingestion, validated agronomic prescriptions and live GCP deployment. `capabilities` advertises AI unavailable and conversations false. The current engine returns planning/verification checks with unreviewed status; it does not claim sowing dates, irrigation doses or crop-loss probabilities. `sourceIds: []` intentionally means a workflow check is not being represented as a sourced agronomic recommendation.
+Deferred: recoverable accounts, Gemini/Vertex inference, conversation endpoints, speech, farmer-facing screens, satellite/seasonal ingestion, validated agronomic prescriptions and live GCP deployment. `capabilities` advertises AI unavailable and conversations false. The current engine returns planning/verification checks with unreviewed status; it does not claim sowing dates, irrigation doses or crop-loss probabilities. `sourceIds: []` intentionally means a workflow check is not being represented as a sourced agronomic recommendation.
 
 ## Verification
 
@@ -111,4 +112,4 @@ To regenerate the specification after contract changes: `npm run openapi -w @kav
 
 Firestore parity: Java 21 and Firebase CLI are development dependencies/tooling; `npm run test:firestore` starts the official emulator using `demo-kavach` and runs the same API journey tests against isolated emulator databases. It does not require a real GCP project or use cloud credentials. The emulator does not enforce production composite indexes or IAM, so those remain explicit deployment checks.
 
-For future UI integration, set local `APP_ORIGIN` to the frontend origin and proxy `/api` through the Vite dev server. Production must stay same-origin with Hono. Do not expose emulator endpoints, cloud credentials or service SDKs to frontend code.
+For UI integration, set local `APP_ORIGIN` to the frontend origin and proxy `/api` through the Vite dev server. Production must stay same-origin with Hono. Do not expose emulator endpoints, cloud credentials or service SDKs to frontend code.

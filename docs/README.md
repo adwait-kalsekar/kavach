@@ -6,6 +6,7 @@ Start with the [visual product overview](product/overview.html). Download/open i
 
 | Document                                                                     | Purpose                                                                              |
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [Web and Hono RPC foundation](architecture/web-foundation.md)                | UI/API development, type-only RPC, security boundaries and GCP packaging             |
 | [API integration guide](api/README.md)                                       | Local quickstart, session flow, typed client and current API semantics               |
 | [Generated OpenAPI](api/openapi.json)                                        | Versioned machine-readable request and response contracts                            |
 | [Infrastructure templates](../infra/README.md)                               | Container, emulator and deferred GCP deployment setup                                |

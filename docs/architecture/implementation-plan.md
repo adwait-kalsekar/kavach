@@ -8,7 +8,7 @@ The user deferred cloud project setup. Complete local build, emulator-backed flo
 
 - Backend-first scope and completed batch gates are recorded in [backend foundation](backend-foundation.md); that document takes precedence over the migration-first sequence below.
 - Hono API, strict shared contracts, typed client, pure decision module, SQLite/Firestore adapters, tests and deployment templates are implemented.
-- `apps/web` and `apps/docs` remain Next.js starters. React/Vite migration is deferred until the API foundation is merged.
+- Backend foundation merged in PR #1. `apps/web` is now React/Vite with a real health RPC screen; [web foundation](web-foundation.md) records the current batch. `apps/docs` remains a separate Next starter.
 - The provisional Next API sketch was removed from the application tree; it is not part of the backend implementation.
 - Original product/research/architecture docs were published on main at `599ab97`. Feature worktrees must fetch and merge/rebase main to receive them.
 - Account login, reviewed agronomic guidance, AI conversations and live GCP deployment remain future work.
