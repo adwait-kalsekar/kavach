@@ -4,6 +4,8 @@ Decision date: 17 October 2026. Status: backend and web/health foundations imple
 
 Read in order:
 
+- [GCP deployment and continuous delivery](gcp-deployment.md): researched hosting/pipeline plan, keyless access, required owner inputs and acceptance gates. Deployment automation is not configured yet.
+
 - [Web foundation and Hono RPC](web-foundation.md): current React/Vite setup, browser boundaries, GCP packaging and verification.
 
 0. [Active backend foundation](backend-foundation.md): current batch scope, diagrams, local SQLite refinement and review status. Backend/contracts precede UI migration by latest user instruction.

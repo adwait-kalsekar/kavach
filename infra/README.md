@@ -28,3 +28,5 @@ When project setup is available:
 5. Verify the real URL, IAM, indexes, secure cookies, owned-plan persistence across restart, cross-owner denial and rollback. Confirm any future provider usage terms before enabling it.
 
 Live Cloud Run deployment, production IAM/index enforcement and actual model inference are not proven by local/emulator tests.
+
+The selected automatic-delivery plan is [GitHub Actions → WIF → Artifact Registry → Cloud Run](../docs/architecture/gcp-deployment.md). That document records required owner inputs and bootstrap permissions; the existing Cloud Build file remains build-only.
