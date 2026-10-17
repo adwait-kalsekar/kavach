@@ -7,7 +7,10 @@ const apiName = `kavach-api-live-${process.pid}`;
 const webName = `kavach-web-live-${process.pid}`;
 const sha = "a".repeat(40);
 const docker = (...args) =>
-  execFileSync("docker", args, { encoding: "utf8" }).trim();
+  execFileSync("docker", args, {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  }).trim();
 const names = [];
 async function ready(origin) {
   for (let i = 0; i < 100; i++) {
@@ -23,6 +26,20 @@ async function ready(origin) {
   throw new Error("Container did not become ready");
 }
 try {
+  assert.throws(
+    () =>
+      docker(
+        "run",
+        "--rm",
+        "--env",
+        "API_ORIGIN=https://api.example.com\nhttps://evil.example.com",
+        webImage,
+      ),
+    (error) =>
+      error.status === 1 &&
+      String(error.stderr).includes("Invalid web configuration characters"),
+    "Runtime public config must reject multiline injection before rendering templates",
+  );
   // Discover web URL first, then configure the API's exact CORS origin.
   docker(
     "run",
