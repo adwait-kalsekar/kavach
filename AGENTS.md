@@ -34,7 +34,8 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 - Local development requires no GCP project. Explicit SQLite local storage is allowed; it is not production persistence. In-memory stores are for tests only.
 - Production uses Firestore, workload identity/ADC and validated configuration. Refuse local storage, emulator configuration or localhost origins in production. Never silently fall back from Firestore to local storage.
 - Keep secrets and runtime databases outside Git; document required variable names in `.env.example`. Never store cloud keys or credentials in frontend configuration.
-- Cloud provisioning remains deferred until the user supplies a project. Emulator/local tests are not live GCP verification.
+- GCP project is `kavach-farmers-market-sense`; see `docs/deployment/gcp-setup.md`. A project ID grants no access. Bootstrap defaults to an offline plan; never use --apply without actual provisioning authorization and verified identity. Emulator/mocked deploy tests are not live GCP verification.
+- CI deployment is gated by successful verify + trusted main + GCP_DEPLOY_ENABLED, with WIF restricted to repository IDs/workflow/production. Deploy only the exact tested image by digest; keep runtime/deploy identities separate. CI must not edit IAM policy. Never create JSON keys or weaken trust/CSP/origin checks to unblock deployment.
 
 ## Work and review
 

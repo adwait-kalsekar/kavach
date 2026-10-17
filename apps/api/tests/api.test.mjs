@@ -483,10 +483,11 @@ test("Hono test interface supports health, readiness, OpenAPI and structured API
 });
 
 test("public typed health contract and RPC routes match the OpenAPI endpoint registry", async () => {
-  const h = await harness();
+  const h = await harness({ RELEASE_SHA: "a".repeat(40) });
   try {
     const response = await h.app.request("/api/v1/health");
     assert.equal(response.status, 200);
+    assert.equal(response.headers.get("x-release-sha"), "a".repeat(40));
     const body = endpoints.health.response.parse(await response.json());
     assert.equal(body.data.service, "kavach-api");
     assert.equal(body.data.status, "ok");

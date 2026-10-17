@@ -1,6 +1,6 @@
 # GCP deployment and continuous delivery
 
-Researched 17 October 2026 against official Google documentation. This is the selected deployment plan, not implemented continuous delivery or a live deployment. The current CI verifies the application; `infra/cloudbuild.yaml` only builds/pushes an image. No GCP project is configured.
+Researched 17 October 2026 against official Google documentation. The code-side pipeline, bootstrap, access checks and owner guide are now implemented. They have not provisioned or deployed live GCP resources. Project: `kavach-farmers-market-sense`; GCP identity and actual project setup remain pending. See [step-by-step setup](../deployment/gcp-setup.md). `infra/cloudbuild.yaml` remains an independent build-only template, not a second deploy controller.
 
 ## Selected topology
 
@@ -43,13 +43,13 @@ Cloud Run supplies a managed HTTPS `run.app` URL. A custom domain, purchased cer
 Extend the existing GitHub Actions workflow rather than adding a second independent deployment trigger:
 
 1. PRs and main run the existing verification job: pinned Node/npm, lockfile install, import and bundle boundaries, Turbo build/typecheck, API tests, OpenAPI drift, desktop/mobile/Hono-served browser tests, Firestore emulator parity and container smoke.
-2. Make the container builder use the same `npm run build:app` Turbo dependency graph, with required build tooling installed in the builder only. Its current explicit workspace build sequence is correct for today's packages; a single Turbo entry point avoids having to maintain that order separately as the graph grows. Keep the clean production dependency stage.
+2. The container builder now uses the same `npm run build:app` Turbo dependency graph, with required build tooling installed in the builder only. This replaces the former explicit workspace build sequence. Keep the clean production dependency stage.
 3. For a successful main run only, export the already smoke-tested image as a short-lived workflow artifact. A separate production job downloads/loads that exact image; do not rebuild an unverified image after tests.
 4. Production job alone receives `id-token: write` and exchanges GitHub OIDC through WIF for the deploy service account. The verification job has only read access and no cloud identity. Never use `pull_request_target` to execute contributor code with deployment access.
 5. Push the image to Artifact Registry, label/tag it with the source commit, and deploy its immutable `sha256` digest. Do not deploy a floating `latest` tag. Pin third-party action versions to reviewed commit SHAs.
 6. Use a GitHub `production` environment restricted to main. Allow automatic deployment after successful main verification as requested; a manual environment reviewer is optional, not required by this design.
 7. Serialize production deployments and reject stale SHAs before promotion, so an older slow build cannot replace a newer release. Don't cancel an in-flight traffic change. Record previous revision/digest and perform a final stale-commit check before moving traffic.
-8. Create the candidate revision with no production traffic, wait for readiness, then promote through the stable service URL. Run public health and browser checks there, including the guest/farm/assessment/plan journey. Clean up smoke records through a server/admin process. Roll back traffic to the previous revision if post-promotion checks fail.
+8. Create the candidate revision with no production traffic, wait for readiness, then promote through the stable service URL. Run public desktop/mobile health checks and database readiness there, verifying the expected release SHA. The automatic live smoke creates no synthetic production records; guest/farm/assessment/plan persistence remains a separate first-deployment acceptance check. Roll back traffic to the previous revision if post-promotion checks fail.
 
 A revision traffic-tag URL is an alternate origin. Our exact-origin CSRF checks will intentionally reject browser mutations there. Don't relax APP_ORIGIN for previews: candidate readiness can run before promotion, but full mutation journeys should use the canonical production URL after promotion, or a separate staging service with its own configured origin/database.
 
@@ -100,11 +100,11 @@ These are configuration identifiers, not credentials. The WIF trust policy suppl
 
 ## Codex cloud computer access
 
-Observed 17 October 2026: this session's environment status reports **no GCP outbound identity, runtime variables or secrets**, and no identity manifest is configured. `gcloud` is not installed. Existing GitHub access is working; it does not grant Google Cloud access.
+Observed 17 October 2026: this session's environment status reports **no GCP outbound identity, runtime variables or secrets**, and no identity manifest is configured. The official gcloud 589.0.0 CLI is now installed outside the repo; its project check fails with no active account. Existing GitHub code access is working; it does not grant Google Cloud access. A GitHub environment-update request returned 403 Resource not accessible by integration, so the owner guide includes manual environment/variable steps.
 
 Preferred setup paths:
 
-1. Configure an authorized GCP outbound identity/connection in the Codex cloud environment, if that option is available to the owner. Select a dedicated bootstrap/deployment identity, review its scope, and let the environment report it ready. Install the official gcloud CLI and use its provided profile/credential selectors normally. Never paste tokens or private keys into chat.
+1. Configure an authorized GCP outbound identity/connection in the Codex cloud environment, if that option is available to the owner. Select a dedicated bootstrap/deployment identity, review its scope, and let the environment report it ready. Use the installed CLI with its provided profile/credential selectors normally. Never paste tokens or private keys into chat.
 2. If no GCP connection is available, the owner runs a reviewed one-time bootstrap script in Google Cloud Shell under their existing authorized login. It configures GCP/WIF and produces only non-secret IDs for the repository settings. After that, GitHub Actions can build/deploy on main without any GCP credential stored on the Codex computer. This path is sufficient for automatic delivery.
 
 Do not request a long-lived service-account JSON key as the default fallback. A configured Codex identity and GitHub OIDC federation are separate access paths; one does not automatically establish the other.
@@ -134,3 +134,13 @@ Do not request a long-lived service-account JSON key as the default fallback. A 
 - [Secret Manager integration](https://docs.cloud.google.com/run/docs/configuring/services/secrets)
 - [Billing settings](https://docs.cloud.google.com/run/docs/configuring/billing-settings)
 - [Budgets and alert/spend-cap distinctions](https://docs.cloud.google.com/billing/docs/how-to/budgets)
+
+## Implemented code-side handoff
+
+- Workflow uses a main-only enable switch, tested-image artifact transfer, separate WIF deploy job and serialized promotions. Deployment helpers reject stale commits, invalid digests, unready candidates and existing traffic splits, and restore prior traffic after failed live checks.
+- Bootstrap applies named resources with no service-account keys, reserves the service with a private Google hello container, then the bootstrap operator enables public access when setup finishes. The temporary public hello page is replaced by the first tested app rollout; this avoids giving CI IAM-policy editing rights. The deployer remains Run Developer on the existing service.
+- Access diagnostic, non-secret GitHub configuration helper and minimal Cloud Shell upload bundle support setup without authenticating the private GitHub repo in Cloud Shell.
+- `npm run test:deploy` covers 12 deployment/rollback conditions and five bootstrap/validation guards. These are deterministic mocked-command tests, not proof of GCP permissions, WIF token exchange or successful provisioning.
+- Full project IAM/index/public-access and canonical-URL tests must run after the owner completes bootstrap. Deployment remains disabled until then.
+
+The expanded builder uses the full pinned root development toolchain to run the exact Turbo build command; its npm audit currently reports 10 development-tool advisories (four moderate, six high). The clean runtime dependency stage reports zero. Build tooling is not copied to the runtime image; remediation of inherited tooling advisories remains a separate dependency-maintenance task.

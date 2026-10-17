@@ -112,6 +112,7 @@ export function createApp({
   app.use("*", async (c, next) => {
     c.set("requestId", randomUUID());
     c.header("X-Request-ID", c.get("requestId"));
+    if (config.releaseSha) c.header("X-Release-SHA", config.releaseSha);
     c.header("Cache-Control", "no-store");
     c.header("X-Content-Type-Options", "nosniff");
     c.header("Referrer-Policy", "same-origin");

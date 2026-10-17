@@ -47,3 +47,7 @@ npm run test:e2e
 `apps/docs` remains the separate Next.js starter (`npm run dev:docs`); it is excluded from application development and GCP packaging. Root `docs/` is the canonical documentation.
 
 Shared packages include contracts, a browser-safe API client, pure decision logic, and the original UI/lint/TypeScript configuration. Use [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) for engineering instructions.
+
+## GCP setup
+
+[Follow the project-specific Cloud Console/Cloud Shell guide](docs/deployment/gcp-setup.md). The workflow and rollback code are prepared, but deployment is disabled until GCP bootstrap and GitHub settings are complete. No service-account keys are required.

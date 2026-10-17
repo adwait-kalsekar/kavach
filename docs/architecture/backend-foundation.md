@@ -66,3 +66,7 @@ Local process serialization is not distributed locking. SQLite transactions prot
 ## Remaining gates
 
 No live GCP resources, production IAM/index enforcement, live weather reliability, load performance or model behavior have been verified. The emulator emits an SDK metadata-discovery warning in this workspace; all parity tests pass. SQLite has no automatic expiry cleanup, so it is local tooling only. Guest sessions are not recoverable accounts. Assessments are unreviewed workflow checks, not agronomic prescriptions. Future account-provider and AI implementation must preserve the browser → Hono boundary.
+
+## GCP delivery follow-up
+
+The [owner setup guide](../deployment/gcp-setup.md) and `infra/gcp/` now prepare keyless main-to-Cloud-Run deployment. Local deployment/rollback guard tests and application checks are distinct from live IAM/WIF/provisioning verification. The latter remains blocked by missing GCP identity; no cloud resources have been created.

@@ -16,3 +16,11 @@ library-files
 
 /test-results
 /playwright-report
+
+# Ephemeral deployment credentials and container transfer artifacts
+**/gha-creds-*.json
+/kavach-image.tar.gz
+/gcp-bootstrap-output.json
+
+**/__pycache__
+**/*.pyc

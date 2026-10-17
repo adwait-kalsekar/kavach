@@ -1,12 +1,17 @@
 name: Application contracts and integration
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches: [main]
 permissions:
   contents: read
+defaults:
+  run:
+    shell: bash
 jobs:
   verify:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -21,6 +26,8 @@ jobs:
       - run: npm run check:app
       - run: npm run test:api
       - run: npm run openapi:check
+      - name: Deployment and rollback guard tests
+        run: npm run test:deploy
       - run: npx playwright install --with-deps chromium
       - name: Desktop, mobile and Hono-served browser journeys
         run: npm run test:e2e
@@ -34,3 +41,63 @@ jobs:
         run: docker build -f infra/Dockerfile.api -t kavach-api:ci .
       - name: Container HTTP workflow and restart persistence
         run: node infra/tests/container-smoke.mjs kavach-api:ci
+      - name: Verify deployment smoke against the real container
+        run: node infra/gcp/test-live-smoke.mjs kavach-api:ci
+      - name: Export the exact tested image for main deployment
+        if: github.ref == 'refs/heads/main' && vars.GCP_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: docker save kavach-api:ci | gzip > kavach-image.tar.gz
+      - name: Transfer tested image
+        if: github.ref == 'refs/heads/main' && vars.GCP_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: kavach-image-${{ github.sha }}
+          path: kavach-image.tar.gz
+          compression-level: 0
+          retention-days: 1
+
+  deploy:
+    timeout-minutes: 20
+    needs: verify
+    if: github.ref == 'refs/heads/main' && vars.GCP_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: kavach-production
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_PROJECT_NUMBER: ${{ vars.GCP_PROJECT_NUMBER }}
+      GCP_REGION: ${{ vars.GCP_REGION }}
+      GCP_CLOUD_RUN_SERVICE: ${{ vars.GCP_CLOUD_RUN_SERVICE }}
+      GCP_ARTIFACT_REPOSITORY: ${{ vars.GCP_ARTIFACT_REPOSITORY }}
+      GCP_RUNTIME_SERVICE_ACCOUNT: ${{ vars.GCP_RUNTIME_SERVICE_ACCOUNT }}
+      FIRESTORE_DATABASE_ID: ${{ vars.FIRESTORE_DATABASE_ID }}
+      APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24.19.0"
+          package-manager-cache: false
+      - run: npm install --global npm@12.2.0
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: kavach-image-${{ github.sha }}
+      - run: gunzip -c kavach-image.tar.gz | docker load
+      - name: Keyless Google Cloud authentication
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+        with:
+          version: "589.0.0"
+      - name: Deploy immutable image, check live UI, restore previous traffic on failure
+        run: node infra/gcp/deploy.mjs

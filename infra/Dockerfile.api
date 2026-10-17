@@ -7,6 +7,7 @@ WORKDIR /app
 
 FROM build-base AS builder
 COPY package.json package-lock.json ./
+COPY turbo.json ./turbo.json
 COPY apps/api ./apps/api
 COPY apps/web ./apps/web
 COPY packages/api-client ./packages/api-client
@@ -17,19 +18,8 @@ COPY packages/domain ./packages/domain
 COPY packages/typescript-config ./packages/typescript-config
 RUN --mount=type=secret,id=npm_ca \
     if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
-    npm ci --workspace @kavach/api --workspace web --include-workspace-root=false --ignore-scripts
-RUN --mount=type=secret,id=npm_ca \
-    if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
-    npm run build --workspace @kavach/contracts
-RUN --mount=type=secret,id=npm_ca \
-    if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
-    npm run build --workspace @kavach/domain
-RUN --mount=type=secret,id=npm_ca \
-    if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
-    npm run build --workspace @kavach/api
-RUN --mount=type=secret,id=npm_ca \
-    if [ -f /run/secrets/npm_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/npm_ca; fi; \
-    npm run build --workspace @kavach/api-client && node scripts/check-browser-boundary.mjs && npm run build --workspace web
+    npm ci --workspace @kavach/api --workspace web --include-workspace-root=true --ignore-scripts
+RUN npm run build:app
 # Install runtime dependencies from scratch; build/lint/browser tooling stays out.
 FROM build-base AS production-deps
 COPY package.json package-lock.json ./

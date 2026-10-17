@@ -1,0 +1,10 @@
+{
+  "project": "kavach-farmers-market-sense",
+  "region": "asia-south1",
+  "service": "kavach-api",
+  "artifactRepository": "kavach",
+  "database": "(default)",
+  "githubRepository": "adwait-kalsekar/kavach",
+  "githubRepositoryId": "1421988948",
+  "githubOwnerId": "61903060"
+}

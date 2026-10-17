@@ -18,7 +18,8 @@
     "build:app": "npm run check:boundaries && turbo run build --filter=web... --filter=@kavach/api...",
     "check:app": "npm run check:boundaries && turbo run check-types lint --filter=web... --filter=@kavach/api...",
     "test:e2e": "npm run build:app && playwright test",
-    "check:boundaries": "node scripts/check-browser-boundary.mjs"
+    "check:boundaries": "node scripts/check-browser-boundary.mjs",
+    "test:deploy": "node --test infra/gcp/tests/*.test.mjs && python3 -m unittest discover -s infra/gcp/tests -p \"test_*.py\""
   },
   "devDependencies": {
     "firebase-tools": "15.34.0",

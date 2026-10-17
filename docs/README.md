@@ -6,6 +6,7 @@ Start with the [visual product overview](product/overview.html). Download/open i
 
 | Document                                                                     | Purpose                                                                              |
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [First GCP setup: step-by-step](deployment/gcp-setup.md)                     | Project-specific Cloud Console/Cloud Shell instructions and safe credential options  |
 | [GCP deployment and continuous delivery](architecture/gcp-deployment.md)     | Main-to-Cloud-Run plan, keyless IAM, bootstrap inputs and public URL                 |
 | [Web and Hono RPC foundation](architecture/web-foundation.md)                | UI/API development, type-only RPC, security boundaries and GCP packaging             |
 | [API integration guide](api/README.md)                                       | Local quickstart, session flow, typed client and current API semantics               |
