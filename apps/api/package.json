@@ -1,0 +1,26 @@
+{
+  "name": "@kavach/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc -p tsconfig.json --noEmit",
+    "dev": "node --env-file-if-exists=.env --watch dist/server.js",
+    "start": "node --env-file-if-exists=.env dist/server.js",
+    "test": "node tests/run.mjs"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "9.3.1",
+    "@hono/node-server": "2.1.5",
+    "@kavach/contracts": "*",
+    "@kavach/domain": "*",
+    "hono": "4.13.13",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/node": "26.6.5",
+    "typescript": "7.0.2"
+  }
+}

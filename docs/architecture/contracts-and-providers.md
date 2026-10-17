@@ -2,6 +2,8 @@
 
 Implementation target, 17 October 2026. Read [stack decision](stack-and-gcp.md) first.
 
+Current implementation status: [backend foundation](backend-foundation.md) and [API guide](../api/README.md). The backend is implemented; the frontend/AI sections below remain targets. Local development defaults to durable SQLite with an optional Firestore emulator; production remains Firestore. Account login is deferred behind Hono-managed guest ownership. The generated [OpenAPI specification](../api/openapi.json) is authoritative for current HTTP payloads.
+
 ## Dependency rules
 
 ```text
@@ -48,24 +50,24 @@ packages/ui/src/          # Accessible reusable components
 
 All private operations derive ownership from a server-validated opaque cookie session. The frontend has no bearer credential to persist in localStorage. `Idempotency-Key` applies to creation/confirmation operations; reuse with a different payload is a conflict, not a new operation. List responses are bounded and paginated.
 
-| Operation | Intended behavior |
-| --- | --- |
-| `GET /api/v1/session` | Resolve current session and issue a same-origin CSRF bootstrap token; no private cache |
-| `POST /api/v1/session` | Validate origin/CSRF bootstrap, create guest owner/session and set HTTP-only cookie |
-| `DELETE /api/v1/session` | Validate origin/CSRF, revoke session and clear cookie |
-| `GET /api/v1/capabilities` | Supported district/crop combinations and public capabilities; no credentials |
-| `POST /api/v1/farms` | Validate confirmed context and persist owner-scoped farm |
-| `PATCH /api/v1/farms/:id` | Update using expected revision; stale edit returns conflict |
-| `POST /api/v1/assessments` | Create an immutable assessment for a confirmed farm revision |
-| `GET /api/v1/assessments/:id` | Fetch authorized snapshot with evidence provenance |
-| `POST /api/v1/assessments/:id/compare` | Assess explicitly hypothetical constraints; no farm mutation |
-| `POST /api/v1/plans` | Save reference to an owned assessment |
-| `GET /api/v1/plans` | Owner-only paginated history |
-| `PATCH /api/v1/plans/:id` | Update bounded task state with revision check |
-| `POST /api/v1/conversations` | Start an owner-scoped context-bound conversation |
-| `POST /api/v1/conversations/:id/messages` | Interpret question, run allowed tools, validate and persist response |
-| `GET /api/v1/conversations/:id/messages` | Owner-only paginated messages |
-| `GET /api/v1/evidence/:id` | Return permitted evidence metadata linked to an authorized assessment, or explicitly public region-pack evidence |
+| Operation                                 | Intended behavior                                                                                                |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `GET /api/v1/session`                     | Resolve current session and issue a same-origin CSRF bootstrap token; no private cache                           |
+| `POST /api/v1/session`                    | Validate origin/CSRF bootstrap, create guest owner/session and set HTTP-only cookie                              |
+| `DELETE /api/v1/session`                  | Validate origin/CSRF, revoke session and clear cookie                                                            |
+| `GET /api/v1/capabilities`                | Supported district/crop combinations and public capabilities; no credentials                                     |
+| `POST /api/v1/farms`                      | Validate confirmed context and persist owner-scoped farm                                                         |
+| `PATCH /api/v1/farms/:id`                 | Update using expected revision; stale edit returns conflict                                                      |
+| `POST /api/v1/assessments`                | Create an immutable assessment for a confirmed farm revision                                                     |
+| `GET /api/v1/assessments/:id`             | Fetch authorized snapshot with evidence provenance                                                               |
+| `POST /api/v1/assessments/:id/compare`    | Assess explicitly hypothetical constraints; no farm mutation                                                     |
+| `POST /api/v1/plans`                      | Save reference to an owned assessment                                                                            |
+| `GET /api/v1/plans`                       | Owner-only paginated history                                                                                     |
+| `PATCH /api/v1/plans/:id`                 | Update bounded task state with revision check                                                                    |
+| `POST /api/v1/conversations`              | Start an owner-scoped context-bound conversation                                                                 |
+| `POST /api/v1/conversations/:id/messages` | Interpret question, run allowed tools, validate and persist response                                             |
+| `GET /api/v1/conversations/:id/messages`  | Owner-only paginated messages                                                                                    |
+| `GET /api/v1/evidence/:id`                | Return permitted evidence metadata linked to an authorized assessment, or explicitly public region-pack evidence |
 
 These are targets, not routes that exist today. Implement only the endpoints needed by the active milestone. Public errors use `{ error: { code, message, requestId, retryable } }`; no stack trace, raw prompt, upstream credential or provider response leaks.
 
@@ -95,12 +97,15 @@ First implement one actual adapter per used capability and a deterministic fake 
 
 ```ts
 type ProviderResult<T> =
-  | { status: 'available'; value: T; provenance: Provenance }
-  | { status: 'partial'; value: T; provenance: Provenance; missing: string[] }
-  | { status: 'unavailable'; reason: string; retryable: boolean };
+  | { status: "available"; value: T; provenance: Provenance }
+  | { status: "partial"; value: T; provenance: Provenance; missing: string[] }
+  | { status: "unavailable"; reason: string; retryable: boolean };
 
 interface WeatherForecastProvider {
-  getForecast(request: ForecastRequest, signal: AbortSignal): Promise<ProviderResult<Forecast>>;
+  getForecast(
+    request: ForecastRequest,
+    signal: AbortSignal,
+  ): Promise<ProviderResult<Forecast>>;
 }
 ```
 

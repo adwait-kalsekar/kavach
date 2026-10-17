@@ -5,13 +5,18 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "!.next/dev/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^build", "^check-types"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "passThroughEnv": ["TEST_FIRESTORE", "FIRESTORE_EMULATOR_HOST", "GOOGLE_CLOUD_PROJECT"]
     },
     "dev": {
       "cache": false,

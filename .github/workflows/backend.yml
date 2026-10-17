@@ -1,0 +1,33 @@
+name: Backend contracts and integration
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24.19.0"
+          # Install the required npm version before invoking it in this workspace.
+          package-manager-cache: false
+      - run: npm install --global npm@12.2.0
+      - run: npm ci
+      - run: npm run build:api
+      - run: npm run check:api
+      - run: npm run test:api
+      - run: npm run openapi:check
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Firestore emulator contract parity (no GCP account)
+        run: npm run test:firestore
+      - name: Container build
+        run: docker build -f infra/Dockerfile.api -t kavach-api:ci .
+      - name: Container HTTP workflow and restart persistence
+        run: node infra/tests/container-smoke.mjs kavach-api:ci

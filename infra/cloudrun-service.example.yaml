@@ -1,0 +1,32 @@
+# Template only: replace project, image digest, runtime identity and origin before deployment.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: kavach-api
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "3"
+    spec:
+      serviceAccountName: kavach-api@REPLACE_PROJECT_ID.iam.gserviceaccount.com
+      containerConcurrency: 20
+      timeoutSeconds: 60
+      containers:
+        - image: asia-south1-docker.pkg.dev/REPLACE_PROJECT_ID/kavach/kavach-api@sha256:REPLACE_DIGEST
+          ports: [{ containerPort: 8080 }]
+          env:
+            - { name: APP_ENV, value: production }
+            - { name: STORAGE_BACKEND, value: firestore }
+            - { name: GOOGLE_CLOUD_PROJECT, value: REPLACE_PROJECT_ID }
+            - { name: APP_ORIGIN, value: "https://REPLACE_CLOUD_RUN_HOST" }
+            - { name: WEATHER_PROVIDER, value: disabled }
+          resources:
+            limits: { cpu: "1", memory: 512Mi }
+          startupProbe:
+            httpGet: { path: /readyz, port: 8080 }
+            periodSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            periodSeconds: 30

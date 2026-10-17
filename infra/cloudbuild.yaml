@@ -1,0 +1,20 @@
+# Build/push only. Does not deploy or create a database.
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-f",
+        "infra/Dockerfile.api",
+        "-t",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$BUILD_ID",
+        ".",
+      ]
+images:
+  ["${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$BUILD_ID"]
+substitutions:
+  _REGION: asia-south1
+  _REPOSITORY: kavach
+  _SERVICE: kavach-api
+options:
+  logging: CLOUD_LOGGING_ONLY

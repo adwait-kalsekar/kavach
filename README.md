@@ -1,43 +1,35 @@
 # Kavach
 
-A minimal Turborepo starter for exploring and building Kavach.
+Farmer seasonal-readiness copilot being developed for the Google Cloud AI Builder Cup. Start with the [visual product brief](docs/product/overview.html) and [documentation index](docs/README.md).
 
-## Product and research
+## Backend quickstart
 
-Open the [visual product brief](docs/product/overview.html) in a browser for proposed screens and the farmer journey. The [documentation index](docs/README.md) links the product specification, source/API register, competitive review and original project brief.
-
-## Prerequisites
-
-- Node.js 24 LTS (24.15.0+) or Node.js 26+
-- npm 12.2.0
-
-## Get started
-
-Run these commands from the repository root:
+Requires Node.js 24 LTS (24.15+) and npm 12.2.0. No GCP project or credentials are needed locally.
 
 ```sh
 npm ci
-npm run dev
+npm run build:api
+npm run start:api
 ```
 
-The default apps run on ports 3000 (`web`) and 3001 (`docs`). Both use Next.js and share components from `packages/ui`.
+The Hono API runs at `http://localhost:8080`, with durable local SQLite storage. Optional settings belong in `apps/api/.env`; see [.env.example](apps/api/.env.example). The [API guide](docs/api/README.md) explains the guest-session handshake and typed client. [OpenAPI](docs/api/openapi.json) defines the current contracts.
 
-## Checks
+Implemented: guest ownership, farm context, immutable assessments, hypothetical comparisons, saved-plan tracking, optional weather adapter and SQLite/Firestore persistence. Workflow checks are explicitly unreviewed. Account login, AI conversations, reviewed agronomic advice and live GCP deployment are deferred.
+
+## Verification
 
 ```sh
-npm run lint
-npm run check-types
-npm run build
+npm run build:api
+npm run check:api
+npm run test:api
+npm run openapi:check
+npm run test:firestore  # Java 21+, downloads the emulator; no GCP account
 ```
 
-The starter has no automated test suite yet. Production builds and local HTTP smoke checks validate the initial apps.
+[Infrastructure instructions](infra/README.md) cover the API container and future Cloud Run configuration. [Architecture and batch reviews](docs/architecture/backend-foundation.md) record current scope and verification limits.
 
-## Workspace
+## Frontend roadmap
 
-- `apps/web`: main application
-- `apps/docs`: documentation application
-- `packages/ui`: shared React components
-- `packages/eslint-config`: shared lint configuration
-- `packages/typescript-config`: shared TypeScript configuration
+The selected frontend is React/Vite with TanStack Router and Query. Its implementation is deferred; `apps/web` and `apps/docs` are still the original Next.js starters, available through `npm run dev`. All future browser service access must pass through Hono.
 
-Turborepo caches tasks locally. Remote caching and deployment are optional; no secrets or external services are required to develop this starter.
+Shared packages include contracts, a browser-safe API client, pure decision logic, and the original UI/lint/TypeScript configuration. Use [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) for engineering instructions.

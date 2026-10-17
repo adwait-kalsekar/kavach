@@ -1,0 +1,44 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "plans",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ownerId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" },
+        { "fieldPath": "__name__", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "sessions",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "operations",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "quotas",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    { "collectionGroup": "assessments", "fieldPath": "context", "indexes": [] },
+    { "collectionGroup": "assessments", "fieldPath": "weather", "indexes": [] },
+    { "collectionGroup": "assessments", "fieldPath": "actions", "indexes": [] },
+    { "collectionGroup": "assessments", "fieldPath": "reasons", "indexes": [] },
+    {
+      "collectionGroup": "assessments",
+      "fieldPath": "limitations",
+      "indexes": []
+    },
+    { "collectionGroup": "operations", "fieldPath": "result", "indexes": [] },
+    { "collectionGroup": "plans", "fieldPath": "tasks", "indexes": [] }
+  ]
+}
