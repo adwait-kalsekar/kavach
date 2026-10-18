@@ -115,6 +115,10 @@
                 "$schema": "https://json-schema.org/draft/2020-12/schema",
                 "type": "object",
                 "properties": {
+                  "contextVersion": {
+                    "type": "number",
+                    "const": 2
+                  },
                   "regionId": {
                     "type": "string",
                     "enum": [
@@ -251,6 +255,10 @@
                         "input": {
                           "type": "object",
                           "properties": {
+                            "contextVersion": {
+                              "type": "number",
+                              "const": 2
+                            },
                             "regionId": {
                               "type": "string",
                               "enum": [
@@ -1088,6 +1096,258 @@
                           ],
                           "additionalProperties": false
                         },
+                        "protection": {
+                          "type": "object",
+                          "properties": {
+                            "policy": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "const": "maharashtra-pmfby-rabi-2026-27"
+                                },
+                                "version": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "state": {
+                                  "type": "string",
+                                  "const": "Maharashtra"
+                                },
+                                "season": {
+                                  "type": "string",
+                                  "const": "Rabi 2026–27"
+                                },
+                                "checkedOn": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "recheckOn": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "source": {
+                                  "type": "object",
+                                  "properties": {
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "issued": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    },
+                                    "calendarPage": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "scopePage": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    }
+                                  },
+                                  "required": [
+                                    "title",
+                                    "url",
+                                    "issued",
+                                    "sha256",
+                                    "calendarPage",
+                                    "scopePage"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "portalUrl": {
+                                  "type": "string",
+                                  "const": "https://pmfby.gov.in/"
+                                },
+                                "crops": {
+                                  "minItems": 3,
+                                  "maxItems": 3,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "crop": {
+                                        "type": "string",
+                                        "enum": [
+                                          "chickpea",
+                                          "sorghum",
+                                          "wheat"
+                                        ]
+                                      },
+                                      "calendarCrop": {
+                                        "type": "string"
+                                      },
+                                      "deadline": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                      },
+                                      "irrigationCondition": {
+                                        "type": "string",
+                                        "enum": [
+                                          "not-separated-in-calendar",
+                                          "irrigated-only"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "crop",
+                                      "calendarCrop",
+                                      "deadline",
+                                      "irrigationCondition"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "actions": {
+                                  "minItems": 4,
+                                  "maxItems": 4,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "enum": [
+                                          "verify-notification",
+                                          "prepare-records",
+                                          "official-application",
+                                          "retain-receipt"
+                                        ]
+                                      },
+                                      "sourcePages": {
+                                        "minItems": 1,
+                                        "maxItems": 3,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "integer",
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "sourcePages"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "version",
+                                "state",
+                                "season",
+                                "checkedOn",
+                                "recheckOn",
+                                "source",
+                                "portalUrl",
+                                "crops",
+                                "actions"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "crop": {
+                              "type": "string",
+                              "enum": [
+                                "chickpea",
+                                "sorghum",
+                                "wheat"
+                              ]
+                            },
+                            "calendarCrop": {
+                              "type": "string"
+                            },
+                            "publishedDeadline": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            },
+                            "assessedOn": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            },
+                            "daysToPublishedDate": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "verify-eligibility",
+                                "irrigation-context-differs",
+                                "published-date-passed",
+                                "source-recheck-needed",
+                                "source-not-issued-yet"
+                              ]
+                            },
+                            "eligibility": {
+                              "type": "string",
+                              "const": "unverified"
+                            },
+                            "cropContext": {
+                              "type": "string",
+                              "enum": [
+                                "needs-irrigation-confirmation",
+                                "reported-irrigation-differs",
+                                "category-requires-portal-confirmation"
+                              ]
+                            },
+                            "missing": {
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "notified-village-and-crop",
+                                  "current-portal-calendar",
+                                  "irrigated-wheat-category",
+                                  "land-and-sowing-records",
+                                  "aadhaar-linked-bank-details"
+                                ]
+                              }
+                            },
+                            "timingPrecision": {
+                              "type": "string",
+                              "const": "Published calendar date; portal cutoff time and later amendments are not confirmed."
+                            },
+                            "limitation": {
+                              "type": "string",
+                              "const": "A state policy calendar does not establish personal eligibility, enrollment, premium or claim approval."
+                            }
+                          },
+                          "required": [
+                            "policy",
+                            "crop",
+                            "calendarCrop",
+                            "publishedDeadline",
+                            "assessedOn",
+                            "daysToPublishedDate",
+                            "status",
+                            "eligibility",
+                            "cropContext",
+                            "missing",
+                            "timingPrecision",
+                            "limitation"
+                          ],
+                          "additionalProperties": false
+                        },
                         "cropOptions": {
                           "maxItems": 8,
                           "type": "array",
@@ -1567,6 +1827,10 @@
                 "$schema": "https://json-schema.org/draft/2020-12/schema",
                 "type": "object",
                 "properties": {
+                  "contextVersion": {
+                    "type": "number",
+                    "const": 2
+                  },
                   "regionId": {
                     "type": "string",
                     "enum": [
@@ -1758,7 +2022,8 @@
                       "season",
                       "history",
                       "actions",
-                      "water"
+                      "water",
+                      "protection"
                     ]
                   },
                   "text": {
@@ -1844,6 +2109,10 @@
                             "input": {
                               "type": "object",
                               "properties": {
+                                "contextVersion": {
+                                  "type": "number",
+                                  "const": 2
+                                },
                                 "regionId": {
                                   "type": "string",
                                   "enum": [
@@ -2677,6 +2946,258 @@
                                 "level",
                                 "rainDryRankPct",
                                 "surfaceDryRankPct",
+                                "limitation"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "protection": {
+                              "type": "object",
+                              "properties": {
+                                "policy": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "const": "maharashtra-pmfby-rabi-2026-27"
+                                    },
+                                    "version": {
+                                      "type": "number",
+                                      "const": 1
+                                    },
+                                    "state": {
+                                      "type": "string",
+                                      "const": "Maharashtra"
+                                    },
+                                    "season": {
+                                      "type": "string",
+                                      "const": "Rabi 2026–27"
+                                    },
+                                    "checkedOn": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "recheckOn": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "source": {
+                                      "type": "object",
+                                      "properties": {
+                                        "title": {
+                                          "type": "string"
+                                        },
+                                        "url": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        "issued": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        },
+                                        "sha256": {
+                                          "type": "string",
+                                          "pattern": "^[a-f0-9]{64}$"
+                                        },
+                                        "calendarPage": {
+                                          "type": "integer",
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991
+                                        },
+                                        "scopePage": {
+                                          "type": "integer",
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991
+                                        }
+                                      },
+                                      "required": [
+                                        "title",
+                                        "url",
+                                        "issued",
+                                        "sha256",
+                                        "calendarPage",
+                                        "scopePage"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "portalUrl": {
+                                      "type": "string",
+                                      "const": "https://pmfby.gov.in/"
+                                    },
+                                    "crops": {
+                                      "minItems": 3,
+                                      "maxItems": 3,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "crop": {
+                                            "type": "string",
+                                            "enum": [
+                                              "chickpea",
+                                              "sorghum",
+                                              "wheat"
+                                            ]
+                                          },
+                                          "calendarCrop": {
+                                            "type": "string"
+                                          },
+                                          "deadline": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                          },
+                                          "irrigationCondition": {
+                                            "type": "string",
+                                            "enum": [
+                                              "not-separated-in-calendar",
+                                              "irrigated-only"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "crop",
+                                          "calendarCrop",
+                                          "deadline",
+                                          "irrigationCondition"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "actions": {
+                                      "minItems": 4,
+                                      "maxItems": 4,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "enum": [
+                                              "verify-notification",
+                                              "prepare-records",
+                                              "official-application",
+                                              "retain-receipt"
+                                            ]
+                                          },
+                                          "sourcePages": {
+                                            "minItems": 1,
+                                            "maxItems": 3,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "integer",
+                                              "exclusiveMinimum": 0,
+                                              "maximum": 9007199254740991
+                                            }
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "sourcePages"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "version",
+                                    "state",
+                                    "season",
+                                    "checkedOn",
+                                    "recheckOn",
+                                    "source",
+                                    "portalUrl",
+                                    "crops",
+                                    "actions"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "crop": {
+                                  "type": "string",
+                                  "enum": [
+                                    "chickpea",
+                                    "sorghum",
+                                    "wheat"
+                                  ]
+                                },
+                                "calendarCrop": {
+                                  "type": "string"
+                                },
+                                "publishedDeadline": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "assessedOn": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "daysToPublishedDate": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "verify-eligibility",
+                                    "irrigation-context-differs",
+                                    "published-date-passed",
+                                    "source-recheck-needed",
+                                    "source-not-issued-yet"
+                                  ]
+                                },
+                                "eligibility": {
+                                  "type": "string",
+                                  "const": "unverified"
+                                },
+                                "cropContext": {
+                                  "type": "string",
+                                  "enum": [
+                                    "needs-irrigation-confirmation",
+                                    "reported-irrigation-differs",
+                                    "category-requires-portal-confirmation"
+                                  ]
+                                },
+                                "missing": {
+                                  "minItems": 1,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "notified-village-and-crop",
+                                      "current-portal-calendar",
+                                      "irrigated-wheat-category",
+                                      "land-and-sowing-records",
+                                      "aadhaar-linked-bank-details"
+                                    ]
+                                  }
+                                },
+                                "timingPrecision": {
+                                  "type": "string",
+                                  "const": "Published calendar date; portal cutoff time and later amendments are not confirmed."
+                                },
+                                "limitation": {
+                                  "type": "string",
+                                  "const": "A state policy calendar does not establish personal eligibility, enrollment, premium or claim approval."
+                                }
+                              },
+                              "required": [
+                                "policy",
+                                "crop",
+                                "calendarCrop",
+                                "publishedDeadline",
+                                "assessedOn",
+                                "daysToPublishedDate",
+                                "status",
+                                "eligibility",
+                                "cropContext",
+                                "missing",
+                                "timingPrecision",
                                 "limitation"
                               ],
                               "additionalProperties": false
@@ -3701,6 +4222,14 @@
                               "type": "number",
                               "const": 1
                             },
+                            "replyStyle": {
+                              "type": "string",
+                              "enum": [
+                                "standard",
+                                "one-line",
+                                "simple"
+                              ]
+                            },
                             "views": {
                               "minItems": 1,
                               "maxItems": 4,
@@ -3712,7 +4241,8 @@
                                   "rain-history",
                                   "surface-context",
                                   "crop-actions",
-                                  "water-comparison"
+                                  "water-comparison",
+                                  "insurance-check"
                                 ]
                               }
                             }

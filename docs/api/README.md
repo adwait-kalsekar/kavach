@@ -165,13 +165,28 @@ Firestore parity: Java 21 and Firebase CLI are development dependencies/tooling;
 
 For UI integration, set `APP_ORIGIN` to the exact frontend origin. The independently served React app calls the configured Hono API origin directly with credentialed CORS; it never uses an API proxy. Default Cloud Run URLs support health only; guest sessions need same-site sibling custom domains. Do not expose emulator endpoints, cloud credentials or service SDKs to frontend code.
 
-
 ## Public seasonal-readiness sample
 
 `POST /api/v1/demo/readiness` accepts:
 
 ```json
-{"regionId":"nanded","crop":"wheat","intent":"sowing","stage":"pre-sowing","soil":"unknown","moisture":"unknown","irrigation":"none"}
+{
+  "regionId": "nanded",
+  "crop": "wheat",
+  "intent": "sowing",
+  "stage": "pre-sowing",
+  "soil": "unknown",
+  "moisture": "unknown",
+  "irrigation": "none"
+}
 ```
 
 Returns dated regional evidence, historical comparisons, crop sources and deterministic verification tasks. Ten exact district IDs/three crops are defined in OpenAPI. These are grid samples and unreviewed crop context, not a calibrated farm-risk prediction or sowing prescription. `POST /api/v1/demo/readiness/explain` adds locale (en-IN/hi-IN/mr-IN), voice, question (season/history/actions/water), optional bounded text/history and optional matching water assumptions. Server recomputes results and binds a version-1 allowlisted visual envelope; no model HTML/measurements. Optional water must match region/crop. Exact public guards and credential-omit transport remain; private session/CSRF/ownership is unchanged. See [method/limits](../architecture/season-readiness.md).
+
+### Readiness protection context (v2 opt-in)
+
+`POST /api/v1/demo/readiness` accepts optional `contextVersion: 2`. With it, the immutable response includes `protection`: a published Maharashtra insurance calendar, India-date timing state, irrigation category, unverified eligibility and source-linked checks. Without it, the response retains the v1 shape with no protection field. Example: `{"contextVersion":2,"regionId":"nanded","crop":"wheat","intent":"sowing","stage":"pre-sowing","soil":"unknown","moisture":"unknown","irrigation":"none"}` returns the irrigated-wheat calendar entry with a category mismatch, not eligibility or enrollment.
+
+`POST /api/v1/demo/readiness/explain` additionally accepts `question: "protection"` only with contextVersion 2. The canonical `insurance-check` view is only emitted when protection is present. Named history/action/water/protection questions include their matching view regardless of model availability. All existing exact-Origin, body, public-demo quota and private-route controls remain unchanged. This adds no chat persistence or enrollment endpoint.
+
+For v2 explanation responses, `components.replyStyle` indicates `standard`, `one-line` or `simple`. It is derived from a presentation request with prior assistant context; clients can collapse supporting evidence for successful short follow-ups. Unavailable explanations use standard expanded evidence. V1 responses omit this field. The model consumes the bounded existing role/text history but cannot update farm facts from it.

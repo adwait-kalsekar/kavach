@@ -1,3 +1,4 @@
+import { protectionLabel } from "./protection-card";
 import { localizedAction } from "./season-action-copy";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
@@ -292,6 +293,7 @@ export function SeasonPage() {
             ["season-summary", t.overview],
             ["rain-history", t.history],
             ["crop-actions", t.actions],
+            ["insurance-check", protectionLabel(app.locale)],
             ["sources", t.sources],
           ] as const
         ).map(([v, l]) => (
@@ -346,6 +348,9 @@ export function SeasonPage() {
               </div>
               <SeasonCards assessment={a} views={["season-summary"]} />
               <div className={c("season-link-row")}>
+                <button onClick={() => setView("insurance-check")}>
+                  {protectionLabel(app.locale)} →
+                </button>
                 <button onClick={() => setView("surface-context")}>
                   {t.surface} →
                 </button>

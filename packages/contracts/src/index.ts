@@ -47,6 +47,7 @@ export * from "./core.js";
 export * from "./demo.js";
 export * from "./water-planning.js";
 export * from "./season-readiness.js";
+export * from "./protection.js";
 
 export const endpoints = {
   demoReadiness: {

@@ -1,3 +1,4 @@
+import { ProtectionCard } from "./protection-card";
 import { EvidenceLearning } from "./evidence-learning";
 import { CropOptions } from "./crop-options";
 import { localizedAction } from "./season-action-copy";
@@ -200,6 +201,23 @@ export function SeasonCards({
                         <dt>{f(o.areaAcres, 2)} acres</dt>
                         <dd>
                           {f(o.requiredWaterLitres)} L{" "}
+                          <span className={c("water-fit-label")}>
+                            {locale === "en-IN"
+                              ? "Entered water covers"
+                              : locale === "mr-IN"
+                                ? "नोंदवलेल्या पाण्यात शक्य"
+                                : "दर्ज पानी से पूरा"}
+                            : {f(o.coverageFraction * 100)}%
+                          </span>
+                          <span
+                            className={c("water-fit-track")}
+                            role="img"
+                            aria-label={`${f(o.coverageFraction * 100)}%`}
+                          >
+                            <span
+                              style={{ width: `${o.coverageFraction * 100}%` }}
+                            />
+                          </span>
                           <small>
                             {o.balanceLitres < 0
                               ? "Water gap"
@@ -262,7 +280,16 @@ export function SeasonCards({
               </Link>
             </>
           ) : null}
-          <EvidenceLearning assessment={a} view={view} waterPlan={waterPlan} />
+          {view === "insurance-check" && a.protection ? (
+            <ProtectionCard assessment={a.protection} />
+          ) : null}
+          {view !== "insurance-check" ? (
+            <EvidenceLearning
+              assessment={a}
+              view={view}
+              waterPlan={waterPlan}
+            />
+          ) : null}
         </section>
       ))}
     </div>

@@ -1,3 +1,4 @@
+import { chatCopy } from "./chat-copy";
 import { SeasonCards } from "./season-cards";
 import { seasonCopy } from "./season-copy";
 import { KavachApiError } from "@kavach/api-client";
@@ -21,6 +22,18 @@ export function AssistantRoute() {
 export function AssistantPage() {
   const app = usePlanning(),
     t = planningCopy[app.locale];
+  const region =
+    app.catalog.data?.data.regions.find((r) => r.id === app.input.regionId)
+      ?.name || app.input.regionId;
+  const copy = chatCopy(app.locale, app.seasonInput, region);
+  const [showQuestions, setShowQuestions] = useState(false);
+  const index = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (showQuestions) {
+      index.current?.scrollIntoView({ block: "start" });
+      index.current?.focus({ preventScroll: true });
+    }
+  }, [showQuestions]);
   const [voiceReply, setVoiceReply] = useState(false);
   const [text, setText] = useState(""),
     [busy, setBusy] = useState(false),
@@ -41,7 +54,14 @@ export function AssistantPage() {
   } | null>(null);
   const thread = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    thread.current?.scrollTo({ top: thread.current.scrollHeight });
+    const container = thread.current;
+    if (!container) return;
+    const last = container.querySelector("[data-message]:last-of-type");
+    if (last)
+      container.scrollTo({
+        top: Math.max(0, (last as HTMLElement).offsetTop - 20),
+        behavior: "smooth",
+      });
   }, [app.chat.length, busy]);
   const controller = useRef<AbortController | null>(null),
     recorder = useRef<Awaited<ReturnType<typeof beginRecording>> | null>(null),
@@ -96,13 +116,10 @@ export function AssistantPage() {
     setUrl("");
     const label =
       questionText ||
-      (question === "season"
-        ? seasonCopy[app.locale].talk
-        : question === "history"
-          ? seasonCopy[app.locale].history
-          : t.qChecks);
+      copy.suggestions.find((s) => s.question === question)?.text ||
+      t.qChecks;
     app.setChat((rows) => [
-      ...rows.slice(-11),
+      ...rows.slice(-79),
       {
         id: crypto.randomUUID(),
         role: "user",
@@ -119,9 +136,10 @@ export function AssistantPage() {
           locale: app.locale,
           voice: fromVoice,
           question,
-          history: app.chat
-            .slice(-6)
-            .map((row) => ({ role: row.role, text: row.text.slice(0, 600) })),
+          history: app.chat.slice(-6).map((row) => ({
+            role: row.role,
+            text: row.text.slice(0, 600),
+          })),
           ...(questionText ? { text: questionText } : {}),
         },
         ctrl.signal,
@@ -131,7 +149,7 @@ export function AssistantPage() {
       if (response.data.explanation.status === "available") {
         const explanation = response.data.explanation;
         app.setChat((rows) => [
-          ...rows.slice(-11),
+          ...rows.slice(-79),
           {
             id: crypto.randomUUID(),
             role: "assistant",
@@ -141,6 +159,7 @@ export function AssistantPage() {
             seasonAnswer: {
               assessment: response.data.assessment,
               views: response.data.components.views,
+              replyStyle: response.data.components.replyStyle,
               ...(response.data.waterPlan
                 ? { waterPlan: response.data.waterPlan }
                 : {}),
@@ -150,15 +169,16 @@ export function AssistantPage() {
       }
       if (response.data.explanation.status !== "available")
         app.setChat((rows) => [
-          ...rows.slice(-11),
+          ...rows.slice(-79),
           {
             id: crypto.randomUUID(),
             role: "assistant",
-            text: seasonCopy[app.locale].context,
+            text: copy.fallback,
             locale: app.locale,
             seasonAnswer: {
               assessment: response.data.assessment,
               views: response.data.components.views,
+              replyStyle: response.data.components.replyStyle,
               ...(response.data.waterPlan
                 ? { waterPlan: response.data.waterPlan }
                 : {}),
@@ -260,215 +280,383 @@ export function AssistantPage() {
     }
   }
   return (
-    <section className={c("talk-window")} aria-label={t.helpTitle}>
-      <header className={c("talk-header")}>
-        <div>
-          <h1>
-            {app.locale === "mr-IN"
-              ? "कवचशी बोला"
-              : app.locale === "hi-IN"
-                ? "कवच से बात करें"
-                : "Talk to Kavach"}
-          </h1>
-          <p>
-            {cropNames[app.locale][app.input.crop]} ·{" "}
-            {app.input.regionId[0]!.toUpperCase() + app.input.regionId.slice(1)}
-          </p>
-        </div>
-      </header>
-      <div
-        ref={thread}
-        className={c("conversation")}
-        role="log"
-        aria-label="Conversation"
-      >
-        {!app.chat.length && (
-          <div className={c("talk-welcome")}>
-            <div className={c("talk-mark")}>
-              <Icon name="leaf" size={38} />
-            </div>
-            <h2>
+    <div className={c("talk-layout")}>
+      <aside className={c("chat-history")} aria-label={copy.recent}>
+        <h2>{copy.recent}</h2>
+        <p className={c("small muted")}>{copy.historyNote}</p>
+        <nav>
+          {app.chat
+            .filter((row) => row.role === "user")
+            .map((row, i) => (
+              <button
+                key={row.id}
+                onClick={() =>
+                  document
+                    .getElementById("message-" + row.id)
+                    ?.scrollIntoView({ block: "start", behavior: "smooth" })
+                }
+              >
+                <span>{i + 1}</span>
+                {row.text}
+              </button>
+            ))}
+        </nav>
+      </aside>
+      <section className={c("talk-window")} aria-label={t.helpTitle}>
+        <header className={c("talk-header")}>
+          <div>
+            <h1>
               {app.locale === "mr-IN"
-                ? "चला, तुमची योजना समजून घेऊया."
+                ? "कवचशी बोला"
                 : app.locale === "hi-IN"
-                  ? "आइए, आपकी योजना समझें।"
-                  : "Let's work through your plan."}
-            </h2>
+                  ? "कवच से बात करें"
+                  : "Talk to Kavach"}
+            </h1>
             <p>
-              {app.locale === "en-IN"
-                ? "Ask about your season, past El Niño years, crop checks or water options. Type for text and evidence cards. Use the microphone for a spoken reply too."
-                : app.locale === "mr-IN"
-                  ? "हंगाम, मागील वर्षे किंवा शेत तपासण्यांबद्दल विचारा. लिहिलेल्या प्रश्नांना मजकूर आणि माहितीची कार्डे मिळतात. बोलून प्रश्न विचारल्यास आवाजातही उत्तर मिळते."
-                  : "अपने मौसम, पिछले वर्षों या खेत की जाँच के बारे में पूछें। लिखे प्रश्नों का जवाब पाठ और जानकारी के कार्ड में मिलता है। माइक्रोफोन से पूछने पर आवाज़ में भी जवाब मिलता है।"}
+              {cropNames[app.locale][app.input.crop]} · {region} ·{" "}
+              {copy.irrigation}
             </p>
-            <div className={c("question-pills")}>
-              {(
-                [
-                  ["season", seasonCopy[app.locale].talk],
-                  ["history", seasonCopy[app.locale].history],
-                  ["actions", t.qChecks],
-                ] as const
-              ).map(([q, label]) => (
+          </div>
+          <div className={c("chat-tools")}>
+            <Link to="/situation">{copy.change}</Link>
+            <button
+              className={c("chat-history-toggle")}
+              onClick={() => setShowQuestions((v) => !v)}
+              aria-expanded={showQuestions}
+              aria-controls="visit-question-index"
+            >
+              {copy.recent} (
+              {app.chat.filter((row) => row.role === "user").length})
+            </button>
+          </div>
+        </header>
+        <div
+          ref={thread}
+          className={c("conversation")}
+          role="log"
+          aria-label="Conversation"
+        >
+          {showQuestions && (
+            <nav
+              ref={index}
+              id="visit-question-index"
+              tabIndex={-1}
+              className={c("mobile-question-index")}
+              aria-label={copy.recent}
+            >
+              <p className={c("small muted")}>{copy.historyNote}</p>
+              {app.chat
+                .filter((row) => row.role === "user")
+                .map((row) => (
+                  <button
+                    key={row.id}
+                    onClick={() => {
+                      setShowQuestions(false);
+                      requestAnimationFrame(() =>
+                        document
+                          .getElementById("message-" + row.id)
+                          ?.scrollIntoView({
+                            block: "start",
+                            behavior: "smooth",
+                          }),
+                      );
+                    }}
+                  >
+                    {row.text}
+                  </button>
+                ))}
+            </nav>
+          )}
+          {!app.chat.length && (
+            <div className={c("talk-welcome")}>
+              <div className={c("talk-mark")}>
+                <Icon name="leaf" size={38} />
+              </div>
+              <h2>
+                {app.locale === "mr-IN"
+                  ? "चला, तुमची योजना समजून घेऊया."
+                  : app.locale === "hi-IN"
+                    ? "आइए, आपकी योजना समझें।"
+                    : "Let's work through your plan."}
+              </h2>
+              <p>
+                {app.locale === "en-IN"
+                  ? "Ask about your season, past El Niño years, crop checks or water options. Type for text and evidence cards. Use the microphone for a spoken reply too."
+                  : app.locale === "mr-IN"
+                    ? "हंगाम, मागील वर्षे किंवा शेत तपासण्यांबद्दल विचारा. लिहिलेल्या प्रश्नांना मजकूर आणि माहितीची कार्डे मिळतात. बोलून प्रश्न विचारल्यास आवाजातही उत्तर मिळते."
+                    : "अपने मौसम, पिछले वर्षों या खेत की जाँच के बारे में पूछें। लिखे प्रश्नों का जवाब पाठ और जानकारी के कार्ड में मिलता है। माइक्रोफोन से पूछने पर आवाज़ में भी जवाब मिलता है।"}
+              </p>
+              <div className={c("question-pills")}>
+                {copy.suggestions.map((s) => (
+                  <button
+                    disabled={busy || recording || starting}
+                    key={s.question}
+                    onClick={() => void ask(s.question, s.text)}
+                  >
+                    <span className={c("prompt-symbol")} aria-hidden="true">
+                      {s.symbol}
+                    </span>
+                    <span>
+                      <strong>{s.title}</strong>
+                      <span>{s.text}</span>
+                    </span>
+                    <Icon name="arrow" size={17} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {app.chat.map((row) => (
+            <div
+              key={row.id}
+              id={"message-" + row.id}
+              data-message
+              tabIndex={-1}
+              className={c(
+                row.role === "user" ? "user-message" : "assistant-message",
+              )}
+              lang={row.locale}
+            >
+              <p>{row.text}</p>
+              {row.model && row.id === app.chat.at(-1)?.id && !busy ? (
+                <div className={c("reply-actions")}>
+                  <button
+                    disabled={recording || starting}
+                    onClick={() =>
+                      void ask(
+                        "season",
+                        app.locale === "en-IN"
+                          ? "Give me a one-liner about what you just said"
+                          : app.locale === "mr-IN"
+                            ? "हे एका ओळीत सांगा"
+                            : "इसे एक वाक्य में बताएँ",
+                      )
+                    }
+                  >
+                    {app.locale === "en-IN"
+                      ? "One-line summary"
+                      : app.locale === "mr-IN"
+                        ? "एका ओळीत"
+                        : "एक वाक्य में"}
+                  </button>
+                  <button
+                    disabled={recording || starting}
+                    onClick={() =>
+                      void ask(
+                        "season",
+                        app.locale === "en-IN"
+                          ? "Explain what you just said to me simply"
+                          : app.locale === "mr-IN"
+                            ? "हे सोप्या भाषेत समजावून सांगा"
+                            : "इसे सरल भाषा में समझाएँ",
+                      )
+                    }
+                  >
+                    {app.locale === "en-IN"
+                      ? "Explain simply"
+                      : app.locale === "mr-IN"
+                        ? "सोप्या भाषेत"
+                        : "सरल भाषा में"}
+                  </button>
+                </div>
+              ) : null}
+              {row.seasonAnswer ? (
+                row.seasonAnswer.replyStyle &&
+                row.seasonAnswer.replyStyle !== "standard" ? (
+                  <details className={c("reply-evidence")}>
+                    <summary>
+                      {app.locale === "en-IN"
+                        ? "Show supporting evidence"
+                        : app.locale === "mr-IN"
+                          ? "आधारभूत माहिती दाखवा"
+                          : "समर्थन में जानकारी दिखाएँ"}
+                    </summary>
+                    <SeasonCards
+                      assessment={row.seasonAnswer.assessment}
+                      views={row.seasonAnswer.views}
+                      waterPlan={row.seasonAnswer.waterPlan}
+                    />
+                  </details>
+                ) : (
+                  <SeasonCards
+                    assessment={row.seasonAnswer.assessment}
+                    views={row.seasonAnswer.views}
+                    waterPlan={row.seasonAnswer.waterPlan}
+                  />
+                )
+              ) : null}
+              {row.model && (
+                <small>
+                  {app.locale === "en-IN"
+                    ? "Kavach · Google AI"
+                    : "कवच · Google AI"}
+                </small>
+              )}
+            </div>
+          ))}
+          {app.chat.length > 0 && !busy && !recording && !starting ? (
+            <details className={c("followup-prompts")}>
+              <summary>{copy.next}</summary>
+              <div className={c("question-pills")}>
+                {copy.suggestions.map((s) => (
+                  <button
+                    key={s.question}
+                    onClick={() => void ask(s.question, s.text)}
+                  >
+                    {s.title}
+                    <Icon name="arrow" size={17} />
+                  </button>
+                ))}
+              </div>
+            </details>
+          ) : null}
+          {busy && (
+            <p className={c("thinking")} role="status">
+              {t.thinking}
+            </p>
+          )}
+          {error && (
+            <div className={c("notice")} role="alert">
+              <p>{error}</p>
+              {app.season.data?.data ? (
+                <SeasonCards
+                  assessment={app.season.data.data}
+                  views={[
+                    lastRequest.current?.question === "protection"
+                      ? "insurance-check"
+                      : lastRequest.current?.question === "history"
+                        ? "rain-history"
+                        : lastRequest.current?.question === "water"
+                          ? "water-comparison"
+                          : "crop-actions",
+                  ]}
+                  waterPlan={app.plan.data?.data}
+                />
+              ) : null}
+              <Link to="/situation">
+                {app.locale === "en-IN"
+                  ? "View evidence without AI"
+                  : seasonCopy[app.locale].overview}{" "}
+                →
+              </Link>
+              {lastRequest.current && (
                 <button
                   disabled={busy || recording || starting}
-                  key={q}
-                  onClick={() => void ask(q)}
+                  onClick={() => {
+                    const last = lastRequest.current;
+                    if (last)
+                      void ask(last.question, last.text, last.fromVoice);
+                  }}
                 >
-                  {label}
-                  <Icon name="arrow" size={17} />
+                  {t.retry}
                 </button>
-              ))}
+              )}
             </div>
-          </div>
-        )}
-        {app.chat.map((row) => (
-          <div
-            key={row.id}
-            className={c(
-              row.role === "user" ? "user-message" : "assistant-message",
-            )}
-            lang={row.locale}
-          >
-            <p>{row.text}</p>
-            {row.seasonAnswer ? (
-              <SeasonCards
-                assessment={row.seasonAnswer.assessment}
-                views={row.seasonAnswer.views}
-                waterPlan={row.seasonAnswer.waterPlan}
-              />
-            ) : null}
-            {row.model && (
-              <small>
-                {app.locale === "en-IN"
-                  ? "Kavach · Google AI"
-                  : "कवच · Google AI"}
-              </small>
-            )}
-          </div>
-        ))}
-        {busy && (
-          <p className={c("thinking")} role="status">
-            {t.thinking}
-          </p>
-        )}
-        {error && (
-          <div className={c("notice")} role="alert">
-            {error}
-            {lastRequest.current && (
-              <button
-                disabled={busy || recording || starting}
-                onClick={() => {
-                  const last = lastRequest.current;
-                  if (last) void ask(last.question, last.text, last.fromVoice);
-                }}
-              >
-                {t.retry}
-              </button>
-            )}
-          </div>
-        )}
-        {answer?.explanation.status === "unavailable" && (
-          <div className={c("notice")} role="status">
-            <p>{answer.explanation.reason}</p>
-            {answer.explanation.retryable && (
-              <button
-                disabled={busy || recording || starting}
-                onClick={() => {
-                  const last = lastRequest.current;
-                  if (last) void ask(last.question, last.text, last.fromVoice);
-                }}
-              >
-                {t.retry}
-              </button>
-            )}
-          </div>
-        )}
-        {url && voiceReply && (
-          <audio
-            controls
-            autoPlay
-            src={url}
-            preload="auto"
-            aria-label={t.play}
-          />
-        )}
-        {voiceReply &&
-          answer?.explanation.status === "available" &&
-          answer.audio.status === "unavailable" && (
-            <p className={c("small muted")}>{t.noAudio}</p>
           )}
-      </div>
-      <div className={c("talk-composer")}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (text.trim()) void ask("season", text.trim());
-          }}
-        >
-          <label className="sr-only" htmlFor="plan-question">
-            {t.question}
-          </label>
-          <textarea
-            id="plan-question"
-            placeholder={
-              app.locale === "en-IN" ? "Type your question…" : t.question
-            }
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            maxLength={1200}
-            rows={1}
-            disabled={busy || recording || starting}
-            onKeyDown={(e) => {
-              if (
-                e.key === "Enter" &&
-                !e.shiftKey &&
-                !e.nativeEvent.isComposing
-              ) {
-                e.preventDefault();
-                if (text.trim() && !busy && !recording && !starting)
-                  void ask("season", text.trim());
-              }
+          {answer?.explanation.status === "unavailable" && (
+            <div className={c("notice")} role="status">
+              <p>{answer.explanation.reason}</p>
+              {answer.explanation.retryable && (
+                <button
+                  disabled={busy || recording || starting}
+                  onClick={() => {
+                    const last = lastRequest.current;
+                    if (last)
+                      void ask(last.question, last.text, last.fromVoice);
+                  }}
+                >
+                  {t.retry}
+                </button>
+              )}
+            </div>
+          )}
+          {url && voiceReply && (
+            <audio
+              controls
+              autoPlay
+              src={url}
+              preload="auto"
+              aria-label={t.play}
+            />
+          )}
+          {voiceReply &&
+            answer?.explanation.status === "available" &&
+            answer.audio.status === "unavailable" && (
+              <p className={c("small muted")}>{t.noAudio}</p>
+            )}
+        </div>
+        <div className={c("talk-composer")}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (text.trim()) void ask("season", text.trim());
             }}
-          />
-          <button
-            type="button"
-            className={c(recording ? "record-active" : "mic-button")}
-            disabled={busy || starting}
-            aria-label={recording ? t.finish : t.record}
-            onClick={() => void record()}
           >
-            <Icon name={recording ? "check" : "mic"} size={23} />
-          </button>
-          <button
-            className={c("send-button")}
-            disabled={busy || recording || starting || !text.trim()}
-            aria-label={t.send}
-          >
-            <Icon name="arrow" size={22} />
-          </button>
-        </form>
-        <div className={c("composer-hint")}>
-          <span role="status">
-            {recording
-              ? t.recording
-              : app.locale === "en-IN"
-                ? "Tap the mic to speak. Tap again when you're done."
-                : t.record}
-          </span>
-          {recording && (
+            <label className="sr-only" htmlFor="plan-question">
+              {t.question}
+            </label>
+            <textarea
+              id="plan-question"
+              placeholder={
+                app.locale === "en-IN" ? "Type your question…" : t.question
+              }
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              maxLength={1200}
+              rows={1}
+              disabled={busy || recording || starting}
+              onKeyDown={(e) => {
+                if (
+                  e.key === "Enter" &&
+                  !e.shiftKey &&
+                  !e.nativeEvent.isComposing
+                ) {
+                  e.preventDefault();
+                  if (text.trim() && !busy && !recording && !starting)
+                    void ask("season", text.trim());
+                }
+              }}
+            />
             <button
               type="button"
-              className={c("cancel-recording")}
-              onClick={cancelRecording}
+              className={c(recording ? "record-active" : "mic-button")}
+              disabled={busy || starting}
+              aria-label={recording ? t.finish : t.record}
+              onClick={() => void record()}
             >
-              {t.cancel}
+              <Icon name={recording ? "check" : "mic"} size={23} />
             </button>
-          )}
-          <Link to="/compare">
-            {app.locale === "en-IN" ? "Your comparison" : t.compare}
-          </Link>
+            <button
+              className={c("send-button")}
+              disabled={busy || recording || starting || !text.trim()}
+              aria-label={t.send}
+            >
+              <Icon name="arrow" size={22} />
+            </button>
+          </form>
+          <div className={c("composer-hint")}>
+            <span role="status">
+              {recording
+                ? t.recording
+                : app.locale === "en-IN"
+                  ? "Tap the mic to speak. Tap again when you're done."
+                  : t.record}
+            </span>
+            {recording && (
+              <button
+                type="button"
+                className={c("cancel-recording")}
+                onClick={cancelRecording}
+              >
+                {t.cancel}
+              </button>
+            )}
+            <Link to="/compare">
+              {app.locale === "en-IN" ? "Your comparison" : t.compare}
+            </Link>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

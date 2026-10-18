@@ -1,0 +1,64 @@
+{
+  "id": "maharashtra-pmfby-rabi-2026-27",
+  "version": 1,
+  "state": "Maharashtra",
+  "season": "Rabi 2026–27",
+  "checkedOn": "2026-10-18",
+  "recheckOn": "2026-10-25",
+  "source": {
+    "title": "Maharashtra Agriculture Department · PMFBY GR 3 July 2026",
+    "url": "https://krishi.maharashtra.gov.in/Site/Upload/GR/PMFBY%20GR%202026-27%20dtd%2003_07_2026.pdf",
+    "issued": "2026-07-03",
+    "sha256": "cc3d4d88d90657d85aab29c341031f5d553c5c4bdc9e7c3c3774d2e0114fc3b4",
+    "calendarPage": 7,
+    "scopePage": 4
+  },
+  "portalUrl": "https://pmfby.gov.in/",
+  "crops": [
+    {
+      "crop": "chickpea",
+      "calendarCrop": "Gram / chickpea",
+      "deadline": "2026-12-15",
+      "irrigationCondition": "not-separated-in-calendar"
+    },
+    {
+      "crop": "sorghum",
+      "calendarCrop": "Rabi jowar",
+      "deadline": "2026-11-30",
+      "irrigationCondition": "not-separated-in-calendar"
+    },
+    {
+      "crop": "wheat",
+      "calendarCrop": "Irrigated wheat",
+      "deadline": "2026-12-15",
+      "irrigationCondition": "irrigated-only"
+    }
+  ],
+  "actions": [
+    {
+      "id": "verify-notification",
+      "sourcePages": [
+        4
+      ]
+    },
+    {
+      "id": "prepare-records",
+      "sourcePages": [
+        24,
+        25
+      ]
+    },
+    {
+      "id": "official-application",
+      "sourcePages": [
+        25
+      ]
+    },
+    {
+      "id": "retain-receipt",
+      "sourcePages": [
+        25
+      ]
+    }
+  ]
+}

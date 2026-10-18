@@ -1,6 +1,10 @@
+import { seasonReplyStyle } from "./season-reply-style.js";
+import protectionRaw from "../evidence/season-readiness/protection.json" with { type: "json" };
 import guidanceRaw from "../evidence/season-readiness/crop-guidance.json" with { type: "json" };
 import { z } from "zod";
 import {
+  protectionPolicySchema,
+  seasonAssessmentSchema,
   cropGuidanceSchema,
   regionEvidenceSchema,
   cropRulePackSchema,
@@ -9,13 +13,14 @@ import {
   type SeasonInput,
   type SeasonExplainInput,
 } from "@kavach/contracts";
-import { assessSeason } from "@kavach/domain";
+import { assessSeason, assessProtection } from "@kavach/domain";
 import regionsRaw from "../evidence/season-readiness/regions.json" with { type: "json" };
 import rulesRaw from "../evidence/season-readiness/actions.json" with { type: "json" };
 import type { WaterPlanningService } from "./water-planning.js";
 import type { DemoService } from "./demo.js";
 import type { ExplanationProvider } from "../ports/explanation.js";
 import type { SpeechProvider } from "../ports/speech.js";
+const protectionPolicy = protectionPolicySchema.parse(protectionRaw);
 const regions = z.array(regionEvidenceSchema).length(10).parse(regionsRaw);
 const guidance = z.array(cropGuidanceSchema).min(3).max(50).parse(guidanceRaw);
 const rules = z
@@ -43,7 +48,7 @@ export class SeasonReadinessService {
     private planning: WaterPlanningService,
   ) {}
   assess(input: SeasonInput) {
-    return assessSeason(
+    const assessment = assessSeason(
       input,
       regions.find((r) => r.regionId === input.regionId)!,
       rules.find(
@@ -51,6 +56,16 @@ export class SeasonReadinessService {
       )!,
       this.now().toISOString(),
     );
+    return input.contextVersion === 2
+      ? seasonAssessmentSchema.parse({
+          ...assessment,
+          protection: assessProtection(
+            input,
+            protectionPolicy,
+            assessment.assessedAt,
+          ),
+        })
+      : assessment;
   }
   async explain(input: SeasonExplainInput, requestSignal: AbortSignal) {
     const { locale, voice, question, text, history, water, ...context } = input;
@@ -103,27 +118,45 @@ export class SeasonReadinessService {
             .filter(
               (id) =>
                 seasonViewSchema.safeParse(id).success &&
-                (id !== "water-comparison" || waterPlan),
+                (id !== "water-comparison" || waterPlan) &&
+                (id !== "insurance-check" || assessment.protection),
             )
             .slice(0, 2)
         : [];
-    const views = selected.length
-      ? selected
-      : question === "history"
-        ? ["rain-history"]
-        : question === "actions"
-          ? ["crop-actions"]
-          : question === "water" && waterPlan
-            ? ["water-comparison"]
-            : question === "water"
-              ? ["surface-context", "crop-actions"]
-              : ["season-summary", "rain-history"];
+    const requested =
+      question === "protection" && assessment.protection
+        ? "insurance-check"
+        : question === "history"
+          ? "rain-history"
+          : question === "actions"
+            ? "crop-actions"
+            : question === "water" && waterPlan
+              ? "water-comparison"
+              : undefined;
+    const views = requested
+      ? [...new Set([requested, ...selected])].slice(0, 2)
+      : selected.length
+        ? selected
+        : question === "water"
+          ? ["surface-context", "crop-actions"]
+          : ["season-summary", "rain-history"];
     return seasonExplanationSchema.parse({
       assessment,
       ...(waterPlan ? { waterPlan } : {}),
       explanation,
       audio,
-      components: { version: 1, views },
+      components: {
+        version: 1,
+        views,
+        ...(input.contextVersion === 2
+          ? {
+              replyStyle:
+                explanation.status === "available"
+                  ? seasonReplyStyle(input)
+                  : "standard",
+            }
+          : {}),
+      },
     });
   }
 }

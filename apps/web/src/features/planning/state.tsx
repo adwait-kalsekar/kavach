@@ -56,12 +56,13 @@ function useStateValue() {
       seasonAnswer?: {
         assessment: SeasonAssessment;
         views: SeasonView[];
+        replyStyle?: "standard" | "one-line" | "simple";
         waterPlan?: WaterPlan;
       };
     }[]
   >([]);
   const [seasonFacts, setSeasonFacts] = useState<
-    Omit<SeasonInput, "regionId" | "crop">
+    Omit<SeasonInput, "regionId" | "crop" | "contextVersion">
   >({
     intent: "sowing",
     stage: "pre-sowing",
@@ -72,6 +73,7 @@ function useStateValue() {
     wellRecharge: "unknown",
   });
   const seasonInput: SeasonInput = {
+    contextVersion: 2,
     regionId: input.regionId,
     crop: input.crop,
     ...seasonFacts,

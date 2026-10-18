@@ -59,3 +59,24 @@ The Google inference projection excludes raw thirty-year baseline arrays, duplic
 Each existing model-selected evidence view now offers two or three deterministic learning controls. A matching-baseline explanation includes a year picker using the assessment’s existing totals/departures; it does not recompute climate risk in the browser. The three-step El Niño concept cites [NOAA’s ENSO explanation](https://www.noaa.gov/understanding-el-nino). Other controls distinguish dated regional records from user-reported or unknown current field moisture, historical guidance from current advice, and one hypothetical water application from whole-season demand. Source receipts retain data dates and scope. These authored English/Hindi/Marathi panels are first-party UI content, not generated facts, reviewed agronomic modules, new model topics or an A2UI/AG-UI implementation. Opening them makes no API/model call and changes no confirmed inputs or conversation entries.
 
 The default Google model is now Gemini 3.6 Flash with its supported MINIMAL reasoning level for bounded explanation/classification. Explicit operator overrides to other configured models retain LOW. This follows [Google’s model thinking documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/thinking); it does not promise latency. Compact context, schema/prose validation, shared paid quotas and one bounded deadline remain.
+
+## Published crop-protection calendar (opt-in context v2)
+
+The server-curated `protection.json` cites Maharashtra Agriculture Department's [PMFBY GR, 3 July 2026](https://krishi.maharashtra.gov.in/Site/Upload/GR/PMFBY%20GR%202026-27%20dtd%2003_07_2026.pdf), SHA256 `cc3d4d88d90657d85aab29c341031f5d553c5c4bdc9e7c3c3774d2e0114fc3b4`. PDF page 7 publishes participation dates: rabi jowar 30 November 2026; irrigated wheat and gram 15 December 2026. Page 4 establishes notified insurance-area scope; pages 24–25 cover application prerequisites/channels and retaining application copies or receipts. Dates are not planting windows, confirmed personal cutoffs or proof a farmer is eligible. No premium amounts are calculated. Not all notification annexures or subsequent amendments have been reviewed.
+
+The pack was inspected on 18 October. `recheckOn: 2026-10-25` is a prototype freshness policy, not an official expiry date. `assessProtection` takes an injected ISO timestamp, derives India calendar date (UTC+05:30), computes days to the published date, and emits source-not-issued-yet / published-date-passed / source-recheck-needed / irrigation-context-differs / verify-eligibility. Irrigation mismatch remains independently represented when time status has priority. Individual eligibility is always `unverified`. Past dates require an extension check; the engine never infers enrollment closure or a synthetic end-of-coverage date.
+
+The frontend gives four source-linked checks and an explicit [official PMFBY handoff](https://pmfby.gov.in/). It neither collects documents nor applies for insurance. Displayed crop/category and missing checks are canonical values. The Google explanation cannot invent dates, coverage or application success.
+
+```mermaid
+flowchart LR
+  Input[Explicit contextVersion 2 and crop/irrigation] --> Assess[Pure protection assessment + India date]
+  Policy[Curated state policy + dates/pages/hash] --> Assess
+  Assess --> Card[Published date + unverified eligibility + checks]
+  Assess --> Explain[Bounded Google explanation]
+  Explain --> View[insurance-check view selection]
+  View --> Card
+  Card --> Handoff[User chooses official portal/bank/CSC]
+```
+
+Legacy v1 callers omit `contextVersion`; their exact response has no protection field and Google cannot select insurance-check. The named protection question requires v2. No route, authentication exception or paid quota was added.

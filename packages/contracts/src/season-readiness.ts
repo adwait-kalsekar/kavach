@@ -1,3 +1,4 @@
+import { protectionAssessmentSchema } from "./protection.js";
 import { waterPlanningInputSchema, waterPlanSchema } from "./water-planning.js";
 import { z } from "zod";
 import { demoLocaleSchema, explanationSchema, audioSchema } from "./demo.js";
@@ -14,6 +15,7 @@ export const seasonRegionSchema = z.enum([
   "ahilyanagar",
 ]);
 export const seasonInputSchema = z.strictObject({
+  contextVersion: z.literal(2).optional(),
   regionId: seasonRegionSchema,
   crop: z.enum(["chickpea", "sorghum", "wheat"]),
   intent: z.enum(["sowing", "growing", "water"]),
@@ -181,6 +183,7 @@ export const seasonAssessmentSchema = z.strictObject({
     surfaceDryRankPct: finite.min(0).max(100),
     limitation: z.string(),
   }),
+  protection: protectionAssessmentSchema.optional(),
   cropOptions: z
     .array(
       z.strictObject({
@@ -217,12 +220,20 @@ export const seasonAssessmentSchema = z.strictObject({
   ]),
   limitations: z.array(z.string()).min(1),
 });
+export const seasonViewSchema = z.enum([
+  "season-summary",
+  "rain-history",
+  "surface-context",
+  "crop-actions",
+  "water-comparison",
+  "insurance-check",
+]);
 export const seasonExplainInputSchema = seasonInputSchema
   .extend({
     water: waterPlanningInputSchema.optional(),
     locale: demoLocaleSchema,
     voice: z.boolean().default(false),
-    question: z.enum(["season", "history", "actions", "water"]),
+    question: z.enum(["season", "history", "actions", "water", "protection"]),
     text: z.string().trim().min(1).max(1200).optional(),
     history: z
       .array(
@@ -238,14 +249,11 @@ export const seasonExplainInputSchema = seasonInputSchema
     (v) =>
       !v.water || (v.water.regionId === v.regionId && v.water.crop === v.crop),
     "Water comparison must match the selected region/crop",
+  )
+  .refine(
+    (v) => v.question !== "protection" || v.contextVersion === 2,
+    "Protection requires contextVersion 2",
   );
-export const seasonViewSchema = z.enum([
-  "season-summary",
-  "rain-history",
-  "surface-context",
-  "crop-actions",
-  "water-comparison",
-]);
 export const seasonExplanationSchema = z.strictObject({
   assessment: seasonAssessmentSchema,
   waterPlan: waterPlanSchema.optional(),
@@ -253,6 +261,7 @@ export const seasonExplanationSchema = z.strictObject({
   audio: audioSchema,
   components: z.strictObject({
     version: z.literal(1),
+    replyStyle: z.enum(["standard", "one-line", "simple"]).optional(),
     views: z.array(seasonViewSchema).min(1).max(4),
   }),
 });

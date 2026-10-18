@@ -151,3 +151,5 @@ export function evaluate(input: {
 
 export { calculateWaterPlan } from "./water-planning.js";
 export { assessSeason } from "./season-readiness.js";
+
+export * from "./protection.js";
