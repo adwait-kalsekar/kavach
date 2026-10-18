@@ -8,7 +8,7 @@ Ship one working, mobile-friendly **Latur/chickpea planning demonstration** on G
 
 The core differentiator to show is **resource feasibility**, not a generic agricultural chatbot: one irrigation becomes no irrigation; the deterministic checks change, Gemini explains the change and unknown field moisture remains visibly unknown. No invented sowing dates, irrigation doses, yield gains or field measurements.
 
-Already implemented: Hono API; strict Zod/OpenAPI contracts and typed RPC; deterministic planning checks; guest ownership, farms, assessments, comparison and saved plans; SQLite/Firestore adapters; responsive React/Vite health screen; independent web/API container images; tested GCP delivery/bootstrap artifacts. **Not implemented yet:** farmer demo screens, public stateless demo endpoints, model adapter, live AI or live GCP deployment. New routes in [build specification](build-spec.md) are proposals, not working endpoints.
+Already implemented: Hono API; strict Zod/OpenAPI contracts and typed RPC; deterministic planning checks; guest ownership, farms, assessments, comparison and saved plans; SQLite/Firestore adapters; responsive React/Vite health screen; independent web/API container images; GCP provisioning and verified main-to-Cloud-Run deployment. **Not implemented yet:** farmer demo screens, public stateless demo endpoints, model adapter or live AI. The deployed default-URL experience is health only. New routes in [build specification](build-spec.md) are proposals, not working endpoints.
 
 ## The deadline decision: public stateless sample demo
 
@@ -33,7 +33,7 @@ This is a new deadline recommendation, not an implemented exception to security.
 | Python 3; Java 21+ for Firestore emulator        | Bootstrap/model diagnostic and the full parity suite                                            |
 | Screen recording + PDF export                    | Submission includes video, PDF deck and public source, not just a deployed URL                  |
 
-Do not paste keys/tokens into chat. Prefer local ADC/attached Cloud Run identity; no frontend model SDK or key. This Codex environment currently has no GCP identity. Installing gcloud or knowing the project ID does not grant deployment access.
+Do not paste keys/tokens into chat. Prefer local ADC/attached Cloud Run identity; no frontend model SDK or key. On 18 October the owner authenticated the local gcloud setup identity; provisioning and the first live CI deployment are verified. See the [live setup log](../architecture/backend-foundation.md#authorized-live-setup--18-october-2026). Installing gcloud or knowing the project ID alone does not grant deployment access.
 
 ## First local commands
 

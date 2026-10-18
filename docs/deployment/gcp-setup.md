@@ -1,6 +1,6 @@
 # First GCP setup for Kavach
 
-Project: **kavach-farmers-market-sense**. Region: **asia-south1 (Mumbai)**. Deployment code is prepared; actual provisioning and the first public Kavach rollout require authorized GCP access. No live project changes have been made by Codex.
+Project: **kavach-farmers-market-sense**. Region: **asia-south1 (Mumbai)**. The owner authorized setup and authenticated the local gcloud CLI on 18 October 2026. Bootstrap and the first CI deployment passed, with automatic main deployment enabled. The [web health foundation](https://kavach-web-62041733238.asia-south1.run.app) and [API health](https://kavach-api-62041733238.asia-south1.run.app/api/v1/health) are live. See the [live setup log](../architecture/backend-foundation.md#authorized-live-setup--18-october-2026) for acceptance details; the farmer demo and model remain unimplemented.
 
 **Updated for independent web/API services. Discard the earlier combined-service setup ZIP and regenerate/download the current bundle.** The first deployment on two default Cloud Run URLs supports health only. The owner deferred the domain: guest farms/plans require later HTTPS sibling custom domains. Read [the serving and recovery decision](../architecture/gcp-deployment.md).
 
@@ -64,7 +64,9 @@ The script:
 - Reserves two Cloud Run services privately with Google's hello container. At successful setup completion, the bootstrap operator deliberately enables public access. Each URL initially shows Google's placeholder page, **not Kavach**. The first tested CI rollout replaces it. CI has no IAM-policy editing permission.
 - Writes **gcp-bootstrap-output.json** with only non-secret identifiers needed by GitHub.
 
-Index/TTL operations can take several minutes. Keep Cloud Shell open. If setup fails, stop and share the error text with Codex. Do not give the runtime/deployer broad admin roles to make it pass. Never share tokens, key JSON or credential debug dumps.
+The required composite query index must become READY before rollout. Field-index exemptions and TTL policies are submitted asynchronously and can remain pending after bootstrap exits; inspect Firestore operations/TTL status before claiming maintenance completion. Hono enforces expiry independently of eventual TTL cleanup. Keep Cloud Shell open while bootstrap runs. If setup fails, stop and share the error text with Codex. Do not give the runtime/deployer broad admin roles to make it pass. Never share tokens, key JSON or credential debug dumps.
+
+On a Mac where Python lacks its default CA file, use the existing system CA bundle for this process, preserving TLS verification: `SSL_CERT_FILE=/etc/ssl/cert.pem python3 infra/gcp/bootstrap.py --apply --use-existing-database`. The existing-database flag is appropriate only after inspecting the dedicated app database, including when resuming after bootstrap created it. Never disable certificate verification.
 
 If the script finds an existing database, inspect it first. Only if it is the dedicated Kavach default database in Mumbai and replacing its client rules with deny-all is intended, resume with:
 
@@ -84,7 +86,7 @@ Send that JSON back to Codex. It is safe to share here: there are no credentials
 
 ## 5. Configure GitHub and trigger the first deployment
 
-The current Codex GitHub connection can push workflow code, but a tested environment-configuration request returned **403 Resource not accessible by integration**. Its repository metadata reports admin access, which does not override the integration's narrower API permissions. No environment was created. Complete the following owner-side steps, or authorize a connection that explicitly permits deployment-environment and Actions-variable administration. Do not paste a GitHub token into chat.
+The earlier Codex GitHub connector returned **403 Resource not accessible by integration** for environment administration. On 18 October the owner's authenticated local `gh` CLI successfully created `production` with a main-only branch policy, so that connector limitation does not apply to this session. The steps below remain the manual alternative for future setup. Do not paste a GitHub token into chat.
 
 ### Owner-side GitHub console steps
 
@@ -100,7 +102,7 @@ The 13 environment variable names are: GCP_PROJECT_ID, GCP_PROJECT_NUMBER, GCP_R
 
 ### Optional CLI helper with sufficient GitHub access
 
-The helper below works from a trusted computer with an authorized `gh` CLI identity that can administer deployment environments and Actions variables. The present Codex connection cannot apply it until its integration permissions change.
+The helper below works from a trusted computer with an authorized `gh` CLI identity that can administer deployment environments and Actions variables. It was successfully applied through the owner's local CLI on 18 October; a connector with narrower permissions may still require owner-side UI setup.
 
 The helper previews without changes:
 
@@ -142,12 +144,13 @@ For manual recovery, restore web first and then API: **Cloud Run → kavach-web 
 - **Permission denied:** share the command/error; have an administrator review the setup operator's access. Never grant CI Owner/Editor.
 - **Public access blocked:** an organization administrator may need to approve public hosting. CI cannot edit service IAM policy.
 - **WIF denied:** allow IAM propagation, then check numeric repository/owner IDs, main, workflow path and production environment. Never replace the condition with `true`.
+- **Attribute condition rejects this repository:** its verified subject is `repo:adwait-kalsekar@61903060/kavach@1421988948:environment:production`, using GitHub's immutable owner/repository IDs. A legacy name-only subject cannot match. Inspect `gh api repos/adwait-kalsekar/kavach/actions/oidc/customization/sub` and the live provider; only an authorized administrator should migrate a reviewed exact old subject, preserving all other checks. Do not disable immutable claims or accept wildcard subjects.
 - **Index not READY:** wait for the build in Firestore indexes, then retry. Permission errors are not treated as missing resources.
 - **Live smoke failure:** inspect workflow and Cloud Run logs; confirm the previous revision retained/regained traffic.
 
 ## Optional: direct GCP access from Codex
 
-The official **gcloud 589.0.0** CLI is installed in this computer at `/workspace/.tools/gcloud/google-cloud-sdk/bin/gcloud`. Its read-only project check currently fails because no active GCP identity is configured. Installing a CLI does not grant access.
+The official **gcloud 589.0.0** CLI is installed on the owner's Mac and available on PATH. The owner authenticated it on 18 October; read-only project/billing/IAM checks succeeded. Credentials remain in the CLI's external configuration, not in this repository. Installing a CLI alone does not grant access.
 
 If Codex environment settings expose a **GCP connection/outbound identity**, configure an authorized identity there, review the permission scope and wait for its readiness status. Codex can select its supplied profile and use gcloud normally. Recheck using `infra/gcp/check-access.py`; project read access alone does not prove setup/deploy permissions.
 

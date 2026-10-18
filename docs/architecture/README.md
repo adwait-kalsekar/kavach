@@ -1,12 +1,12 @@
 # Architecture and implementation entry point
 
-Decision date: 17 October 2026. Status: backend and web/health foundations implemented; farmer-facing screens, AI and live deployment remain planned. No cloud resources have been provisioned.
+Decision date: 17 October 2026. Status updated 18 October: backend and web/health foundations are deployed on GCP; main-to-Cloud-Run delivery passed its first live rollout. Farmer-facing screens and AI remain pending. See the [live setup log](backend-foundation.md#authorized-live-setup--18-october-2026).
 
 For the current eight-hour submission deadline, start with [the active sprint handoff](../submission/README.md). Its proposed public sample-only surface preserves the private API security boundary and defers custom domains; it is not yet implemented.
 
 Read in order:
 
-- [GCP deployment and continuous delivery](gcp-deployment.md): researched hosting/pipeline plan, keyless access, required owner inputs and acceptance gates. Automation is prepared; live GCP access/setup is pending.
+- [GCP deployment and continuous delivery](gcp-deployment.md): two-service hosting, keyless access and acceptance gates. Provisioning and the first live health-foundation rollout are verified.
 
 - [Web foundation and Hono RPC](web-foundation.md): current React/Vite setup, browser boundaries, GCP packaging and verification.
 
@@ -28,7 +28,7 @@ These decisions supersede earlier suggestions to retain Next.js or use PostgreSQ
 - Hono-managed guest sessions for low-friction saved-plan ownership; opaque HTTP-only cookies and server-derived owner IDs. No browser Firebase/Auth/Firestore/model SDK or direct service connection.
 - Keep the existing npm/Turborepo setup. Do not add another package manager or deploy to another cloud.
 
-GCP project is kavach-farmers-market-sense; preferred region is Mumbai. Account setup and a custom domain remain pending. Work locally with SQLite, optional emulators and explicitly labeled test fixtures until those details are supplied. Do not describe emulator verification as live GCP verification.
+GCP project is kavach-farmers-market-sense; region is Mumbai. Account access, billing, provisioning and the first application rollout are verified. A custom domain remains deferred. Local development uses SQLite, optional emulators and explicitly labeled fixtures. Do not describe emulator verification as live GCP verification.
 
 ## Required browser boundary
 

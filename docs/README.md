@@ -47,4 +47,4 @@ These files are tracked on `main`. Existing feature worktrees do not update auto
 
 Research reviewed: 17 October 2026. Product scope remains a proposal pending implementation and agronomic validation.
 
-Architecture decision: [React/Vite + TanStack Router/Query, Hono/Node, Firestore and Cloud Run](architecture/README.md). Earlier Next.js and SQL suggestions are superseded for the initial application. Cloud setup remains deferred by user instruction.
+Architecture decision: [React/Vite + TanStack Router/Query, Hono/Node, Firestore and Cloud Run](architecture/README.md). Earlier Next.js and SQL suggestions are superseded for the initial application. The owner authorized cloud setup on 18 October; see the [live setup log](architecture/backend-foundation.md#authorized-live-setup--18-october-2026).

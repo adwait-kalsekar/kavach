@@ -35,7 +35,7 @@ def call(args, optional=False):
     result = subprocess.run(["gcloud", *args, "--quiet"], text=True, capture_output=True)
     if result.returncode:
         # Permission/network failures must never be mistaken for a missing resource.
-        if optional and not re.search(r"PERMISSION_DENIED|permission denied|UNAUTHENTICATED", result.stderr, re.I) and re.search(r"\bNOT_FOUND\b|does not exist|was not found", result.stderr, re.I):
+        if optional and not re.search(r"PERMISSION_DENIED|permission denied|UNAUTHENTICATED", result.stderr, re.I) and re.search(r"\bNOT_FOUND\b|does not exist|was not found|\(gcloud\.run\.services\.describe\) Cannot find service \[[a-z0-9-]+\]", result.stderr, re.I):
             return None
         raise RuntimeError(f"gcloud {' '.join(args[:4])} failed: {result.stderr.strip()}")
     return result.stdout.strip()
@@ -58,6 +58,18 @@ def rules_request(project, token, method, path, body=None):
             return None
         # Never print bearer credentials or request headers.
         raise RuntimeError(f"Firestore Rules API {method} {path} failed with HTTP {error.code}. Check Rules API permissions and project setup.") from None
+
+
+def github_condition(c):
+    # Verified against this repository's OIDC customization API. GitHub's immutable
+    # subject includes numeric IDs; accepting the legacy subject would not match.
+    owner, repository = c["githubRepository"].split("/")
+    subject = f"repo:{owner}@{c['githubOwnerId']}/{repository}@{c['githubRepositoryId']}:environment:production"
+    workflow = c["githubRepository"] + "/.github/workflows/backend.yml@refs/heads/main"
+    return (f"assertion.repository_id=='{c['githubRepositoryId']}' && assertion.repository_owner_id=='{c['githubOwnerId']}'"
+            f" && assertion.ref=='refs/heads/main' && assertion.workflow_ref=='{workflow}'"
+            f" && assertion.sub=='{subject}'"
+            " && assertion.event_name in ['push','workflow_dispatch']")
 
 
 def apply(c, use_existing_database=False):
@@ -111,11 +123,7 @@ def apply(c, use_existing_database=False):
     pool, provider = "kavach-github", "github"
     if describe(["iam", "workload-identity-pools", "describe", pool, "--location=global", *common]) is None:
         call(["iam", "workload-identity-pools", "create", pool, "--location=global", "--display-name=Kavach GitHub", *common])
-    workflow = c["githubRepository"] + "/.github/workflows/backend.yml@refs/heads/main"
-    condition = (f"assertion.repository_id=='{c['githubRepositoryId']}' && assertion.repository_owner_id=='{c['githubOwnerId']}'"
-                 f" && assertion.ref=='refs/heads/main' && assertion.workflow_ref=='{workflow}'"
-                 f" && assertion.sub=='repo:{c['githubRepository']}:environment:production'"
-                 " && assertion.event_name in ['push','workflow_dispatch']")
+    condition = github_condition(c)
     mapping = "google.subject=assertion.sub,attribute.repository_id=assertion.repository_id,attribute.repository_owner_id=assertion.repository_owner_id"
     existing = describe(["iam", "workload-identity-pools", "providers", "describe", provider, "--workload-identity-pool", pool, "--location=global", *common])
     if existing is None:
@@ -142,9 +150,10 @@ def apply(c, use_existing_database=False):
     for field in indexes["fieldOverrides"]:
         args = ["--database=(default)", "--collection-group", field["collectionGroup"], *common]
         if field.get("indexes") == []:
-            call(["firestore", "indexes", "fields", "update", field["fieldPath"], *args, "--disable-indexes"])
+            call(["firestore", "indexes", "fields", "update", field["fieldPath"], *args, "--disable-indexes", "--async"])
         if field.get("ttl"):
-            call(["firestore", "fields", "ttls", "update", field["fieldPath"], *args, "--enable-ttl"])
+            call(["firestore", "fields", "ttls", "update", field["fieldPath"], *args, "--enable-ttl", "--async"])
+    print("Field-index exemptions and TTL policies submitted. Firestore applies these asynchronously; application expiry checks remain mandatory. The query index was created/checked separately above.")
     # Access token exists only in memory for these API calls; it is never output or saved.
     token = call(["auth", "print-access-token"])
     ruleset = rules_request(project, token, "POST", "rulesets", {"source": {"files": [{"name": "firestore.rules", "content": (ROOT / "infra/firestore.rules").read_text()}]}})

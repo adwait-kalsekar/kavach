@@ -29,7 +29,7 @@ The API smoke overrides production settings to explicit local SQLite, creates ow
 
 ## GCP delivery
 
-`infra/gcp/bootstrap.py` defaults to an offline plan, reserves web/API services and configures separate runtime identities, registry, database/indexes/TTL/rules and constrained GitHub WIF only with --apply. Only API runtime has Firestore permission. No live setup has run. Regenerate the Cloud Shell bundle after changes with `python3 infra/gcp/make-bundle.py`; old combined-service bundles are obsolete.
+`infra/gcp/bootstrap.py` defaults to an offline plan, reserves web/API services and configures separate runtime identities, registry, database/indexes/TTL/rules and constrained GitHub WIF only with --apply. Only API runtime has Firestore permission. Authorized setup and the first live CI rollout passed on 18 October 2026; see the [live setup log](../docs/architecture/backend-foundation.md#authorized-live-setup--18-october-2026). Field-index/TTL maintenance submits asynchronously; verify operation status separately. GitHub federation uses this repository's exact immutable subject. Regenerate the Cloud Shell bundle after changes with `python3 infra/gcp/make-bundle.py`; old combined-service bundles are obsolete.
 
 GitHub Actions verifies and smoke-tests both images, transfers those exact artifacts, pushes immutable digests, stages ready candidates and promotes API then web. Live checks verify both releases. Failure restores web then API, with manual recovery reporting. This is coordinated deployment, not an atomic two-service transaction; retain previous-client compatibility. `cloudbuild.yaml` builds/pushes both images only and must not become a second deploy controller.
 

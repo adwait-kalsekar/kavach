@@ -1,6 +1,6 @@
 # GCP deployment and continuous delivery
 
-Decision updated 17 October 2026 following the owner's requirement for independent frontend/API serving. This supersedes the earlier combined Hono/static-assets topology. Code and local tests are distinct from live GCP verification: no cloud resources have been provisioned. Project: `kavach-farmers-market-sense`; preferred region: `asia-south1` (Mumbai). See [owner setup steps](../deployment/gcp-setup.md).
+Decision updated 17 October 2026 following the owner's requirement for independent frontend/API serving. This supersedes the earlier combined Hono/static-assets topology. On 18 October, authorized provisioning and the first live application rollout completed successfully. The deployed application is the health foundation; farmer demo/AI acceptance remains future work. See the [current setup log](backend-foundation.md#authorized-live-setup--18-october-2026). Project: `kavach-farmers-market-sense`; region: `asia-south1` (Mumbai). See [owner setup steps](../deployment/gcp-setup.md).
 
 ## Selected topology
 
@@ -98,7 +98,9 @@ Provision logging/uptime/error alerts and budget notifications as operational ac
 - `kavach-deploy`: registry writer, Run Developer on both existing services and Service Account User on both runtime identities. No service IAM-policy editing.
 - Google-managed Cloud Run service agent: platform image-pull/runtime duties; distinct from application identities.
 
-Bootstrap defaults to an offline plan. Cloud Shell or an authorized managed GCP identity is needed for --apply. The current Codex environment has no GCP identity/secrets; gcloud is installed but unauthenticated. GitHub code access does not grant GCP access, and the current integration cannot administer GitHub environments (403). The owner guide includes manual steps.
+Bootstrap defaults to an offline plan. An authorized GCP setup identity is needed for --apply. On 18 October the owner authenticated gcloud 589.0.0 on the local Mac; project access, billing and the operator's Owner role were verified. The authenticated local GitHub CLI successfully created the main-only production environment; the earlier connector's 403 limitation does not apply to this CLI session. Credentials remain outside the repository.
+
+This repository uses [GitHub's immutable OIDC subject](https://docs.github.com/en/actions/reference/security/oidc#immutable-subject-claims): `repo:adwait-kalsekar@61903060/kavach@1421988948:environment:production`. The legacy name-only subject fails federation. Bootstrap requires this exact immutable subject in addition to the separate numeric repository/owner IDs, main ref, exact workflow and permitted events. An administrator corrected the initial known legacy condition without broadening any other trust check; bootstrap continues to refuse unrecognized provider-policy changes.
 
 Non-secret GitHub settings are the previous ten plus `GCP_WEB_SERVICE`, `GCP_WEB_RUNTIME_SERVICE_ACCOUNT`, `API_ORIGIN` (13 total). Default APP_ORIGIN is the web service URL; API_ORIGIN is the API URL. WIF supplies authorization; these identifiers do not. Domain changes will be deliberate configuration updates after routing is provisioned. Never put credentials in chat, browser config, images or Vite variables.
 
@@ -122,7 +124,7 @@ Reviewed 17 October 2026:
 
 ## Eight-hour deadline extension — proposed 18 October 2026
 
-The owner confirmed console access and billing, but no GCP identity is available in this Codex environment. The [submission sprint](../submission/README.md) adds a proposed **public sample-only demo** to avoid putting the deferred custom domain on the critical path. Until its narrow CORS/contracts/model/quota checks are implemented, default URLs still support health only. Private guest farms/plans retain their current same-site session requirements.
+The owner confirmed console access and billing and subsequently authenticated the local setup identity. The [submission sprint](../submission/README.md) adds a proposed **public sample-only demo** to avoid putting the deferred custom domain on the critical path. Until its narrow CORS/contracts/model/quota checks are implemented, default URLs still support health only. Private guest farms/plans retain their current same-site session requirements.
 
 ```mermaid
 flowchart LR

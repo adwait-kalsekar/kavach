@@ -1,6 +1,6 @@
 # Cloud and model: first-hour runbook
 
-Project: `kavach-farmers-market-sense`. The owner confirmed console access and billing on 18 October 2026. Codex has not authenticated to this project or created resources. Run the owner steps locally/Cloud Shell; never send credentials through chat.
+Project: `kavach-farmers-market-sense`. On 18 October 2026 the owner authenticated the local gcloud CLI and authorized provisioning. Bootstrap completed and GitHub deployment is enabled; first-rollout acceptance is recorded in the [live setup log](../architecture/backend-foundation.md#authorized-live-setup--18-october-2026). No live Google-model response is claimed yet. Never send credentials through chat.
 
 ## 1. Local login and one real model response
 
@@ -41,7 +41,7 @@ Follow [the project-specific console/Cloud Shell guide](../deployment/gcp-setup.
 python3 infra/gcp/make-bundle.py
 ```
 
-The ZIP under `.data/` contains setup files, the model probe and guides; it does not include private credentials or the application's database. Follow the guide to configure the main-only GitHub production environment and 13 existing non-secret variables. Owner UI setup is needed because the current Codex integration cannot administer environments. Verify the existing health foundation deploys early; the initial Google hello containers are placeholders, not the prototype.
+The ZIP under `.data/` contains setup files, the model probe and guides; it does not include private credentials or the application's database. Follow the guide to configure the main-only GitHub production environment and 13 existing non-secret variables. These were configured through the owner's authorized local `gh` CLI on 18 October; owner UI setup remains an alternative when a connector lacks environment administration. Verify the existing health foundation deploys early; the initial Google hello containers are placeholders, not the prototype.
 
 ## 3. Authorize only the API runtime for model use
 
