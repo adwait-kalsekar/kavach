@@ -32,7 +32,7 @@ const steps = [
   {
     target: "talk",
     title: "Ask and see the evidence",
-    body: "Type or tap the microphone, speak, then tap to finish. Hear a short reply and see relevant evidence cards. Google explanations can be unavailable; your evidence and checks still work.",
+    body: "Type for text and evidence cards. For a spoken reply too, tap the microphone, speak, then tap to finish. Google explanations can be unavailable; your evidence and checks still work.",
   },
 ] as const;
 export function GuidedTour() {

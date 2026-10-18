@@ -91,10 +91,19 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
           })
           .click();
         const result = await (await explanationResponse).json();
-        assert.equal(result.data.explanation.status, "available");
+        assert.equal(
+          result.data.explanation.status,
+          "available",
+          `Live Google explanation unavailable: ${result.data.explanation.reason || "unknown reason"}`,
+        );
         assert.equal(result.data.explanation.model.provider, "google");
         assert.ok(result.data.explanation.model.version);
-        assert.equal(result.data.audio.status, "available");
+        assert.equal(
+          result.data.audio.status,
+          "unavailable",
+          "Typed prompts must not request spoken audio",
+        );
+        assert.equal(await page.locator("audio").count(), 0);
         await page.locator(".fp-assistant-message").waitFor();
       }
       if (provider === "disabled" && viewport.width > 1000) {
@@ -134,7 +143,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
       await context.close();
     }
     console.log(
-      `Desktop/mobile planning, ${provider === "google" ? "real Google explanation/audio" : "explicit disabled-provider state"}, exact release health and database readiness passed.`,
+      `Desktop/mobile planning, ${provider === "google" ? "real Google explanation with silent typed reply" : "explicit disabled-provider state"}, exact release health and database readiness passed.`,
     );
   } finally {
     await browser.close();

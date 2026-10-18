@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createDemoClient } from "@kavach/api-client";
 import type {
@@ -23,8 +29,23 @@ export const initialInput: WaterPlanningInput = {
 };
 function useStateValue() {
   const [input, setInput] = useState(initialInput);
-  const [locale, setLocale] = useState<DemoLocale>("en-IN");
-  const [spoken, setSpoken] = useState(true);
+  const [locale, setLocale] = useState<DemoLocale>(() => {
+    try {
+      const saved = localStorage.getItem("kavach.locale.v1");
+      if (saved === "en-IN" || saved === "hi-IN" || saved === "mr-IN")
+        return saved;
+    } catch {
+      /* Browser storage may be unavailable. */
+    }
+    return "en-IN";
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("kavach.locale.v1", locale);
+    } catch {
+      /* Language still works for the visit. */
+    }
+  }, [locale]);
   const [chat, setChat] = useState<
     {
       id: string;
@@ -119,8 +140,6 @@ function useStateValue() {
     confirm,
     locale,
     setLocale,
-    spoken,
-    setSpoken,
     chat,
     setChat,
     selected,

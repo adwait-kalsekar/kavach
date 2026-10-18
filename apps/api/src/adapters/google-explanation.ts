@@ -126,8 +126,58 @@ export class GoogleExplanation implements ExplanationProvider {
           questionTopic: input.question,
           untrustedQuestion: input.text || "",
           untrustedHistory: input.history || [],
-          assessment,
-          waterComparison: waterPlan || null,
+          // Baseline series are for deterministic ranks and cards, not inference.
+          // Keep crop conditions and uncertainty; omit duplicate rules and raw series.
+          assessment: {
+            input: assessment.input,
+            assessedAt: assessment.assessedAt,
+            evidence: {
+              name: assessment.evidence.name,
+              rainfall: {
+                start: assessment.evidence.rainfall.start,
+                end: assessment.evidence.rainfall.end,
+                totalMm: assessment.evidence.rainfall.totalMm,
+                baselineMeanMm: assessment.evidence.rainfall.baselineMeanMm,
+                departurePct: assessment.evidence.rainfall.departurePct,
+                history: assessment.evidence.rainfall.history,
+                scope: assessment.evidence.rainfall.source.scope,
+                limitation: assessment.evidence.rainfall.source.limitation,
+              },
+              surface: {
+                start: assessment.evidence.surface.start,
+                end: assessment.evidence.surface.end,
+                moisture: assessment.evidence.surface.moisture,
+                baselineMoisture: assessment.evidence.surface.baselineMoisture,
+                meanDailyMaxC: assessment.evidence.surface.meanDailyMaxC,
+                baselineDailyMaxC:
+                  assessment.evidence.surface.baselineDailyMaxC,
+                scope: assessment.evidence.surface.source.scope,
+                limitation: assessment.evidence.surface.source.limitation,
+              },
+              enso: {
+                period: assessment.evidence.enso.period,
+                anomalyC: assessment.evidence.enso.anomalyC,
+                limitation: assessment.evidence.enso.limitation,
+              },
+            },
+            regionalSignal: assessment.regionalSignal,
+            readiness: assessment.readiness,
+            missing: assessment.missing,
+            stress: assessment.stress,
+            cropContext: {
+              review: assessment.cropContext.review,
+              rainfedWindow: assessment.cropContext.rainfedWindow,
+              irrigatedWindow: assessment.cropContext.irrigatedWindow,
+              bulletin: assessment.cropContext.bulletin,
+            },
+            cropOptions: assessment.cropOptions,
+            actions: assessment.actions,
+            guidanceStatus: assessment.guidanceStatus,
+            limitations: assessment.limitations,
+          },
+          waterComparison: waterPlan
+            ? { calculation: waterPlan.calculation, method: waterPlan.method }
+            : null,
           permittedViews: allowed,
         }),
         config: {
@@ -164,8 +214,9 @@ export class GoogleExplanation implements ExplanationProvider {
     } catch {
       return {
         status: "unavailable",
-        reason:
-          "The explanation could not be verified. Your seasonal evidence and checks remain available.",
+        reason: signal.aborted
+          ? "The seasonal explanation took too long. Your evidence and checks remain available."
+          : "The explanation could not be verified. Your seasonal evidence and checks remain available.",
         retryable: true,
       };
     }

@@ -70,7 +70,7 @@ export class SeasonReadinessService {
     if (this.enabled && this.provider.explainSeason) {
       const signal = AbortSignal.any([
         requestSignal,
-        AbortSignal.timeout(25000),
+        AbortSignal.timeout(35000),
       ]);
       await this.demo.budget("model", 1);
       explanation = await this.provider.explainSeason(

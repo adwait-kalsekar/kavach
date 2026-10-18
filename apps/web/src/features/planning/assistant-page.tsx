@@ -21,8 +21,7 @@ export function AssistantRoute() {
 export function AssistantPage() {
   const app = usePlanning(),
     t = planningCopy[app.locale];
-  const voice = app.spoken,
-    setVoice = app.setSpoken;
+  const [voiceReply, setVoiceReply] = useState(false);
   const [text, setText] = useState(""),
     [busy, setBusy] = useState(false),
     [recording, setRecording] = useState(false),
@@ -37,6 +36,7 @@ export function AssistantPage() {
   >("idle");
   const lastRequest = useRef<{
     question: SeasonExplainInput["question"];
+    fromVoice: boolean;
     text?: string;
   } | null>(null);
   const thread = useRef<HTMLDivElement>(null);
@@ -83,6 +83,7 @@ export function AssistantPage() {
     mode.current = "answering";
     lastRequest.current = {
       question,
+      fromVoice,
       ...(questionText ? { text: questionText } : {}),
     };
     controller.current?.abort();
@@ -91,6 +92,7 @@ export function AssistantPage() {
     setBusy(true);
     setError("");
     setAnswer(null);
+    setVoiceReply(fromVoice);
     setUrl("");
     const label =
       questionText ||
@@ -115,7 +117,7 @@ export function AssistantPage() {
           ...app.seasonInput,
           water: app.input,
           locale: app.locale,
-          voice,
+          voice: fromVoice,
           question,
           history: app.chat
             .slice(-6)
@@ -163,7 +165,7 @@ export function AssistantPage() {
             },
           },
         ]);
-      if (response.data.audio.status === "available") {
+      if (fromVoice && response.data.audio.status === "available") {
         const audio = response.data.audio;
         setUrl(
           URL.createObjectURL(
@@ -273,23 +275,6 @@ export function AssistantPage() {
             {app.input.regionId[0]!.toUpperCase() + app.input.regionId.slice(1)}
           </p>
         </div>
-        <button
-          className={c("sound-toggle")}
-          aria-label={t.voice}
-          aria-pressed={voice}
-          onClick={() => setVoice(!voice)}
-        >
-          <Icon name="sound" size={20} />
-          <span>
-            {voice
-              ? app.locale === "en-IN"
-                ? "Voice on"
-                : "आवाज सुरू"
-              : app.locale === "en-IN"
-                ? "Voice off"
-                : "आवाज बंद"}
-          </span>
-        </button>
       </header>
       <div
         ref={thread}
@@ -311,10 +296,10 @@ export function AssistantPage() {
             </h2>
             <p>
               {app.locale === "en-IN"
-                ? "Ask about your season, past El Niño years, crop checks or water options. Your answers include evidence cards; tap the microphone to speak."
+                ? "Ask about your season, past El Niño years, crop checks or water options. Type for text and evidence cards. Use the microphone for a spoken reply too."
                 : app.locale === "mr-IN"
-                  ? "तुमच्या हंगामाबद्दल, मागील वर्षांबद्दल किंवा आवश्यक तपासण्यांबद्दल प्रश्न विचारा. लिहा किंवा मायक्रोफोन वापरा."
-                  : "अपने मौसम, पिछले वर्षों या ज़रूरी जाँच के बारे में पूछें। लिखें या माइक्रोफोन का उपयोग करें।"}
+                  ? "हंगाम, मागील वर्षे किंवा शेत तपासण्यांबद्दल विचारा. लिहिलेल्या प्रश्नांना मजकूर आणि माहितीची कार्डे मिळतात. बोलून प्रश्न विचारल्यास आवाजातही उत्तर मिळते."
+                  : "अपने मौसम, पिछले वर्षों या खेत की जाँच के बारे में पूछें। लिखे प्रश्नों का जवाब पाठ और जानकारी के कार्ड में मिलता है। माइक्रोफोन से पूछने पर आवाज़ में भी जवाब मिलता है।"}
             </p>
             <div className={c("question-pills")}>
               {(
@@ -374,7 +359,7 @@ export function AssistantPage() {
                 disabled={busy || recording || starting}
                 onClick={() => {
                   const last = lastRequest.current;
-                  if (last) void ask(last.question, last.text);
+                  if (last) void ask(last.question, last.text, last.fromVoice);
                 }}
               >
                 {t.retry}
@@ -390,7 +375,7 @@ export function AssistantPage() {
                 disabled={busy || recording || starting}
                 onClick={() => {
                   const last = lastRequest.current;
-                  if (last) void ask(last.question, last.text);
+                  if (last) void ask(last.question, last.text, last.fromVoice);
                 }}
               >
                 {t.retry}
@@ -398,7 +383,7 @@ export function AssistantPage() {
             )}
           </div>
         )}
-        {url && voice && (
+        {url && voiceReply && (
           <audio
             controls
             autoPlay
@@ -407,7 +392,7 @@ export function AssistantPage() {
             aria-label={t.play}
           />
         )}
-        {voice &&
+        {voiceReply &&
           answer?.explanation.status === "available" &&
           answer.audio.status === "unavailable" && (
             <p className={c("small muted")}>{t.noAudio}</p>
