@@ -2,6 +2,10 @@
 
 Start with the [visual product overview](product/overview.html). Download/open it in any browser; it is a standalone HTML document with no build, network, or API dependencies.
 
+## Active submission sprint
+
+[Eight-hour POC handoff](submission/README.md) is the current implementation order for the October 18 deadline. [Build/API specification](submission/build-spec.md), [cloud/model runbook](submission/cloud-and-model.md), [submission checklist](submission/submission-checklist.md) and [deck starter](submission/deck-outline.md) define work still to implement. They do not claim the prototype is already complete.
+
 ## Index
 
 | Document                                                                     | Purpose                                                                              |

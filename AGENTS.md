@@ -13,6 +13,8 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 
 ## Read first
 
+- **Deadline priority (18 October 2026):** read `docs/submission/README.md` and `docs/submission/build-spec.md` before implementation. The eight-hour POC scope supersedes the broad roadmap order: public synthetic scenario → deterministic checks/comparison → one grounded Google-model explanation. This demo is proposed, not already implemented. Skip login/domain/saved-plan UI work for this sprint.
+
 - `docs/README.md` indexes the project; `docs/architecture/README.md` records the selected stack.
 - Read `docs/architecture/backend-foundation.md` for the implemented backend and `docs/architecture/web-foundation.md` for the active web/API setup.
 - Keep architecture documents, Mermaid diagrams, API contracts/examples and actual implementation status synchronized in the same change. Do not describe planned capabilities as implemented.
@@ -32,6 +34,7 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 ## Local / production
 
 - Local development requires no GCP project. Explicit SQLite local storage is allowed; it is not production persistence. In-memory stores are for tests only.
+- Public-demo deadline proposal: only explicitly allowlisted `/api/v1/demo/*` sample calculations may gain cookie-free cross-site access after strict contracts, exact-Origin CORS, body bounds and shared paid-inference quotas are implemented. Keep all existing private-route session/CSRF/ownership checks. Do not broaden the generic API guard or use browser-persisted bearer tokens. See the submission build specification.
 - Production has independent web/API Cloud Run services, ports 8081/8080 internally and HTTPS 443 externally. Default run.app URLs support health only; guest journeys need same-site sibling custom domains. Keep APP_ORIGIN equal to the web origin and API_ORIGIN equal to the API origin. Web runtime has no Firestore/provider permissions.
 - Production uses Firestore, workload identity/ADC and validated configuration. Refuse local storage, emulator configuration or localhost origins in production. Never silently fall back from Firestore to local storage.
 - Keep secrets and runtime databases outside Git; document required variable names in `.env.example`. Never store cloud keys or credentials in frontend configuration.

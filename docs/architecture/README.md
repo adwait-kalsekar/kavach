@@ -2,6 +2,8 @@
 
 Decision date: 17 October 2026. Status: backend and web/health foundations implemented; farmer-facing screens, AI and live deployment remain planned. No cloud resources have been provisioned.
 
+For the current eight-hour submission deadline, start with [the active sprint handoff](../submission/README.md). Its proposed public sample-only surface preserves the private API security boundary and defers custom domains; it is not yet implemented.
+
 Read in order:
 
 - [GCP deployment and continuous delivery](gcp-deployment.md): researched hosting/pipeline plan, keyless access, required owner inputs and acceptance gates. Automation is prepared; live GCP access/setup is pending.

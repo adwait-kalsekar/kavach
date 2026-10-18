@@ -6,7 +6,7 @@ import json
 import zipfile
 
 root = Path(__file__).resolve().parents[2]
-files = ["infra/gcp/bootstrap.py", "infra/gcp/check-access.py", "infra/gcp/settings.example.json", "infra/firestore.rules", "infra/firestore.indexes.json", "docs/deployment/gcp-setup.md", "docs/architecture/gcp-deployment.md"]
+files = ["infra/gcp/bootstrap.py", "infra/gcp/check-access.py", "infra/gcp/check-gemini.py", "infra/gcp/settings.example.json", "infra/firestore.rules", "infra/firestore.indexes.json", "docs/deployment/gcp-setup.md", "docs/architecture/gcp-deployment.md", "docs/submission/cloud-and-model.md"]
 target = root / ".data/kavach-gcp-setup.zip"
 target.parent.mkdir(exist_ok=True)
 manifest = {}

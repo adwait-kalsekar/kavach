@@ -4,6 +4,10 @@ Plan date: 17 October 2026. Stack decisions are locked in [stack-and-gcp.md](sta
 
 The user deferred cloud project setup. Complete local build, emulator-backed flows, tests and reviewable deployment artifacts before requesting project-specific setup. No deployment or resource creation is implied by this plan.
 
+## Deadline override — 18 October 2026
+
+The owner now has eight hours and confirmed project console access/billing. Follow [the active submission sprint](../submission/README.md) and its [build specification](../submission/build-spec.md) instead of attempting the full roadmap below. The selected deadline path adds public, synthetic, cookie-free scenario assessment/comparison and a bounded Google-model explanation; private ownership endpoints retain all protections. Domain setup, saved-plan UI, freeform conversations and wider evidence ingestion remain out of the sprint. These additions are proposed work, not implemented by the handoff.
+
 ## Current repository state
 
 - Backend-first scope and completed batch gates are recorded in [backend foundation](backend-foundation.md); that document takes precedence over the migration-first sequence below.

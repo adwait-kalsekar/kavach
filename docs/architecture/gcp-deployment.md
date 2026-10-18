@@ -119,3 +119,19 @@ Reviewed 17 October 2026:
 - [Service identity](https://docs.cloud.google.com/run/docs/securing/service-identity)
 - [Firestore locations](https://docs.cloud.google.com/firestore/native/docs/locations)
 - [Billing budgets](https://docs.cloud.google.com/billing/docs/how-to/budgets)
+
+## Eight-hour deadline extension — proposed 18 October 2026
+
+The owner confirmed console access and billing, but no GCP identity is available in this Codex environment. The [submission sprint](../submission/README.md) adds a proposed **public sample-only demo** to avoid putting the deferred custom domain on the critical path. Until its narrow CORS/contracts/model/quota checks are implemented, default URLs still support health only. Private guest farms/plans retain their current same-site session requirements.
+
+```mermaid
+flowchart LR
+  B[Browser] --> W[Existing independent web service]
+  B --> H[Existing Hono service]
+  H --> O[Existing protected farms / plans]
+  H -. proposed cookie-free sample routes .-> D[Demo orchestration / pure evaluate]
+  D -. proposed bounded explanation .-> G[Google model via API identity]
+  D -. proposed quota + finite cache .-> F[Firestore operational records]
+```
+
+Only labelled synthetic scenario IDs and bounded irrigation changes are accepted. The proposed demo stores no farmer account/context/plan and uses credentials: omit; this does not relax the private API. Exact-Origin allowlisting, transactional paid-inference limits and strict output validation are prerequisites. Google model configuration must be added explicitly to deployment config/workflow/API env serialization; current infrastructure does not silently activate these proposed flags. See [implementation details](../submission/build-spec.md) and [model setup](../submission/cloud-and-model.md).

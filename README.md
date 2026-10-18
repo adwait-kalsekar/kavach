@@ -2,6 +2,10 @@
 
 Farmer seasonal-readiness copilot being developed for the Google Cloud AI Builder Cup. Start with the [visual product brief](docs/product/overview.html) and [documentation index](docs/README.md).
 
+## Eight-hour submission handoff
+
+**Start with [the deadline plan](docs/submission/README.md).** It contains local setup, the hour-by-hour build order, an agent prompt, the proposed public sample-demo contracts, Google-model/cloud setup, and the required deck/video/public-source checklist. Backend/health/deployment foundations exist; demo screens and live Google-model integration still need implementation. The deadline route avoids domain/auth work while preserving private API protection.
+
 ## Run the application
 
 Requires Node.js 24 LTS (24.15+) and npm 12.2.0. No GCP project or credentials are needed locally.
