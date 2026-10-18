@@ -1,3 +1,11 @@
+import {
+  planningTranscriptSchema,
+  planningCatalogSchema,
+  waterPlanningInputSchema,
+  waterPlanSchema,
+  waterExplainInputSchema,
+  waterExplanationSchema,
+} from "./water-planning.js";
 import { z } from "zod";
 import {
   idSchema,
@@ -26,11 +34,45 @@ import {
   demoAssessmentSchema,
   demoExplanationSchema,
   transcriptionSchema,
+  demoMessageInputSchema,
+  messageInterpretationSchema,
 } from "./demo.js";
 export * from "./core.js";
 export * from "./demo.js";
+export * from "./water-planning.js";
 
 export const endpoints = {
+  planningTranscribe: {
+    method: "POST",
+    path: "/api/v1/demo/planning/transcribe",
+    publicDemo: true,
+    binary: true,
+    response: envelope(planningTranscriptSchema),
+    status: 200,
+  },
+  planningCatalog: {
+    method: "GET",
+    path: "/api/v1/demo/planning",
+    publicDemo: true,
+    response: envelope(planningCatalogSchema),
+    status: 200,
+  },
+  demoWaterPlan: {
+    method: "POST",
+    path: "/api/v1/demo/water-plan",
+    publicDemo: true,
+    body: waterPlanningInputSchema,
+    response: envelope(waterPlanSchema),
+    status: 200,
+  },
+  demoWaterExplain: {
+    method: "POST",
+    path: "/api/v1/demo/water-plan/explain",
+    publicDemo: true,
+    body: waterExplainInputSchema,
+    response: envelope(waterExplanationSchema),
+    status: 200,
+  },
   demoScenarios: {
     method: "GET",
     path: "/api/v1/demo/scenarios",
@@ -52,6 +94,14 @@ export const endpoints = {
     publicDemo: true,
     body: demoExplainInputSchema,
     response: envelope(demoExplanationSchema),
+    status: 200,
+  },
+  demoMessage: {
+    method: "POST",
+    path: "/api/v1/demo/message",
+    publicDemo: true,
+    body: demoMessageInputSchema,
+    response: envelope(messageInterpretationSchema),
     status: 200,
   },
   demoTranscribe: {

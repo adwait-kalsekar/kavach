@@ -92,6 +92,2366 @@
     }
   },
   "paths": {
+    "/api/v1/demo/planning/transcribe": {
+      "post": {
+        "operationId": "planningTranscribe",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en-IN",
+                "hi-IN",
+                "mr-IN"
+              ]
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "audio/wav": {
+              "schema": {
+                "type": "string",
+                "format": "binary",
+                "description": "PCM16 mono 16kHz, at most 30s / 1 MiB."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "available"
+                            },
+                            "transcript": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1200
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "transcript"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "unavailable"
+                            },
+                            "reason": {
+                              "type": "string"
+                            },
+                            "retryable": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "reason",
+                            "retryable"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/planning": {
+      "get": {
+        "operationId": "planningCatalog",
+        "parameters": [],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "demo": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "persisted": {
+                          "type": "boolean",
+                          "const": false
+                        },
+                        "regions": {
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "enum": [
+                                  "latur",
+                                  "beed",
+                                  "nanded"
+                                ]
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "climate": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "status": {
+                                        "type": "string",
+                                        "const": "available"
+                                      },
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "version": {
+                                        "type": "number",
+                                        "const": 1
+                                      },
+                                      "provider": {
+                                        "type": "string"
+                                      },
+                                      "product": {
+                                        "type": "string"
+                                      },
+                                      "sourceUrl": {
+                                        "type": "string",
+                                        "format": "uri"
+                                      },
+                                      "retrievedAt": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                      },
+                                      "period": {
+                                        "type": "object",
+                                        "properties": {
+                                          "start": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                          },
+                                          "end": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                          },
+                                          "label": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "start",
+                                          "end",
+                                          "label"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      "baseline": {
+                                        "type": "object",
+                                        "properties": {
+                                          "startYear": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "endYear": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "meanMm": {
+                                            "type": "number",
+                                            "minimum": 0
+                                          },
+                                          "years": {
+                                            "type": "integer",
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 9007199254740991
+                                          }
+                                        },
+                                        "required": [
+                                          "startYear",
+                                          "endYear",
+                                          "meanMm",
+                                          "years"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      "totalMm": {
+                                        "type": "number",
+                                        "minimum": 0
+                                      },
+                                      "departurePct": {
+                                        "type": "number"
+                                      },
+                                      "location": {
+                                        "type": "object",
+                                        "properties": {
+                                          "latitude": {
+                                            "type": "number"
+                                          },
+                                          "longitude": {
+                                            "type": "number"
+                                          },
+                                          "scope": {
+                                            "type": "string",
+                                            "enum": [
+                                              "district-centre",
+                                              "district-mean"
+                                            ]
+                                          },
+                                          "resolution": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "latitude",
+                                          "longitude",
+                                          "scope",
+                                          "resolution"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      "annualTotals": {
+                                        "maxItems": 40,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "year": {
+                                              "type": "integer",
+                                              "minimum": -9007199254740991,
+                                              "maximum": 9007199254740991
+                                            },
+                                            "totalMm": {
+                                              "type": "number",
+                                              "minimum": 0
+                                            }
+                                          },
+                                          "required": [
+                                            "year",
+                                            "totalMm"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      },
+                                      "completeDays": {
+                                        "type": "integer",
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "limitations": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "status",
+                                      "id",
+                                      "version",
+                                      "provider",
+                                      "product",
+                                      "sourceUrl",
+                                      "retrievedAt",
+                                      "period",
+                                      "baseline",
+                                      "totalMm",
+                                      "departurePct",
+                                      "location",
+                                      "annualTotals",
+                                      "completeDays",
+                                      "limitations"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "status": {
+                                        "type": "string",
+                                        "const": "unavailable"
+                                      },
+                                      "reason": {
+                                        "type": "string"
+                                      },
+                                      "retryable": {
+                                        "type": "boolean"
+                                      }
+                                    },
+                                    "required": [
+                                      "status",
+                                      "reason",
+                                      "retryable"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "climate"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "crops": {
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "enum": [
+                                  "chickpea",
+                                  "sorghum",
+                                  "wheat"
+                                ]
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "demo",
+                        "persisted",
+                        "regions",
+                        "crops"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/water-plan": {
+      "post": {
+        "operationId": "demoWaterPlan",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "regionId": {
+                    "type": "string",
+                    "enum": [
+                      "latur",
+                      "beed",
+                      "nanded"
+                    ]
+                  },
+                  "crop": {
+                    "type": "string",
+                    "enum": [
+                      "chickpea",
+                      "sorghum",
+                      "wheat"
+                    ]
+                  },
+                  "plannedAreaAcres": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 100
+                  },
+                  "alternativeAreaAcres": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 100
+                  },
+                  "usableWaterLitres": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100000000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "netApplicationMm": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 300
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "efficiencyPct": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "regionId",
+                  "crop",
+                  "plannedAreaAcres",
+                  "alternativeAreaAcres",
+                  "usableWaterLitres",
+                  "netApplicationMm",
+                  "efficiencyPct"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "demo": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "persisted": {
+                          "type": "boolean",
+                          "const": false
+                        },
+                        "calculation": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "inputs": {
+                                  "type": "object",
+                                  "properties": {
+                                    "regionId": {
+                                      "type": "string",
+                                      "enum": [
+                                        "latur",
+                                        "beed",
+                                        "nanded"
+                                      ]
+                                    },
+                                    "crop": {
+                                      "type": "string",
+                                      "enum": [
+                                        "chickpea",
+                                        "sorghum",
+                                        "wheat"
+                                      ]
+                                    },
+                                    "plannedAreaAcres": {
+                                      "type": "number",
+                                      "minimum": 0.1,
+                                      "maximum": 100
+                                    },
+                                    "alternativeAreaAcres": {
+                                      "type": "number",
+                                      "minimum": 0.1,
+                                      "maximum": 100
+                                    },
+                                    "usableWaterLitres": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "maximum": 100000000
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "netApplicationMm": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 1,
+                                          "maximum": 300
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "efficiencyPct": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 1,
+                                          "maximum": 100
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "regionId",
+                                    "crop",
+                                    "plannedAreaAcres",
+                                    "alternativeAreaAcres",
+                                    "usableWaterLitres",
+                                    "netApplicationMm",
+                                    "efficiencyPct"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "methodVersion": {
+                                  "type": "string",
+                                  "const": "water-volume/1"
+                                },
+                                "assumptionsStatus": {
+                                  "type": "string",
+                                  "const": "illustrative"
+                                },
+                                "agronomicReview": {
+                                  "type": "string",
+                                  "const": "unreviewed"
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "const": "needs-input"
+                                },
+                                "missingInputs": {
+                                  "minItems": 1,
+                                  "maxItems": 3,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "usable-water",
+                                      "application-depth",
+                                      "efficiency"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "inputs",
+                                "methodVersion",
+                                "assumptionsStatus",
+                                "agronomicReview",
+                                "status",
+                                "missingInputs"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "inputs": {
+                                  "type": "object",
+                                  "properties": {
+                                    "regionId": {
+                                      "type": "string",
+                                      "enum": [
+                                        "latur",
+                                        "beed",
+                                        "nanded"
+                                      ]
+                                    },
+                                    "crop": {
+                                      "type": "string",
+                                      "enum": [
+                                        "chickpea",
+                                        "sorghum",
+                                        "wheat"
+                                      ]
+                                    },
+                                    "plannedAreaAcres": {
+                                      "type": "number",
+                                      "minimum": 0.1,
+                                      "maximum": 100
+                                    },
+                                    "alternativeAreaAcres": {
+                                      "type": "number",
+                                      "minimum": 0.1,
+                                      "maximum": 100
+                                    },
+                                    "usableWaterLitres": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "maximum": 100000000
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "netApplicationMm": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 1,
+                                          "maximum": 300
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "efficiencyPct": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 1,
+                                          "maximum": 100
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "regionId",
+                                    "crop",
+                                    "plannedAreaAcres",
+                                    "alternativeAreaAcres",
+                                    "usableWaterLitres",
+                                    "netApplicationMm",
+                                    "efficiencyPct"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "methodVersion": {
+                                  "type": "string",
+                                  "const": "water-volume/1"
+                                },
+                                "assumptionsStatus": {
+                                  "type": "string",
+                                  "const": "illustrative"
+                                },
+                                "agronomicReview": {
+                                  "type": "string",
+                                  "const": "unreviewed"
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "coveredAreaAcres": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "options": {
+                                  "minItems": 2,
+                                  "maxItems": 2,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "enum": [
+                                          "planned",
+                                          "alternative"
+                                        ]
+                                      },
+                                      "areaAcres": {
+                                        "type": "number",
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 100
+                                      },
+                                      "requiredWaterLitres": {
+                                        "type": "number",
+                                        "exclusiveMinimum": 0
+                                      },
+                                      "balanceLitres": {
+                                        "type": "number"
+                                      },
+                                      "coverageFraction": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "areaAcres",
+                                      "requiredWaterLitres",
+                                      "balanceLitres",
+                                      "coverageFraction"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "inputs",
+                                "methodVersion",
+                                "assumptionsStatus",
+                                "agronomicReview",
+                                "status",
+                                "coveredAreaAcres",
+                                "options"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "regionName": {
+                          "type": "string"
+                        },
+                        "climate": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "version": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "product": {
+                                  "type": "string"
+                                },
+                                "sourceUrl": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "retrievedAt": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                },
+                                "period": {
+                                  "type": "object",
+                                  "properties": {
+                                    "start": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "end": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "label": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "start",
+                                    "end",
+                                    "label"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "baseline": {
+                                  "type": "object",
+                                  "properties": {
+                                    "startYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "endYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "meanMm": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "years": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    }
+                                  },
+                                  "required": [
+                                    "startYear",
+                                    "endYear",
+                                    "meanMm",
+                                    "years"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "totalMm": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "departurePct": {
+                                  "type": "number"
+                                },
+                                "location": {
+                                  "type": "object",
+                                  "properties": {
+                                    "latitude": {
+                                      "type": "number"
+                                    },
+                                    "longitude": {
+                                      "type": "number"
+                                    },
+                                    "scope": {
+                                      "type": "string",
+                                      "enum": [
+                                        "district-centre",
+                                        "district-mean"
+                                      ]
+                                    },
+                                    "resolution": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "latitude",
+                                    "longitude",
+                                    "scope",
+                                    "resolution"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "annualTotals": {
+                                  "maxItems": 40,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "year": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "totalMm": {
+                                        "type": "number",
+                                        "minimum": 0
+                                      }
+                                    },
+                                    "required": [
+                                      "year",
+                                      "totalMm"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "completeDays": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "limitations": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "id",
+                                "version",
+                                "provider",
+                                "product",
+                                "sourceUrl",
+                                "retrievedAt",
+                                "period",
+                                "baseline",
+                                "totalMm",
+                                "departurePct",
+                                "location",
+                                "annualTotals",
+                                "completeDays",
+                                "limitations"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "method": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "limitation": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "title",
+                            "url",
+                            "limitation"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "demo",
+                        "persisted",
+                        "calculation",
+                        "regionName",
+                        "climate",
+                        "method"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/water-plan/explain": {
+      "post": {
+        "operationId": "demoWaterExplain",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "regionId": {
+                    "type": "string",
+                    "enum": [
+                      "latur",
+                      "beed",
+                      "nanded"
+                    ]
+                  },
+                  "crop": {
+                    "type": "string",
+                    "enum": [
+                      "chickpea",
+                      "sorghum",
+                      "wheat"
+                    ]
+                  },
+                  "plannedAreaAcres": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 100
+                  },
+                  "alternativeAreaAcres": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 100
+                  },
+                  "usableWaterLitres": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100000000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "netApplicationMm": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 300
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "efficiencyPct": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "en-IN",
+                      "hi-IN",
+                      "mr-IN"
+                    ]
+                  },
+                  "voice": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "question": {
+                    "type": "string",
+                    "enum": [
+                      "explain-coverage",
+                      "explain-assumptions",
+                      "explain-next-checks"
+                    ]
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1200
+                  },
+                  "history": {
+                    "maxItems": 6,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "user",
+                            "assistant"
+                          ]
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 600
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "text"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "regionId",
+                  "crop",
+                  "plannedAreaAcres",
+                  "alternativeAreaAcres",
+                  "usableWaterLitres",
+                  "netApplicationMm",
+                  "efficiencyPct",
+                  "locale",
+                  "question"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "plan": {
+                          "type": "object",
+                          "properties": {
+                            "demo": {
+                              "type": "boolean",
+                              "const": true
+                            },
+                            "persisted": {
+                              "type": "boolean",
+                              "const": false
+                            },
+                            "calculation": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "inputs": {
+                                      "type": "object",
+                                      "properties": {
+                                        "regionId": {
+                                          "type": "string",
+                                          "enum": [
+                                            "latur",
+                                            "beed",
+                                            "nanded"
+                                          ]
+                                        },
+                                        "crop": {
+                                          "type": "string",
+                                          "enum": [
+                                            "chickpea",
+                                            "sorghum",
+                                            "wheat"
+                                          ]
+                                        },
+                                        "plannedAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "alternativeAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "usableWaterLitres": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "maximum": 100000000
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "netApplicationMm": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 300
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "efficiencyPct": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 100
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "regionId",
+                                        "crop",
+                                        "plannedAreaAcres",
+                                        "alternativeAreaAcres",
+                                        "usableWaterLitres",
+                                        "netApplicationMm",
+                                        "efficiencyPct"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "methodVersion": {
+                                      "type": "string",
+                                      "const": "water-volume/1"
+                                    },
+                                    "assumptionsStatus": {
+                                      "type": "string",
+                                      "const": "illustrative"
+                                    },
+                                    "agronomicReview": {
+                                      "type": "string",
+                                      "const": "unreviewed"
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "const": "needs-input"
+                                    },
+                                    "missingInputs": {
+                                      "minItems": 1,
+                                      "maxItems": 3,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "enum": [
+                                          "usable-water",
+                                          "application-depth",
+                                          "efficiency"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "inputs",
+                                    "methodVersion",
+                                    "assumptionsStatus",
+                                    "agronomicReview",
+                                    "status",
+                                    "missingInputs"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "inputs": {
+                                      "type": "object",
+                                      "properties": {
+                                        "regionId": {
+                                          "type": "string",
+                                          "enum": [
+                                            "latur",
+                                            "beed",
+                                            "nanded"
+                                          ]
+                                        },
+                                        "crop": {
+                                          "type": "string",
+                                          "enum": [
+                                            "chickpea",
+                                            "sorghum",
+                                            "wheat"
+                                          ]
+                                        },
+                                        "plannedAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "alternativeAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "usableWaterLitres": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "maximum": 100000000
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "netApplicationMm": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 300
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "efficiencyPct": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 100
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "regionId",
+                                        "crop",
+                                        "plannedAreaAcres",
+                                        "alternativeAreaAcres",
+                                        "usableWaterLitres",
+                                        "netApplicationMm",
+                                        "efficiencyPct"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "methodVersion": {
+                                      "type": "string",
+                                      "const": "water-volume/1"
+                                    },
+                                    "assumptionsStatus": {
+                                      "type": "string",
+                                      "const": "illustrative"
+                                    },
+                                    "agronomicReview": {
+                                      "type": "string",
+                                      "const": "unreviewed"
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "coveredAreaAcres": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "options": {
+                                      "minItems": 2,
+                                      "maxItems": 2,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "enum": [
+                                              "planned",
+                                              "alternative"
+                                            ]
+                                          },
+                                          "areaAcres": {
+                                            "type": "number",
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 100
+                                          },
+                                          "requiredWaterLitres": {
+                                            "type": "number",
+                                            "exclusiveMinimum": 0
+                                          },
+                                          "balanceLitres": {
+                                            "type": "number"
+                                          },
+                                          "coverageFraction": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 1
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "areaAcres",
+                                          "requiredWaterLitres",
+                                          "balanceLitres",
+                                          "coverageFraction"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "inputs",
+                                    "methodVersion",
+                                    "assumptionsStatus",
+                                    "agronomicReview",
+                                    "status",
+                                    "coveredAreaAcres",
+                                    "options"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "regionName": {
+                              "type": "string"
+                            },
+                            "climate": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "version": {
+                                      "type": "number",
+                                      "const": 1
+                                    },
+                                    "provider": {
+                                      "type": "string"
+                                    },
+                                    "product": {
+                                      "type": "string"
+                                    },
+                                    "sourceUrl": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "retrievedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                    },
+                                    "period": {
+                                      "type": "object",
+                                      "properties": {
+                                        "start": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        },
+                                        "end": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        },
+                                        "label": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "start",
+                                        "end",
+                                        "label"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "baseline": {
+                                      "type": "object",
+                                      "properties": {
+                                        "startYear": {
+                                          "type": "integer",
+                                          "minimum": -9007199254740991,
+                                          "maximum": 9007199254740991
+                                        },
+                                        "endYear": {
+                                          "type": "integer",
+                                          "minimum": -9007199254740991,
+                                          "maximum": 9007199254740991
+                                        },
+                                        "meanMm": {
+                                          "type": "number",
+                                          "minimum": 0
+                                        },
+                                        "years": {
+                                          "type": "integer",
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991
+                                        }
+                                      },
+                                      "required": [
+                                        "startYear",
+                                        "endYear",
+                                        "meanMm",
+                                        "years"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "totalMm": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "departurePct": {
+                                      "type": "number"
+                                    },
+                                    "location": {
+                                      "type": "object",
+                                      "properties": {
+                                        "latitude": {
+                                          "type": "number"
+                                        },
+                                        "longitude": {
+                                          "type": "number"
+                                        },
+                                        "scope": {
+                                          "type": "string",
+                                          "enum": [
+                                            "district-centre",
+                                            "district-mean"
+                                          ]
+                                        },
+                                        "resolution": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "latitude",
+                                        "longitude",
+                                        "scope",
+                                        "resolution"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "annualTotals": {
+                                      "maxItems": 40,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "year": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "totalMm": {
+                                            "type": "number",
+                                            "minimum": 0
+                                          }
+                                        },
+                                        "required": [
+                                          "year",
+                                          "totalMm"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "completeDays": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "limitations": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "id",
+                                    "version",
+                                    "provider",
+                                    "product",
+                                    "sourceUrl",
+                                    "retrievedAt",
+                                    "period",
+                                    "baseline",
+                                    "totalMm",
+                                    "departurePct",
+                                    "location",
+                                    "annualTotals",
+                                    "completeDays",
+                                    "limitations"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "unavailable"
+                                    },
+                                    "reason": {
+                                      "type": "string"
+                                    },
+                                    "retryable": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "reason",
+                                    "retryable"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "method": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "url": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "limitation": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "title",
+                                "url",
+                                "limitation"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "demo",
+                            "persisted",
+                            "calculation",
+                            "regionName",
+                            "climate",
+                            "method"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "explanation": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "summary": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1200
+                                },
+                                "actionIds": {
+                                  "maxItems": 6,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "model": {
+                                  "type": "object",
+                                  "properties": {
+                                    "provider": {
+                                      "type": "string",
+                                      "const": "google"
+                                    },
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "version": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "generatedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                    },
+                                    "cached": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "provider",
+                                    "id",
+                                    "version",
+                                    "generatedAt",
+                                    "cached"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "summary",
+                                "actionIds",
+                                "model"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "audio": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "mime": {
+                                  "type": "string",
+                                  "const": "audio/mpeg"
+                                },
+                                "base64": {
+                                  "type": "string",
+                                  "maxLength": 699052
+                                },
+                                "voice": {
+                                  "type": "string"
+                                },
+                                "locale": {
+                                  "type": "string",
+                                  "enum": [
+                                    "en-IN",
+                                    "hi-IN",
+                                    "mr-IN"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "mime",
+                                "base64",
+                                "voice",
+                                "locale"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "plan",
+                        "explanation",
+                        "audio"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/demo/scenarios": {
       "get": {
         "operationId": "demoScenarios",
@@ -2863,6 +5223,352 @@
                         "audio"
                       ],
                       "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/message": {
+      "post": {
+        "operationId": "demoMessage",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1200
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "en-IN",
+                      "hi-IN",
+                      "mr-IN"
+                    ]
+                  },
+                  "voice": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "text",
+                  "locale"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "available"
+                            },
+                            "transcript": {
+                              "type": "string",
+                              "maxLength": 1200
+                            },
+                            "proposed": {
+                              "type": "object",
+                              "properties": {
+                                "intent": {
+                                  "type": "string",
+                                  "enum": [
+                                    "change-irrigation",
+                                    "explain-checks",
+                                    "explain-change",
+                                    "confirm",
+                                    "change",
+                                    "unsupported"
+                                  ]
+                                },
+                                "irrigation": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "one",
+                                        "assured"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "intent",
+                                "irrigation"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "needsConfirmation": {
+                              "type": "boolean"
+                            },
+                            "locale": {
+                              "type": "string",
+                              "enum": [
+                                "en-IN",
+                                "hi-IN",
+                                "mr-IN"
+                              ]
+                            },
+                            "provider": {
+                              "type": "string",
+                              "const": "google"
+                            },
+                            "audio": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "mime": {
+                                      "type": "string",
+                                      "const": "audio/mpeg"
+                                    },
+                                    "base64": {
+                                      "type": "string",
+                                      "maxLength": 699052
+                                    },
+                                    "voice": {
+                                      "type": "string"
+                                    },
+                                    "locale": {
+                                      "type": "string",
+                                      "enum": [
+                                        "en-IN",
+                                        "hi-IN",
+                                        "mr-IN"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "mime",
+                                    "base64",
+                                    "voice",
+                                    "locale"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "unavailable"
+                                    },
+                                    "reason": {
+                                      "type": "string"
+                                    },
+                                    "retryable": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "reason",
+                                    "retryable"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "transcript",
+                            "proposed",
+                            "needsConfirmation",
+                            "locale",
+                            "provider",
+                            "audio"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "unavailable"
+                            },
+                            "reason": {
+                              "type": "string"
+                            },
+                            "retryable": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "reason",
+                            "retryable"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
                     },
                     "meta": {
                       "type": "object",

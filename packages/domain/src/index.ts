@@ -148,3 +148,5 @@ export function evaluate(input: {
     ],
   };
 }
+
+export { calculateWaterPlan } from "./water-planning.js";

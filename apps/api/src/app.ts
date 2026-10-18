@@ -4,7 +4,10 @@ import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { z } from "zod";
 import {
+  waterPlanningInputSchema,
+  waterExplainInputSchema,
   demoInputSchema,
+  demoMessageInputSchema,
   demoExplainInputSchema,
   voiceQuerySchema,
   endpoints,
@@ -26,6 +29,7 @@ import {
   equalSecret,
   type Session,
 } from "./services/session.js";
+import { WaterPlanningService } from "./services/water-planning.js";
 import { DemoService } from "./services/demo.js";
 import { readVoice } from "./services/voice-upload.js";
 import {
@@ -115,6 +119,12 @@ export function createApp({
   const sessions = new SessionService(store, config, now);
   const resources = new ResourceService(store, weather, now);
   const demo = new DemoService(store, config, explanation, speech, now);
+  const planning = new WaterPlanningService(
+    demo,
+    explanation,
+    speech,
+    config.explanationProvider === "google",
+  );
   const cookieOptions = {
     httpOnly: true,
     secure: config.environment === "production",
@@ -199,10 +209,15 @@ export function createApp({
 
   app.use("/api/v1/*", async (c, next) => {
     const demoMethods: Record<string, string> = {
+      "/api/v1/demo/planning": "GET",
+      "/api/v1/demo/water-plan": "POST",
+      "/api/v1/demo/water-plan/explain": "POST",
+      "/api/v1/demo/planning/transcribe": "POST",
       "/api/v1/demo/scenarios": "GET",
       "/api/v1/demo/assess": "POST",
       "/api/v1/demo/explain": "POST",
       "/api/v1/demo/transcribe": "POST",
+      "/api/v1/demo/message": "POST",
     };
     const demoMethod = demoMethods[c.req.path];
     if (
@@ -392,6 +407,35 @@ export function createApp({
     await next();
   };
   const routes = app
+    .get("/api/v1/demo/planning", (c) =>
+      respond("planningCatalog", planning.catalog(), c),
+    )
+    .post("/api/v1/demo/water-plan", jsonBody(waterPlanningInputSchema), (c) =>
+      respond("demoWaterPlan", planning.assess(c.req.valid("json")), c),
+    )
+    .post(
+      "/api/v1/demo/water-plan/explain",
+      jsonBody(waterExplainInputSchema),
+      async (c) =>
+        respond(
+          "demoWaterExplain",
+          await planning.explain(c.req.valid("json"), c.req.raw.signal),
+          c,
+        ),
+    )
+    .post("/api/v1/demo/planning/transcribe", voiceQuery, async (c) => {
+      const { audio, seconds } = await readVoice(c.req.raw);
+      return respond(
+        "planningTranscribe",
+        await planning.transcribe(
+          audio,
+          c.req.valid("query").locale,
+          seconds,
+          c.req.raw.signal,
+        ),
+        c,
+      );
+    })
     .get("/api/v1/demo/scenarios", (c) =>
       respond("demoScenarios", demo.scenarios(), c),
     )
@@ -402,6 +446,13 @@ export function createApp({
       respond(
         "demoExplain",
         await demo.explain(c.req.valid("json"), c.req.raw.signal),
+        c,
+      ),
+    )
+    .post("/api/v1/demo/message", jsonBody(demoMessageInputSchema), async (c) =>
+      respond(
+        "demoMessage",
+        await demo.message(c.req.valid("json"), c.req.raw.signal),
         c,
       ),
     )
@@ -438,7 +489,8 @@ export function createApp({
           environment: config.environment,
           persistence: config.storage,
           weather: config.weather,
-          ai: config.explanationProvider === "google" ? "google" : "unavailable",
+          ai:
+            config.explanationProvider === "google" ? "google" : "unavailable",
           conversations: false,
           supported: [{ district: "Latur", crop: "chickpea" }],
           sources: sourceReferences,

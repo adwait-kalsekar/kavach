@@ -13,7 +13,10 @@ import {
 import { evaluate, RULE_VERSION, sourceReferences } from "@kavach/domain";
 import snapshot from "../evidence/latur-rainfall.json" with { type: "json" };
 import type { Store } from "../ports/store.js";
-import { EXPLANATION_VERSION, type ExplanationProvider } from "../ports/explanation.js";
+import {
+  EXPLANATION_VERSION,
+  type ExplanationProvider,
+} from "../ports/explanation.js";
 import type { SpeechProvider } from "../ports/speech.js";
 import type { Config } from "../config.js";
 import { ServiceError } from "../errors.js";
@@ -236,6 +239,35 @@ export class DemoService {
         retryable: true,
       };
     }
+    const interpreted = await this.interpret(transcript, locale, true, signal);
+    return interpreted.status === "available"
+      ? { ...interpreted, needsConfirmation: true }
+      : interpreted;
+  }
+  async message(
+    input: { text: string; locale: DemoLocale; voice: boolean },
+    requestSignal: AbortSignal,
+  ) {
+    if (this.config.explanationProvider !== "google")
+      return {
+        status: "unavailable",
+        reason:
+          "Google message interpretation is not configured. Use the suggested actions.",
+        retryable: false,
+      };
+    return this.interpret(
+      input.text,
+      input.locale,
+      input.voice,
+      AbortSignal.any([requestSignal, AbortSignal.timeout(25000)]),
+    );
+  }
+  private async interpret(
+    transcript: string,
+    locale: DemoLocale,
+    voice: boolean,
+    signal: AbortSignal,
+  ) {
     await this.budget("model", 1);
     let proposed;
     try {
@@ -249,13 +281,17 @@ export class DemoService {
       };
     }
     const text = confirmation[locale][proposed.irrigation || "other"];
-    await this.budget("tts", text.length);
-    const spoken = await this.speech.synthesize(text, locale, signal);
+    const needsConfirmation = proposed.intent === "change-irrigation";
+    let spoken = silence;
+    if (voice && needsConfirmation) {
+      await this.budget("tts", text.length);
+      spoken = await this.speech.synthesize(text, locale, signal);
+    }
     return {
       status: "available",
       transcript,
       proposed,
-      needsConfirmation: true,
+      needsConfirmation,
       locale,
       provider: "google",
       audio: spoken,

@@ -44,34 +44,74 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
         timeout: 30000,
       });
       await page
-        .getByRole("heading", { name: "Latur, Maharashtra", exact: true })
-        .waitFor();
-      await page
-        .getByRole("button", { name: "Explore water options", exact: true })
-        .click();
-      await page.getByRole("button", { name: /^No irrigation/ }).click();
-      await page
-        .getByRole("button", { name: "Yes, use this", exact: true })
-        .click();
-      await page
-        .getByText("Compared with the sample’s one irrigation", {
-          exact: false,
+        .getByRole("heading", {
+          name: "Make a plan for the water you have.",
+          exact: true,
         })
         .waitFor();
+      await page
+        .getByRole("link", { name: "Compare my water options", exact: true })
+        .click();
+      await page
+        .getByRole("button", { name: "Use this comparison", exact: true })
+        .nth(1)
+        .click();
+      await page
+        .getByRole("link", { name: "See my next steps", exact: true })
+        .click();
+      await page
+        .getByRole("heading", { name: "Check before acting", exact: true })
+        .waitFor();
+      assert.equal(
+        await page.locator(".fp-receipt dd").first().innerText(),
+        "1.5",
+      );
       if (provider === "google" && viewport.width > 1000) {
+        await page
+          .getByRole("button", { name: "Ask about this", exact: true })
+          .first()
+          .click();
         const explanationResponse = page.waitForResponse(
-          (r) => new URL(r.url()).pathname === "/api/v1/demo/explain",
+          (r) =>
+            new URL(r.url()).pathname === "/api/v1/demo/water-plan/explain",
           { timeout: 40000 },
         );
         await page
-          .getByRole("button", { name: "Explain what changed", exact: true })
+          .getByRole("button", {
+            name: "What should I check next?",
+            exact: true,
+          })
           .click();
         const result = await (await explanationResponse).json();
         assert.equal(result.data.explanation.status, "available");
         assert.equal(result.data.explanation.model.provider, "google");
         assert.ok(result.data.explanation.model.version);
         assert.equal(result.data.audio.status, "available");
-        await page.locator(".reply-card").waitFor();
+        await page.locator(".fp-assistant-message").waitFor();
+      }
+      if (provider === "disabled" && viewport.width > 1000) {
+        await page
+          .getByRole("button", { name: "Ask about this", exact: true })
+          .first()
+          .click();
+        const unavailableResponse = page.waitForResponse(
+          (r) =>
+            new URL(r.url()).pathname === "/api/v1/demo/water-plan/explain",
+        );
+        await page
+          .getByRole("button", {
+            name: "What should I check next?",
+            exact: true,
+          })
+          .click();
+        const unavailable = await (await unavailableResponse).json();
+        assert.equal(unavailable.data.explanation.status, "unavailable");
+        await page
+          .getByText(
+            "Google explanations are not configured. The calculation is still available.",
+            { exact: true },
+          )
+          .waitFor();
       }
       const ready = await context.request.get(apiOrigin + "/readyz", {
         timeout: 10000,
@@ -87,7 +127,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
       await context.close();
     }
     console.log(
-      "Live desktop/mobile sample comparison, configured Google explanation/audio, exact release health and database readiness passed.",
+      `Desktop/mobile planning, ${provider === "google" ? "real Google explanation/audio" : "explicit disabled-provider state"}, exact release health and database readiness passed.`,
     );
   } finally {
     await browser.close();

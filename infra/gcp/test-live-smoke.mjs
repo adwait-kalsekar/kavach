@@ -103,9 +103,9 @@ try {
   );
   assert.equal((await fetch(origin + "/api/v1/health")).status, 404);
   assert.equal((await fetch(apiOrigin)).status, 404);
-  await liveSmoke(origin, sha, apiOrigin);
+  await liveSmoke(origin, sha, apiOrigin, "disabled");
   await assert.rejects(
-    () => liveSmoke(origin, "b".repeat(40), apiOrigin),
+    () => liveSmoke(origin, "b".repeat(40), apiOrigin, "disabled"),
     /Expected values/,
   );
   const { chromium } = await import("playwright");
@@ -113,7 +113,7 @@ try {
   let paused = false;
   try {
     const page = await browser.newPage();
-    await page.goto(origin);
+    await page.goto(origin + "/health");
     await page
       .getByRole("heading", { name: "API reachable", exact: true })
       .waitFor();

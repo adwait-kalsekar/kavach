@@ -16,13 +16,13 @@ cp apps/api/.env.example apps/api/.env
 npm run dev
 ```
 
-Open **http://localhost:3000** for the synthetic Latur/chickpea sample, water comparison and English/Hindi/Marathi interface. `/health` retains diagnostics. The browser calls Hono directly on **http://localhost:8080**. Local defaults provide deterministic checks and historical context; optional Google configuration enables voice and model explanations. `npm run dev` starts independent Vite and Hono processes and rebuilds shared packages. Keep API APP_ORIGIN=http://localhost:3000; exact CORS and CSRF protect requests.
+Open **http://localhost:3000** for **My situation → Compare → Next steps**. Select Latur, Beed or Nanded and chickpea, sorghum or wheat. Edit area, usable water and explicitly illustrative application assumptions; compare two areas and print a discussion sheet. **Ask about this** supports typed chat, tap-to-speak questions and optional Google spoken replies, grounded in the current inputs. Language and spoken-reply preferences last for the visit; inputs/chat clear on reload. Crop labels do not select a water dose. `/health` retains independent diagnostics. The browser calls Hono directly on **http://localhost:8080**. Default local mode supports deterministic calculations and dated historical context without cloud credentials; optional Google configuration enables AI/speech. Keep API APP_ORIGIN=http://localhost:3000.
 
 `npm run build:app` builds both packages. `npm run start:api` starts only Hono, which serves no frontend assets. Production uses separate Cloud Run services: Nginx web on internal 8081 and Hono API on 8080, each with its own HTTPS hostname. See [web/RPC architecture](docs/architecture/web-foundation.md), [deployment decision](docs/architecture/gcp-deployment.md) and [container commands](infra/README.md).
 
 The currently deployed foundation supports health. The new public sample works without guest cookies on default URLs after rollout. Private guest farms/plans still require sibling custom domains; domain setup is deferred.
 
-Implemented: guest ownership, farm context, immutable assessments, hypothetical comparisons, saved-plan tracking, optional weather adapter and SQLite/Firestore persistence. Workflow checks are explicitly unreviewed. The new sample adds server-only Gemini, Google speech and a real NASA POWER historical snapshot. Account login, freeform AI conversations and reviewed agronomic advice remain deferred. The infrastructure and earlier main deployment are verified; this POC change is locally validated.
+Implemented: guest ownership, farm context, immutable assessments, hypothetical comparisons, saved-plan tracking, optional weather adapter and SQLite/Firestore persistence. Workflow checks are explicitly unreviewed. The new sample adds server-only Gemini, Google speech and a real NASA POWER historical snapshot. Account login, unrestricted agronomic advice and reviewed crop recommendations remain deferred. Contextual free-text and voice chat are implemented. The infrastructure and earlier main deployment are verified; this POC change is locally validated.
 
 ## Verification
 
@@ -48,4 +48,4 @@ Shared packages include contracts, a browser-safe API client, pure decision logi
 
 ## GCP setup
 
-[Follow the project-specific Cloud Console/Cloud Shell guide](docs/deployment/gcp-setup.md). The workflow and rollback code are prepared, but deployment is disabled until GCP bootstrap and GitHub settings are complete. No service-account keys are required.
+[Follow the project-specific Cloud Console/Cloud Shell guide](docs/deployment/gcp-setup.md). The project bootstrap and earlier foundation deployment are verified. The new farmer-planning experience requires the next verified main rollout. No service-account keys are required.

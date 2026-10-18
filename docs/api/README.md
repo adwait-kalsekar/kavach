@@ -22,12 +22,38 @@ The API listens on `http://localhost:8080`. Defaults use a durable `.data/kavach
 
 ## Public synthetic demo
 
-The exact public sample endpoints use a dedicated `createDemoClient(apiOrigin)` with `credentials: omit`. They never create private farm records. POST requests require the configured exact Origin; no session/CSRF token is used for these four exact route/method pairs. Other routes retain their guards. See [POC architecture](../architecture/poc-implementation.md) for audio bounds, quotas, evidence and provider configuration.
+The exact public sample endpoints use a dedicated `createDemoClient(apiOrigin)` with `credentials: omit`. They never create private farm records. POST requests require the configured exact Origin; no session/CSRF token is used for these nine exact route/method pairs. Other routes retain their guards. See [POC architecture](../architecture/poc-implementation.md) for audio bounds, quotas, evidence and provider configuration.
+
+New farmer-planning operations:
+
+- `GET /api/v1/demo/planning`: allowlisted location/crop catalog with dated rainfall provenance.
+- `POST /api/v1/demo/water-plan`: strict inputs and available/needs-input calculation; no inference or farm record write.
+- `POST /api/v1/demo/water-plan/explain`: same inputs, locale, voice flag, question enum and optional bounded text/history; server recomputes before model use. History is untrusted context, not evidence. Shared model/TTS quotas apply; no arbitrary-input cache.
+- `POST /api/v1/demo/planning/transcribe?locale=en-IN`: bounded WAV → transcript only; does not edit numeric fields. Shared STT quota applies.
+
+```json
+{
+  "regionId": "beed",
+  "crop": "chickpea",
+  "plannedAreaAcres": 3,
+  "alternativeAreaAcres": 1.5,
+  "usableWaterLitres": 180000,
+  "netApplicationMm": 20,
+  "efficiencyPct": 70
+}
+```
+
+Water may be known zero or unknown (`null`); these differ. Areas are 0.1–100 acres, water 0–100,000,000L, depth 1–300mm or null, efficiency 1–100% or null. Empty application inputs return needs-input, never a made-up dose. These bounds constrain the public demo, not agronomic validity. `createDemoClient` exposes `planning`, `waterPlan`, `waterExplain`, and `planningTranscribe` methods alongside legacy operations.
 
 ```ts
 import { createDemoClient } from "@kavach/api-client";
 const demo = createDemoClient("http://localhost:8080");
 await demo.scenarios();
+await demo.message({
+  text: "What if I have no irrigation?",
+  locale: "en-IN",
+  voice: false,
+});
 await demo.assess({
   scenarioId: "latur-chickpea-limited-water",
   changes: { irrigation: "none" },
@@ -43,7 +69,7 @@ await demo.explain({
 await demo.transcribe(wavBlob, "en-IN");
 ```
 
-`GET /api/v1/demo/scenarios`, `POST /api/v1/demo/assess`, `POST /api/v1/demo/explain` and `POST /api/v1/demo/transcribe?locale=en-IN` are defined in the generated OpenAPI. Model/audio/transcription availability is explicit. A transcribed proposal does not apply changes; the UI requests confirmation. No arbitrary text-to-speech or paid freeform prompt endpoint is exposed.
+`GET /api/v1/demo/scenarios`, `POST /api/v1/demo/assess`, `POST /api/v1/demo/explain` `POST /api/v1/demo/transcribe?locale=en-IN` and `POST /api/v1/demo/message` are defined in the generated OpenAPI. Model/audio/transcription availability is explicit. An interpreted water proposal does not apply changes; the UI requests confirmation. Typed text is trimmed and limited to 1200 characters, goes through the server-only closed-intent interpreter, and is not stored. Read-only requests may proceed to an explanation; this is not a general freeform chat API. The existing voice response keeps its legacy confirmation flag for older web clients. No arbitrary text-to-speech or paid freeform prompt endpoint is exposed.
 
 ## Private session and request sequence
 

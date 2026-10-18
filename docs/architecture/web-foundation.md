@@ -1,6 +1,6 @@
 # Web foundation and Hono RPC
 
-Updated 18 October 2026. The home route now provides the mobile voice-first sample, confirmed water comparison, historical context and English/Hindi/Marathi selection. `/health` retains the diagnostic foundation. See [POC implementation](poc-implementation.md) for current local verification and deployment limits.
+Updated 18 October 2026. The root redirects to `/situation`. `/compare` contains a server-calculated water comparison and `/next-steps` a stateless printable discussion sheet. `/evidence` shows source-linked dated rainfall context. Three selectable Maharashtra locations and three crop labels personalize the current visit; language, spoken-reply preference and bounded contextual chat stay in memory. Ask about this opens typed/voice help grounded in the current plan. The old `/talk`, `/sample`, `/sample/compare`, `/season`, `/sources` routes remain legacy bounded demonstrations, not the main navigation. `/health` remains outside both providers. See [POC implementation](poc-implementation.md) for verification and deployment limits.
 
 ## Runtime and GCP structure
 
@@ -18,7 +18,7 @@ Frontend and API are independently served. Hono serves no web output; its root r
 
 The API image receives compiled API/contracts/domain and clean production dependencies. The web image receives only static web output and Nginx configuration. Both are non-root; docs/build tools/server SDKs are absent from the web runtime. `infra/Dockerfile.web` consumes the separately built `kavach-builder` stage. Its `/runtime-config.js` contains only API_ORIGIN; Nginx templates this at startup, so React can use a new API address without rebuilding. Config/HTML revalidate. CSP permits self-hosted scripts/styles/images/worklets, blob audio and connections only to the configured API origin, without inline/eval. API responses retain strict JSON CSP.
 
-Default Cloud Run URLs support the public synthetic demo without cookies after the new release is deployed. Only four exact demo route/method pairs receive the public exception. Full guest ownership still requires same-site sibling custom domains; cross-site private session/resource requests remain rejected. The owner deferred the domain. Local demo acceptance does not prove the next production rollout.
+Default Cloud Run URLs support the public synthetic demo without cookies after the new release is deployed. Only nine exact demo route/method pairs receive the public exception. Full guest ownership still requires same-site sibling custom domains; cross-site private session/resource requests remain rejected. The owner deferred the domain. Local demo acceptance does not prove the next production rollout.
 
 ## Hono RPC without runtime coupling
 

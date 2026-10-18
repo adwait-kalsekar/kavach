@@ -50,10 +50,9 @@ function apiBase(origin: string) {
 export function createApiClient(fetcher: typeof fetch = fetch, origin = "") {
   const base = apiBase(origin);
   return {
-    async request<K extends Exclude<Operation, "demoTranscribe">>(
-      operation: K,
-      options: Options<K>,
-    ): Promise<ResponseBody<K>> {
+    async request<
+      K extends Exclude<Operation, "demoTranscribe" | "planningTranscribe">,
+    >(operation: K, options: Options<K>): Promise<ResponseBody<K>> {
       const endpoint = endpoints[operation];
       const path = endpoint.path.includes("{id}")
         ? endpoint.path.replace("{id}", idSchema.parse(options.id))
@@ -136,7 +135,16 @@ export function createDemoClient(
 ) {
   const base = apiBase(origin);
   async function call<
-    K extends "demoScenarios" | "demoAssess" | "demoExplain" | "demoTranscribe",
+    K extends
+      | "planningCatalog"
+      | "demoWaterPlan"
+      | "demoWaterExplain"
+      | "planningTranscribe"
+      | "demoScenarios"
+      | "demoAssess"
+      | "demoExplain"
+      | "demoTranscribe"
+      | "demoMessage",
   >(
     operation: K,
     body?: BodyInit,
@@ -157,7 +165,8 @@ export function createDemoClient(
           ...(body
             ? {
                 "Content-Type":
-                  operation === "demoTranscribe"
+                  operation === "demoTranscribe" ||
+                  operation === "planningTranscribe"
                     ? "audio/wav"
                     : "application/json",
               }
@@ -169,6 +178,30 @@ export function createDemoClient(
     return readRpcResponse(operation, response);
   }
   return {
+    planning: (signal?: AbortSignal) =>
+      call("planningCatalog", undefined, undefined, signal),
+    waterPlan: (input: RequestBody<"demoWaterPlan">, signal?: AbortSignal) =>
+      call(
+        "demoWaterPlan",
+        JSON.stringify(endpoints.demoWaterPlan.body.parse(input)),
+        undefined,
+        signal,
+      ),
+    waterExplain: (
+      input: RequestBody<"demoWaterExplain">,
+      signal?: AbortSignal,
+    ) =>
+      call(
+        "demoWaterExplain",
+        JSON.stringify(endpoints.demoWaterExplain.body.parse(input)),
+        undefined,
+        signal,
+      ),
+    planningTranscribe: (
+      audio: Blob,
+      locale: import("@kavach/contracts").DemoLocale,
+      signal?: AbortSignal,
+    ) => call("planningTranscribe", audio, locale, signal),
     scenarios: (signal?: AbortSignal) =>
       call("demoScenarios", undefined, undefined, signal),
     assess: (input: RequestBody<"demoAssess">, signal?: AbortSignal) =>
@@ -182,6 +215,13 @@ export function createDemoClient(
       call(
         "demoExplain",
         JSON.stringify(endpoints.demoExplain.body.parse(input)),
+        undefined,
+        signal,
+      ),
+    message: (input: RequestBody<"demoMessage">, signal?: AbortSignal) =>
+      call(
+        "demoMessage",
+        JSON.stringify(endpoints.demoMessage.body.parse(input)),
         undefined,
         signal,
       ),

@@ -1,5 +1,7 @@
 export const EXPLANATION_VERSION = "grounded-summary/3";
 import type {
+  WaterPlan,
+  WaterExplainInput,
   DemoAssessment,
   DemoLocale,
   ExplanationResult,
@@ -7,6 +9,11 @@ import type {
 } from "@kavach/contracts";
 
 export interface ExplanationProvider {
+  explainWater?(
+    plan: WaterPlan,
+    input: WaterExplainInput,
+    signal: AbortSignal,
+  ): Promise<ExplanationResult>;
   explain(
     input: DemoAssessment,
     locale: DemoLocale,

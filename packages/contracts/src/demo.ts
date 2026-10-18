@@ -128,6 +128,11 @@ export const demoExplanationSchema = demoAssessmentSchema.extend({
   explanation: explanationSchema,
   audio: audioSchema,
 });
+export const demoMessageInputSchema = z.strictObject({
+  text: z.string().trim().min(1).max(1200),
+  locale: demoLocaleSchema,
+  voice: z.boolean().default(false),
+});
 export const voiceQuerySchema = z.strictObject({ locale: demoLocaleSchema });
 export const voiceIntentSchema = z.strictObject({
   intent: z.enum([
@@ -140,21 +145,28 @@ export const voiceIntentSchema = z.strictObject({
   ]),
   irrigation: z.enum(["none", "one", "assured"]).nullable(),
 });
+const interpretedMessageSchema = z.strictObject({
+  status: z.literal("available"),
+  transcript: z.string().max(1200),
+  proposed: voiceIntentSchema,
+  needsConfirmation: z.boolean(),
+  locale: demoLocaleSchema,
+  provider: z.literal("google"),
+  audio: audioSchema,
+});
+const interpretationUnavailableSchema = z.strictObject({
+  status: z.literal("unavailable"),
+  reason: z.string(),
+  retryable: z.boolean(),
+});
+export const messageInterpretationSchema = z.discriminatedUnion("status", [
+  interpretedMessageSchema,
+  interpretationUnavailableSchema,
+]);
+// Keep the existing voice wire contract compatible with the previous web release.
 export const transcriptionSchema = z.discriminatedUnion("status", [
-  z.strictObject({
-    status: z.literal("available"),
-    transcript: z.string().max(1200),
-    proposed: voiceIntentSchema,
-    needsConfirmation: z.literal(true),
-    locale: demoLocaleSchema,
-    provider: z.literal("google"),
-    audio: audioSchema,
-  }),
-  z.strictObject({
-    status: z.literal("unavailable"),
-    reason: z.string(),
-    retryable: z.boolean(),
-  }),
+  interpretedMessageSchema.extend({ needsConfirmation: z.literal(true) }),
+  interpretationUnavailableSchema,
 ]);
 export type DemoLocale = z.infer<typeof demoLocaleSchema>;
 export type DemoInput = z.infer<typeof demoInputSchema>;
