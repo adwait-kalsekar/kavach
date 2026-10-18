@@ -1,6 +1,6 @@
 # Architecture and implementation entry point
 
-Decision date: 17 October 2026. Updated 18 October: the voice-first public sample is implemented and validated locally. The deployed main release remains the earlier health foundation until the next rollout. See [current POC architecture and verification](poc-implementation.md) for the sample, historical rainfall and Google speech/explanation flow. See the [live infrastructure setup log](backend-foundation.md#authorized-live-setup--18-october-2026) for verified hosting.
+Decision date: 17 October 2026. Updated 18 October: the public seasonal-readiness POC is deployed on independent Cloud Run web/API services, with ten-district/three-crop selection, genuine Google text/voice, canonical evidence cards, crop checks, water comparison and the insurance calendar. The full original brief remains incomplete. Start with the [full requirement audit](brief-audit.md), [alignment matrix](brief-alignment.md) and [methods](season-readiness.md); older milestone records below are historical. The walkthrough correction in this change addresses language and short-screen highlighting found during the audit.
 
 Read in order:
 

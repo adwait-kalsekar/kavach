@@ -2387,3 +2387,19 @@
   color: #3a5a40;
   font-weight: 500;
 }
+@media (max-height: 600px) {
+  .fp-tour-dialog {
+    padding: 16px;
+  }
+  .fp-tour-dialog h2 {
+    font-size: 20px;
+    margin: 8px 0;
+  }
+  .fp-tour-dialog p {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .fp-tour-controls {
+    margin-top: 12px;
+  }
+}

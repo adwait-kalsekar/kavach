@@ -1,5 +1,7 @@
 # Kavach documentation
 
+For current completeness, read the [full brief audit](architecture/brief-audit.md). The deployed app is a working POC; the complete risk/sensing/action vision is still unfinished.
+
 Start with the [visual product overview](product/overview.html). Download/open it in any browser; it is a standalone HTML document with no build, network, or API dependencies.
 
 ## Seasonal-readiness implementation

@@ -29,6 +29,9 @@ export const initialInput: WaterPlanningInput = {
 };
 function useStateValue() {
   const [input, setInput] = useState(initialInput);
+  const [seasonView, setSeasonView] = useState<SeasonView | "sources">(
+    "season-summary",
+  );
   const [locale, setLocale] = useState<DemoLocale>(() => {
     try {
       const saved = localStorage.getItem("kavach.locale.v1");
@@ -137,6 +140,8 @@ function useStateValue() {
   return {
     input,
     seasonInput,
+    seasonView,
+    setSeasonView,
     season,
     updateSeason,
     confirm,

@@ -71,7 +71,7 @@ export function SeasonCards({
                   <p>{a.stress.limitation}</p>
                 </details>
               </div>
-              <div className={c("rain-pair")}>
+              <div className={c("rain-pair")} data-tour-focus>
                 <div>
                   <span>{t.current}</span>
                   <strong>

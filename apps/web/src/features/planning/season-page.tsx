@@ -1,8 +1,7 @@
 import { protectionLabel } from "./protection-card";
 import { localizedAction } from "./season-action-copy";
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import type { SeasonInput, SeasonView } from "@kavach/contracts";
+import type { SeasonInput } from "@kavach/contracts";
 import { usePlanning, cls as c, useFormat } from "./state";
 import { cropNames } from "./planning-copy";
 import { seasonCopy } from "./season-copy";
@@ -13,7 +12,8 @@ export function SeasonPage() {
     t = seasonCopy[app.locale],
     f = useFormat(),
     a = app.season.data?.data;
-  const [view, setView] = useState<SeasonView | "sources">("season-summary");
+  const view = app.seasonView,
+    setView = app.setSeasonView;
   const select = (
     key:
       | "stage"
@@ -58,7 +58,7 @@ export function SeasonPage() {
         data-tour="profile"
         aria-label={t.field}
       >
-        <div className={c("form-grid")}>
+        <div className={c("form-grid")} data-tour-focus>
           <label>
             {t.location}
             <select
@@ -102,7 +102,7 @@ export function SeasonPage() {
       </section>
       <section className={c("intent-section")} data-tour="intent">
         <h2>{t.task}</h2>
-        <div className={c("intent-options")}>
+        <div className={c("intent-options")} data-tour-focus>
           {(
             [
               ["sowing", t.sowing, "↗"],
