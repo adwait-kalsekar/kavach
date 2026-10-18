@@ -1,5 +1,7 @@
 import type { DemoLocale } from "@kavach/contracts";
 const en = {
+  waterGap: "Water gap for this option",
+  waterLeft: "Water left in this budget",
   situation: "My situation",
   compare: "Compare",
   steps: "Next steps",
@@ -10,9 +12,9 @@ const en = {
   compareTitle: "What can your water cover?",
   compareIntro:
     "See how your stated water compares with two areas. Change the example inputs to explore.",
-  stepsTitle: "Leave with clear next steps.",
+  stepsTitle: "Your selected comparison.",
   stepsIntro:
-    "Keep your comparison and the questions to discuss with a local adviser.",
+    "See the water balance for your selected area, then print the details to discuss with an adviser.",
   location: "Location",
   crop: "Planned crop",
   example: "Demonstration · Maharashtra",
@@ -41,7 +43,7 @@ const en = {
   under: "under these assumptions",
   choose: "Use this comparison",
   selected: "Selected for discussion",
-  next: "See my next steps",
+  next: "Review this comparison",
   notAdvice:
     "This checks a water budget. Neither option is a sowing recommendation.",
   help: "Ask about this",
@@ -343,4 +345,17 @@ Object.assign(planningCopy["mr-IN"], {
   optional: "माहीत नसेल तर रिकामे ठेवा",
   from: "स्रोत",
   noSave: "एक पाळी · उदाहरणातील गृहीतके · पेरणीची परवानगी नाही",
+});
+
+Object.assign(planningCopy["hi-IN"], {
+  waterGap: "इस विकल्प में पानी की कमी",
+  waterLeft: "इस हिसाब में बचा पानी",
+  next: "इस तुलना का सार देखें",
+  stepsTitle: "आपकी चुनी हुई तुलना।",
+});
+Object.assign(planningCopy["mr-IN"], {
+  waterGap: "या पर्यायासाठी पाण्याची कमतरता",
+  waterLeft: "या हिशेबातील उरलेले पाणी",
+  next: "या तुलनेचा सारांश पहा",
+  stepsTitle: "तुम्ही निवडलेली तुलना.",
 });

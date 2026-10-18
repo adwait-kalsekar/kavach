@@ -60,8 +60,15 @@ const waterCompareRoute = createRoute({
 });
 const nextStepsRoute = createRoute({
   getParentRoute: () => planningRoute,
-  path: "/next-steps",
+  path: "/discussion-sheet",
   component: NextStepsPage,
+});
+const legacyNextStepsRoute = createRoute({
+  getParentRoute: () => planningRoute,
+  path: "/next-steps",
+  beforeLoad: () => {
+    throw redirect({ to: "/compare", replace: true });
+  },
 });
 const evidenceRoute = createRoute({
   getParentRoute: () => planningRoute,
@@ -116,6 +123,7 @@ export const router = createRouter({
       situationRoute,
       waterCompareRoute,
       nextStepsRoute,
+      legacyNextStepsRoute,
       evidenceRoute,
       talkRoute,
     ]),

@@ -57,7 +57,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
         .nth(1)
         .click();
       await page
-        .getByRole("link", { name: "See my next steps", exact: true })
+        .getByRole("link", { name: "Review this comparison", exact: true })
         .click();
       await page
         .getByRole("heading", { name: "Check before acting", exact: true })

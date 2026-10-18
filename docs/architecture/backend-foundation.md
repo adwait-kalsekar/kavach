@@ -133,3 +133,8 @@ The UI refinement passes build/check and the 12 existing browser cases. Its sepa
 ### Cost-control verification — 18 October 2026
 
 The owner completed Earth Engine registration; the live configuration reports noncommercial registration and constant compute succeeded. A daily consumer quota of 3,600 EECU-seconds was requested and verified separately from the producer monthly allocation of 540,000 seconds. No satellite export, recurring pipeline, runtime Earth Engine permission or browser/provider connection was added. Both live Cloud Run service maxima were reduced to one; revision deploy/bootstrap defaults now retain max one, min zero. A project-scoped INR 1,000 monthly gross-usage alert budget excludes credits and has actual 50/90/100% plus forecasted 100% thresholds. These are exposure controls, not a guaranteed bill cap or automated billing shutdown. Free Trial versus upgraded paid status still requires owner console confirmation. See the cost safeguards in the deployment setup guide for operational limitations.
+
+
+### Navigation cleanup before readiness integration
+
+Removed the redundant Next Steps navigation destination. The three primary tabs are situation, comparison and Talk. A selected water comparison opens `/discussion-sheet`, with its actual water gap/remaining balance, source checks and print. Direct legacy `/next-steps` links return to comparison, and an unselected discussion-sheet link cannot imply a saved plan. No API/security/provider behavior changed. Local verification is recorded in the current readiness execution ledger.

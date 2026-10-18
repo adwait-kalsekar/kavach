@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
-import { Link, Outlet, useLocation } from "@tanstack/react-router";
+import { Link, Navigate, Outlet, useLocation } from "@tanstack/react-router";
 import { usePlanning, useFormat, cls as c } from "./state";
 import { planningCopy, cropNames } from "./planning-copy";
 import { InputDialog } from "./input-dialog";
@@ -26,7 +26,6 @@ export function PlanningLayout() {
         [
           { to: "/situation", label: t.situation, icon: "sample" },
           { to: "/compare", label: t.compare, icon: "water" },
-          { to: "/next-steps", label: t.steps, icon: "check" },
           {
             to: "/talk",
             label:
@@ -41,6 +40,11 @@ export function PlanningLayout() {
       ).map((v) => (
         <Link
           className={c("nav-button")}
+          aria-current={
+            v.to === "/compare" && path === "/discussion-sheet"
+              ? "page"
+              : undefined
+          }
           activeProps={{ "aria-current": "page" }}
           to={v.to}
           key={v.to}
@@ -379,13 +383,20 @@ export function ComparePage() {
                 {t.help}
               </Link>
               {app.selected ? (
-                <Link className={c("primary button-link")} to="/next-steps">
+                <Link
+                  className={c("primary button-link")}
+                  to="/discussion-sheet"
+                >
                   {t.next}
                 </Link>
               ) : (
-                <button className={c("primary")} disabled>
-                  {t.next}
-                </button>
+                <p className={c("small muted")}>
+                  {app.locale === "en-IN"
+                    ? "Choose an area above to review and print its comparison."
+                    : app.locale === "mr-IN"
+                      ? "तुलना पाहण्यासाठी आणि छापण्यासाठी वरचे क्षेत्र निवडा."
+                      : "तुलना देखने और प्रिंट करने के लिए ऊपर क्षेत्र चुनें।"}
+                </p>
               )}
             </div>
           </section>
@@ -404,101 +415,117 @@ export function NextStepsPage() {
       result?.status === "available"
         ? result.options.find((o) => o.id === app.selected)
         : null;
+  if (!option || !plan) return <Navigate to="/compare" replace />;
   return (
     <>
       <Intro title={t.stepsTitle}>{t.stepsIntro}</Intro>
-      {!option || !plan ? (
-        <section className={c("surface empty")}>
-          <h2>{t.first}</h2>
-          <p>{t.firstDetail}</p>
-          <Link className={c("primary button-link")} to="/compare">
-            {t.start}
-          </Link>
+      <section className={c("outcome-summary")}>
+        <div>
+          <p className={c("small")}>
+            {option.balanceLitres < 0 ? t.waterGap : t.waterLeft}
+          </p>
+          <strong>{f(Math.abs(option.balanceLitres))} L</strong>
+          <p>
+            {f(option.areaAcres, 2)} acres ·{" "}
+            {cropNames[app.locale][app.input.crop]} · {plan.regionName}
+          </p>
+        </div>
+        <p>
+          {option.balanceLitres < 0
+            ? app.locale === "en-IN"
+              ? "This area needs more water than you entered for this application. Check the supply estimate or compare another area before relying on this option."
+              : app.locale === "mr-IN"
+                ? "या क्षेत्रासाठी नोंदवलेल्या पाण्यापेक्षा जास्त पाणी लागते. पुरवठ्याचा अंदाज तपासा किंवा दुसऱ्या क्षेत्राशी तुलना करा."
+                : "इस क्षेत्र को दर्ज पानी से अधिक पानी चाहिए। आपूर्ति का अनुमान जांचें या दूसरे क्षेत्र से तुलना करें।"
+            : app.locale === "en-IN"
+              ? "This option fits the water amount you entered for one illustrative application. It does not establish whether sowing or this application is appropriate."
+              : app.locale === "mr-IN"
+                ? "एका उदाहरणातील पाळीसाठी नोंदवलेले पाणी पुरते. यावरून पेरणी किंवा ही पाळी योग्य आहे हे ठरत नाही."
+                : "एक उदाहरण की सिंचाई के लिए दर्ज पानी पर्याप्त है। इससे बुवाई या यह सिंचाई उचित है, यह तय नहीं होता।"}
+        </p>
+      </section>
+      <div className={c("split")}>
+        <section className={c("surface")}>
+          <h2>{t.checks}</h2>
+          {[
+            [t.checkWater, t.waterDetail],
+            [t.checkField, t.fieldDetail],
+            [t.checkApplication, t.applicationDetail],
+          ].map(([title, detail], i) => (
+            <div key={title} className={c("step")}>
+              <span className={c("number")}>{i + 1}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{detail}</p>
+              </div>
+            </div>
+          ))}
+          <div className={c("notice section-gap")}>
+            <strong>{t.unreviewed}</strong>
+            {t.unreviewedDetail}
+          </div>
         </section>
-      ) : (
-        <div className={c("split")}>
-          <section className={c("surface")}>
-            <h2>{t.checks}</h2>
+        <section className={c("surface receipt")}>
+          <p className={c("small muted")}>{t.sheet}</p>
+          <h2>
+            {cropNames[app.locale][app.input.crop]} · {plan.regionName}
+          </h2>
+          <dl>
             {[
-              [t.checkWater, t.waterDetail],
-              [t.checkField, t.fieldDetail],
-              [t.checkApplication, t.applicationDetail],
-            ].map(([title, detail], i) => (
-              <div key={title} className={c("step")}>
-                <span className={c("number")}>{i + 1}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{detail}</p>
-                </div>
+              [t.area, f(option.areaAcres, 2)],
+              [t.water, f(app.input.usableWaterLitres!) + " L"],
+              [t.needs, f(option.requiredWaterLitres) + " L"],
+              [
+                option.balanceLitres < 0 ? t.short : t.remain,
+                f(Math.abs(option.balanceLitres)) + " L",
+              ],
+              [t.depth, f(app.input.netApplicationMm!) + " mm"],
+              [t.efficiency, f(app.input.efficiencyPct!) + "%"],
+              [t.moisture, t.notChecked],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
               </div>
             ))}
-            <div className={c("notice section-gap")}>
-              <strong>{t.unreviewed}</strong>
-              {t.unreviewedDetail}
-            </div>
-          </section>
-          <section className={c("surface receipt")}>
-            <p className={c("small muted")}>{t.sheet}</p>
-            <h2>
-              {cropNames[app.locale][app.input.crop]} · {plan.regionName}
-            </h2>
-            <dl>
-              {[
-                [t.area, f(option.areaAcres, 2)],
-                [t.water, f(app.input.usableWaterLitres!) + " L"],
-                [t.needs, f(option.requiredWaterLitres) + " L"],
-                [
-                  option.balanceLitres < 0 ? t.short : t.remain,
-                  f(Math.abs(option.balanceLitres)) + " L",
-                ],
-                [t.depth, f(app.input.netApplicationMm!) + " mm"],
-                [t.efficiency, f(app.input.efficiencyPct!) + "%"],
-                [t.moisture, t.notChecked],
-              ].map(([label, value]) => (
-                <div key={label}>
-                  <dt>{label}</dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className={c("small muted")}>{t.noSave}</p>
-            <p className={c("small muted")}>
-              {t.one} {t.caution}
-            </p>
-            <details className={c("section-gap")}>
-              <summary>{t.method}</summary>
-              <p className={c("small")}>
-                m³ = acres × 0.40468564224 × mm × 10 ÷ (efficiency / 100). L =
-                m³ × 1,000.
-              </p>
-              <p className={c("small muted")}>{result?.methodVersion}</p>
-              <a href={plan.method.url} target="_blank" rel="noreferrer">
-                {plan.method.title}
-              </a>
-            </details>
-            <div className={c("stack section-gap no-print")}>
-              <button className={c("primary")} onClick={() => window.print()}>
-                {t.print}
-              </button>
-              <Link className={c("secondary button-link")} to="/compare">
-                {t.edit}
-              </Link>
-            </div>
-            <p className={c("print-only small")}>
-              {t.sample} · {new Date().toLocaleString(app.locale)}
-              <br />
-              {result?.methodVersion} · {plan.method.title}
-              <br />
+          </dl>
+          <p className={c("small muted")}>{t.noSave}</p>
+          <p className={c("small muted")}>
+            {t.one} {t.caution}
+          </p>
+          <details className={c("section-gap")}>
+            <summary>{t.method}</summary>
+            <p className={c("small")}>
               m³ = acres × 0.40468564224 × mm × 10 ÷ (efficiency / 100). L = m³
               × 1,000.
-              <br />
-              {plan.method.url}
-              <br />
-              {t.unreviewedDetail}
             </p>
-          </section>
-        </div>
-      )}
+            <p className={c("small muted")}>{result?.methodVersion}</p>
+            <a href={plan.method.url} target="_blank" rel="noreferrer">
+              {plan.method.title}
+            </a>
+          </details>
+          <div className={c("stack section-gap no-print")}>
+            <button className={c("primary")} onClick={() => window.print()}>
+              {t.print}
+            </button>
+            <Link className={c("secondary button-link")} to="/compare">
+              {t.edit}
+            </Link>
+          </div>
+          <p className={c("print-only small")}>
+            {t.sample} · {new Date().toLocaleString(app.locale)}
+            <br />
+            {result?.methodVersion} · {plan.method.title}
+            <br />
+            m³ = acres × 0.40468564224 × mm × 10 ÷ (efficiency / 100). L = m³ ×
+            1,000.
+            <br />
+            {plan.method.url}
+            <br />
+            {t.unreviewedDetail}
+          </p>
+        </section>
+      </div>
     </>
   );
 }
