@@ -8,11 +8,20 @@ Start with the [visual product overview](product/overview.html). Download/open i
 
 The user’s [original Kavach brief](reference/original-project-brief.md) defines the target: Sense → Compare → Decide → Explain across ten Maharashtra districts and three crops. Start with the [alignment matrix](architecture/brief-alignment.md) and [source/method architecture](architecture/season-readiness.md). These explicitly distinguish the implemented prototype from remaining scientific and source-coverage requirements.
 
+## Submission materials and walkthrough
+
+- [Live application](https://kavach-web-62041733238.asia-south1.run.app)
+- [Video walkthrough — 3:41](https://drive.google.com/file/d/16_JQ9Ign1FwZ1iHbyehvFg2r87MV0ffZ/view?usp=sharing)
+- [Submission pitch deck](submission/kavach-ai-builder-cup-pitch-deck.pdf), the PDF supplied by the owner on 18 October 2026.
+- [Step-by-step application walkthrough](../README.md#walkthrough)
+
+The pitch deck includes the revised architecture diagram. The PDF is retained as the supplied submission artifact; it is not regenerated from Google Slides automatically. Portal submission and its receipt are separate from these materials.
+
 ## Active submission sprint
 
 [Current POC implementation](architecture/poc-implementation.md) records the locally validated voice-first sample, Google integration, evidence and production limitations. The original sprint/build specifications are historical planning context; subsequent user approval added bounded voice and three languages.
 
-[Eight-hour POC handoff](submission/README.md) is the current implementation order for the October 18 deadline. [Build/API specification](submission/build-spec.md), [cloud/model runbook](submission/cloud-and-model.md), [submission checklist](submission/submission-checklist.md) and [deck starter](submission/deck-outline.md) record the original plan and remaining submission work. The POC code is now implemented locally; rollout/deck/video/upload are separate steps.
+[Eight-hour POC handoff](submission/README.md) is the current implementation order for the October 18 deadline. [Build/API specification](submission/build-spec.md), [cloud/model runbook](submission/cloud-and-model.md), [submission checklist](submission/submission-checklist.md) and [deck starter](submission/deck-outline.md) record the original plan and remaining submission work. The public POC is deployed, and the deck/video are linked above. The sprint documents retain historical proposals; portal upload and receipt are separate steps.
 
 ## Index
 
