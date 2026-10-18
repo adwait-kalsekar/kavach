@@ -130,7 +130,7 @@ The workflow summary provides the public URL, commit, image digest, new revision
 2. Scope it to this project, choose a monthly amount you are comfortable with, and add alert thresholds such as 50%, 90% and 100%.
 3. Check the notification recipients. Alerts-only budgets do not stop spending. Newer spend-cap budgets have service/account restrictions; do not assume a universal hard cap.
 4. Open **Cloud Run → kavach-web / kavach-api → Revisions** for image/traffic history and **Logs** for runtime/request failures.
-5. Initial settings per service are min instances 0, max 3, 1 CPU/512 MiB and request-based CPU billing. These are POC defaults, not measured cost guarantees; Firestore, images and logs have separate costs.
+5. Initial settings per service are min instances 0, max 1, 1 CPU/512 MiB and request-based CPU billing. These are POC defaults, not measured cost guarantees; Firestore, images and logs have separate costs.
 6. Configure Artifact Registry cleanup after reviewing rollback retention. Keep active and previous known-good digests available.
 
 ## Rollback and common errors
@@ -169,3 +169,16 @@ After routing/certificates are verified, change the production APP_ORIGIN and AP
 The new implementation uses server-only `EXPLANATION_PROVIDER=google`, `GOOGLE_MODEL_ID=gemini-3.8-flash`, `GOOGLE_CLOUD_LOCATION=global` and `SPEECH_LOCATION=us`. Deployment config passes these explicitly to Hono, with these reviewed defaults when optional GitHub variables are absent. `configure-github.mjs` accepts the four optional non-secret variables alongside the original bootstrap output. Local defaults keep the provider disabled; `LOCAL_GCLOUD_AUTH=true` is an explicit local-only CLI-token mode and is rejected in production.
 
 Bootstrap now enables Vertex AI, Speech-to-Text and Text-to-Speech and gives only the API runtime Vertex AI User, Speech Client and Service Usage Consumer, alongside its Firestore role. These APIs/grants were applied to the selected project during this authorized POC setup. Do not grant them to web or CI. The new demo cache TTL was verified ACTIVE; expiry checks are still enforced by the application. Actual attached Cloud Run model/speech calls must pass the next rollout's smoke check; local owner-credential calls are not proof of runtime identity access. See [POC architecture](../architecture/poc-implementation.md) for current implementation and validation.
+
+
+### Verified cost safeguards — 18 October 2026
+
+Earth Engine registration is now verified as `REGISTERED_NOT_COMMERCIALLY`; a constant-value compute request succeeded. The project has a producer monthly allocation of 540,000 EECU-seconds (150 EECU-hours). A consumer daily limit of **3,600 EECU-seconds** replaces the unlimited daily default. This is aggregate compute time, not elapsed wall time. Google documents this daily quota as approximate and potentially exceeded by a query; it is not a strict monetary cap. No satellite export, recurring ingestion or public Earth Engine compute route was started during this change. Use bounded manual precomputation and packaged snapshots for the POC; do not trigger Earth Engine per page view.
+
+Both live Cloud Run services now have a service-level maximum of **one instance**, retain request-based CPU and scale-to-zero configuration. Bootstrap and subsequent revision deployments use max one as well. Scaling limits reduce exposure but do not cap all charges; database, network, registry and logging costs remain separate.
+
+A project-only **INR 1,000 monthly gross-usage alert budget** was created, with actual thresholds of 50%, 90%, 100% and forecasted 100%. Credits are excluded from the calculation so trial credit does not hide resource consumption. Default billing-account IAM recipients remain enabled. This budget is a warning threshold, not authorization to spend that amount, a cost estimate, a hard cap or an automated shutdown.
+
+The billing account API confirms an open INR account and enabled project billing, but does not establish whether the owner upgraded from Free Trial. Confirm the status in Billing Overview. Google's unupgraded Free Trial does not automatically become a paid account when its credit/time expires. A paid account with promotional credits can continue charging after credits expire. This deployment does not automatically detach project billing at a threshold/date. If paid billing is active, closing/detaching billing is the strongest shutdown option and stops the demo; retained data/recovery implications must be reviewed before execution. Do not assume budget alerts or a local script provide a guaranteed unattended spending cap.
+
+References: [Free Trial FAQ](https://cloud.google.com/signup-faqs), [Earth Engine cost controls](https://developers.google.com/earth-engine/guides/cost_controls).

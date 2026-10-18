@@ -143,7 +143,7 @@ export async function deployApplication({
         "--no-traffic",
         `--port=${s.port}`,
         "--min-instances=0",
-        "--max-instances=3",
+        "--max-instances=1",
         "--concurrency=20",
         "--cpu=1",
         "--memory=512Mi",

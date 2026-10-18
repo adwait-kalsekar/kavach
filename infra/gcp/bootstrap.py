@@ -116,7 +116,7 @@ def apply(c, use_existing_database=False):
         if service is None:
             call(["run", "deploy", service_name, "--region", region, *common,
                   "--image=us-docker.pkg.dev/cloudrun/container/hello", "--service-account", account,
-                  "--invoker-iam-check", "--no-allow-unauthenticated", "--min-instances=0", "--max-instances=3",
+                  "--invoker-iam-check", "--no-allow-unauthenticated", "--min-instances=0", "--max-instances=1",
                   "--cpu=1", "--memory=512Mi", "--labels=kavach-managed=bootstrap"])
         elif service.get("metadata", {}).get("labels", {}).get("kavach-managed") != "bootstrap":
             raise RuntimeError("An unrecognized Cloud Run service already uses this name. Refusing to take it over.")
