@@ -43,6 +43,13 @@ try {
     throw new Error("Packaged API did not become ready");
   }
   await ready();
+  assert.equal((await fetch(origin + "/")).status, 404);
+  const health = await (await fetch(origin + "/api/v1/health")).json();
+  assert.equal(health.data.service, "kavach-api");
+  assert.notEqual(
+    (await fetch(origin + "/api/v1/nonexistent")).headers.get("content-type"),
+    "text/html",
+  );
   assert.equal((await fetch(origin + "/healthz")).status, 200);
   let cookie;
   let csrf;

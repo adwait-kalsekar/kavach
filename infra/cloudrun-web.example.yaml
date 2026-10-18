@@ -1,0 +1,29 @@
+# Template only: replace project, image digest, runtime identity and origin before deployment.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: kavach-web
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "3"
+    spec:
+      serviceAccountName: kavach-web-runtime@REPLACE_PROJECT_ID.iam.gserviceaccount.com
+      containerConcurrency: 20
+      timeoutSeconds: 60
+      containers:
+        - image: asia-south1-docker.pkg.dev/REPLACE_PROJECT_ID/kavach/kavach-web@sha256:REPLACE_DIGEST
+          ports: [{ containerPort: 8081 }]
+          env:
+            - { name: API_ORIGIN, value: "https://REPLACE_API_SERVICE_HOST" }
+            - { name: RELEASE_SHA, value: "REPLACE_SOURCE_COMMIT_40_HEX" }
+          resources:
+            limits: { cpu: "1", memory: 512Mi }
+          startupProbe:
+            httpGet: { path: /readyz, port: 8081 }
+            periodSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8081 }
+            periodSeconds: 30

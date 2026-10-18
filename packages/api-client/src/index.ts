@@ -35,7 +35,20 @@ export type Options<K extends Operation> = {
     ? { body: RequestBody<K> }
     : { body?: never });
 
-export function createApiClient(fetcher: typeof fetch = fetch) {
+function apiBase(origin: string) {
+  if (!origin) return "";
+  const url = new URL(origin);
+  if (
+    url.origin !== origin ||
+    !["https:", "http:"].includes(url.protocol) ||
+    url.username ||
+    url.password
+  )
+    throw new Error("API origin must be an exact HTTP(S) origin.");
+  return origin;
+}
+export function createApiClient(fetcher: typeof fetch = fetch, origin = "") {
+  const base = apiBase(origin);
   return {
     async request<K extends Operation>(
       operation: K,
@@ -64,17 +77,49 @@ export function createApiClient(fetcher: typeof fetch = fetch) {
         body = JSON.stringify(endpoint.body.parse(options.body));
         headers["Content-Type"] = "application/json";
       }
-      const response = await fetcher(path + (query.size ? "?" + query : ""), {
-        method: endpoint.method,
-        headers,
-        body,
-        credentials: "same-origin",
-        signal: options.signal,
-      });
+      const response = await fetcher(
+        base + path + (query.size ? "?" + query : ""),
+        {
+          method: endpoint.method,
+          headers,
+          body,
+          credentials: base ? "include" : "same-origin",
+          signal: options.signal,
+        },
+      );
       const payload: unknown = await response.json();
       if (!response.ok)
         throw new KavachApiError(response.status, errorSchema.parse(payload));
       return endpoint.response.parse(payload) as ResponseBody<K>;
     },
   };
+}
+
+/** Type-only server schema: SDKs/configuration never become browser imports. */
+import type { AppType } from "@kavach/api/rpc";
+import { hc } from "hono/client";
+
+export function createRpcClient(fetcher: typeof fetch = fetch, origin = "") {
+  const base = apiBase(origin);
+  return hc<AppType>(base || "/", {
+    fetch: (
+      input: Parameters<typeof fetch>[0],
+      init?: Parameters<typeof fetch>[1],
+    ) =>
+      fetcher(input, {
+        ...init,
+        credentials: base ? "include" : "same-origin",
+      }),
+  });
+}
+
+/** RPC supplies compile-time completion; Zod still checks the actual wire payload. */
+export async function readRpcResponse<K extends Operation>(
+  operation: K,
+  response: Response,
+): Promise<ResponseBody<K>> {
+  const payload: unknown = await response.json();
+  if (!response.ok)
+    throw new KavachApiError(response.status, errorSchema.parse(payload));
+  return endpoints[operation].response.parse(payload) as ResponseBody<K>;
 }

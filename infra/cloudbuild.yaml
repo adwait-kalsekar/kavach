@@ -1,20 +1,16 @@
-# Build/push only. Does not deploy or create a database.
+# Optional build/push only; GitHub Actions is the production deployment controller.
 steps:
   - name: gcr.io/cloud-builders/docker
-    args:
-      [
-        "build",
-        "-f",
-        "infra/Dockerfile.api",
-        "-t",
-        "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$BUILD_ID",
-        ".",
-      ]
+    args: [build, -f, infra/Dockerfile.api, --target, builder, -t, kavach-builder, .]
+  - name: gcr.io/cloud-builders/docker
+    args: [build, -f, infra/Dockerfile.api, -t, "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/kavach-api:$BUILD_ID", .]
+  - name: gcr.io/cloud-builders/docker
+    args: [build, -f, infra/Dockerfile.web, -t, "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/kavach-web:$BUILD_ID", .]
 images:
-  ["${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$BUILD_ID"]
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/kavach-api:$BUILD_ID"
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/kavach-web:$BUILD_ID"
 substitutions:
   _REGION: asia-south1
   _REPOSITORY: kavach
-  _SERVICE: kavach-api
 options:
   logging: CLOUD_LOGGING_ONLY

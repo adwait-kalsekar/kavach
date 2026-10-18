@@ -4,11 +4,15 @@ Plan date: 17 October 2026. Stack decisions are locked in [stack-and-gcp.md](sta
 
 The user deferred cloud project setup. Complete local build, emulator-backed flows, tests and reviewable deployment artifacts before requesting project-specific setup. No deployment or resource creation is implied by this plan.
 
+## Deadline override — 18 October 2026
+
+The owner now has eight hours and confirmed project console access/billing. Follow [the active submission sprint](../submission/README.md) and its [build specification](../submission/build-spec.md) instead of attempting the full roadmap below. The selected deadline path adds public, synthetic, cookie-free scenario assessment/comparison and a bounded Google-model explanation; private ownership endpoints retain all protections. Domain setup, saved-plan UI, freeform conversations and wider evidence ingestion remain out of the sprint. These additions are proposed work, not implemented by the handoff.
+
 ## Current repository state
 
 - Backend-first scope and completed batch gates are recorded in [backend foundation](backend-foundation.md); that document takes precedence over the migration-first sequence below.
 - Hono API, strict shared contracts, typed client, pure decision module, SQLite/Firestore adapters, tests and deployment templates are implemented.
-- `apps/web` and `apps/docs` remain Next.js starters. React/Vite migration is deferred until the API foundation is merged.
+- Backend foundation merged in PR #1. `apps/web` is now React/Vite with a real health RPC screen; [web foundation](web-foundation.md) records the current batch. `apps/docs` remains a separate Next starter.
 - The provisional Next API sketch was removed from the application tree; it is not part of the backend implementation.
 - Original product/research/architecture docs were published on main at `599ab97`. Feature worktrees must fetch and merge/rebase main to receive them.
 - Account login, reviewed agronomic guidance, AI conversations and live GCP deployment remain future work.
@@ -29,7 +33,7 @@ The steps below retain the broader target and acceptance criteria. They do not r
 - Scaffold Hono `app` factory plus Node `server` entry, request IDs, error envelope, body limits, config validation and process liveness.
 - Retain `apps/docs` as a starter unless its removal is explicitly needed; root `docs/` is the architecture/research authority. Scope POC builds to web/API and dependencies.
 - Add package builds/types/tests and correct Turbo `dist` outputs. Shared domain/contracts must build before dependents; credentials cannot enter browser bundles or cached outputs.
-- Vite development proxy maps `/api` to API server. Add deep-link and API JSON-404 behavior in the production static host.
+- Vite serves UI assets and public API-origin configuration; browser calls Hono directly with exact CORS. Add deep-link and API JSON-404 behavior in the production static host.
 
 **Gate:** clean install and scoped build/type checks pass; frontend loads with a typed API capability response; production static-host smoke test does not serve HTML for missing API/assets. No cloud account needed.
 
@@ -98,12 +102,12 @@ The steps below retain the broader target and acceptance criteria. They do not r
 
 **Depends on:** core 0–5. **Own:** deploy files, CI, runbook and end-to-end checks.
 
-- Build one non-root container from the root context with web static output + compiled API. Use configured `PORT`, graceful shutdown, cache headers and bounded resource settings.
+- Build separate non-root runtime images from the root context: web static output in Nginx, compiled API in Node. Use configured `PORT`, graceful shutdown, cache headers and bounded resource settings.
 - Prepare Cloud Build/Artifact Registry/Cloud Run definitions and environment examples without real credentials. The frontend contains no Firebase/Auth/model provider client configuration or secret; it connects only to Hono.
 - When the user supplies project setup: verify IAM, Firestore/indexes/rules, server session/CSRF configuration, Vertex model/quota/location and service URL; then deploy the reviewed artifact.
 - Run one live end-to-end journey: identity → confirmed context → real evidence → assessment → question → confirmed scenario → save → restart/reload → same owned snapshot.
 - Check denied cross-user reads and data/provider/model failure behavior; verify no broken deep links or secrets in built frontend assets.
-- Assert the browser's full request trace stays on the Hono origin, including sessions, streaming, source views and any media. No direct service connection or signed object-storage bypass is permitted.
+- Assert the browser's assets stay on the web origin and all API/service requests target only Hono, including sessions, streaming, source views and any media. No direct service connection or signed object-storage bypass is permitted.
 - Record actual supported capabilities, tests and limitations in README. The demo must distinguish actual data from labeled scenarios.
 
 **Gate:** functional Google Cloud URL, public source repository, real Google AI interaction, persisted owned plans and honest uncertainty/error states. Prepare PDF architecture/business-case deck and strictly-under-three-minute demo separately.

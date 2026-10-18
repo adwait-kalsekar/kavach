@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { Hono, type Context } from "hono";
+import { Hono, type Context, type MiddlewareHandler } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import {
   listQuerySchema,
   openApiDocument,
   type Operation,
-  type RequestBody,
+  type ResponseBody,
 } from "@kavach/contracts";
 import { sourceReferences } from "@kavach/domain";
 import type { Config } from "./config.js";
@@ -112,12 +112,13 @@ export function createApp({
   app.use("*", async (c, next) => {
     c.set("requestId", randomUUID());
     c.header("X-Request-ID", c.get("requestId"));
+    if (config.releaseSha) c.header("X-Release-SHA", config.releaseSha);
     c.header("Cache-Control", "no-store");
     c.header("X-Content-Type-Options", "nosniff");
     c.header("Referrer-Policy", "same-origin");
     c.header(
       "Content-Security-Policy",
-      "default-src 'none'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'",
+      "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
     );
     await next();
   });
@@ -183,18 +184,54 @@ export function createApp({
 
   app.use("/api/v1/*", async (c, next) => {
     const origin = c.req.header("origin");
+    const healthOnly = [
+      "/api/v1/health",
+      "/api/v1/capabilities",
+      "/api/v1/openapi.json",
+    ].includes(c.req.path);
     if (
       (origin && origin !== config.origin) ||
-      c.req.header("sec-fetch-site") === "cross-site"
+      (!healthOnly && c.req.header("sec-fetch-site") === "cross-site")
     )
       throw new ServiceError(
         403,
         "FORBIDDEN",
-        "Only same-origin application requests are accepted.",
+        "Only the configured application origin is accepted. Cross-site guest cookies require sibling custom domains.",
       );
+    if (origin === config.origin) {
+      c.header("Access-Control-Allow-Origin", config.origin);
+      c.header("Access-Control-Allow-Credentials", "true");
+      c.header("Access-Control-Expose-Headers", "X-Request-ID, X-Release-SHA");
+      c.header("Vary", "Origin");
+    }
+    if (c.req.method === "OPTIONS") {
+      const method = c.req.header("access-control-request-method");
+      const headers = (c.req.header("access-control-request-headers") || "")
+        .toLowerCase()
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
+      if (
+        origin !== config.origin ||
+        !method ||
+        !["GET", "POST", "PATCH", "DELETE"].includes(method) ||
+        headers.some(
+          (h) =>
+            !["content-type", "x-csrf-token", "idempotency-key"].includes(h),
+        )
+      )
+        throw new ServiceError(403, "FORBIDDEN", "Preflight is not permitted.");
+      c.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+      c.header(
+        "Access-Control-Allow-Headers",
+        "Content-Type, X-CSRF-Token, Idempotency-Key",
+      );
+      return c.body(null, 204);
+    }
     const session = await sessions.resolve(getCookie(c, config.cookieName));
     const path = c.req.path;
     const publicPath =
+      path === "/api/v1/health" ||
       path === "/api/v1/capabilities" ||
       path === "/api/v1/openapi.json" ||
       path === "/api/v1/session";
@@ -204,18 +241,6 @@ export function createApp({
         "UNAUTHORIZED",
         "Start a guest session before accessing records.",
       );
-    if (!["GET", "HEAD"].includes(c.req.method)) {
-      if (
-        origin !== config.origin ||
-        !session ||
-        !equalSecret(c.req.header("x-csrf-token") || "", session.csrfToken)
-      )
-        throw new ServiceError(
-          403,
-          "FORBIDDEN",
-          "A valid same-origin session and CSRF token are required.",
-        );
-    }
     if (session) c.set("session", session);
     if (session?.ownerId) {
       c.set("ownerId", session.ownerId);
@@ -224,112 +249,273 @@ export function createApp({
     await next();
   });
 
-  function register<K extends Operation>(
-    name: K,
-    handler: (c: Ctx, body: RequestBody<K>) => Promise<unknown>,
-  ) {
+  function respond<K extends Operation>(name: K, data: unknown, c: Ctx) {
     const endpoint = endpoints[name];
-    app.on(endpoint.method, endpoint.path.replace("{id}", ":id"), async (c) => {
-      if (c.req.param("id") !== undefined) idSchema.parse(c.req.param("id"));
-      if ("idempotent" in endpoint)
-        c.set(
-          "idempotencyKey",
-          idSchema.parse(c.req.header("idempotency-key")),
-        );
-      const body =
-        "body" in endpoint ? endpoint.body.parse(await readBody(c)) : undefined;
-      const data = await handler(c, body as RequestBody<K>);
-      const parsed = endpoint.response.safeParse({
-        data,
-        meta: { requestId: c.get("requestId") },
-      });
-      if (!parsed.success)
-        throw new ServiceError(
-          500,
-          "INTERNAL_ERROR",
-          "The service produced an invalid response.",
-          true,
-        );
-      return c.json(parsed.data, endpoint.status);
+    const parsed = endpoint.response.safeParse({
+      data,
+      meta: { requestId: c.get("requestId") },
     });
+    if (!parsed.success)
+      throw new ServiceError(
+        500,
+        "INTERNAL_ERROR",
+        "The service produced an invalid response.",
+        true,
+      );
+    return c.json(parsed.data as ResponseBody<K>, endpoint.status);
   }
-  const id = (c: Ctx) => idSchema.parse(c.req.param("id"));
-  register("capabilities", async () => ({
-    apiVersion: "v1",
-    environment: config.environment,
-    persistence: config.storage,
-    weather: config.weather,
-    ai: "unavailable",
-    conversations: false,
-    supported: [{ district: "Latur", crop: "chickpea" }],
-    sources: sourceReferences,
-  }));
-  register("session", async (c) => {
-    let session = c.get("session");
-    if (!session) {
-      await consumeQuota(store, "bootstrap-global", 120, now());
-      const created = await sessions.create(null);
-      session = created.session;
-      writeCookie(c, created.token, created.ttl);
+  // Keep the route chain intact: Hono RPC infers paths, validated inputs and responses here.
+  function jsonBody<S extends z.ZodType<Record<string, unknown>>>(
+    schema: S,
+  ): MiddlewareHandler<
+    Bindings,
+    string,
+    { in: { json: z.input<S> }; out: { json: z.output<S> } }
+  > {
+    return async (c, next) => {
+      c.req.addValidatedData("json", schema.parse(await readBody(c)));
+      await next();
+    };
+  }
+  const csrf: MiddlewareHandler<
+    Bindings,
+    string,
+    { in: { header: { "X-CSRF-Token": string } }; out: {} }
+  > = async (c, next) => {
+    const session = c.get("session");
+    if (
+      c.req.header("origin") !== config.origin ||
+      !session ||
+      !equalSecret(c.req.header("x-csrf-token") || "", session.csrfToken)
+    ) {
+      throw new ServiceError(
+        403,
+        "FORBIDDEN",
+        "A valid same-origin session and CSRF token are required.",
+      );
     }
-    return {
-      status: session.ownerId ? "guest" : "bootstrap",
-      csrfToken: session.csrfToken,
-      expiresAt: session.expiresAt,
-    };
-  });
-  register("createSession", async (c) => {
-    const created = await sessions.authenticate(c.get("session"));
-    const session = created?.session || c.get("session");
-    if (created) writeCookie(c, created.token, created.ttl);
-    return {
-      status: "guest",
-      csrfToken: session.csrfToken,
-      expiresAt: session.expiresAt,
-    };
-  });
-  register("revokeSession", async (c) => {
-    await sessions.revoke(c.get("session"));
-    deleteCookie(c, config.cookieName, cookieOptions);
-    return { revoked: true };
-  });
-  register("createFarm", (c, body) =>
-    resources.createFarm(c.get("ownerId"), body, c.get("idempotencyKey")),
-  );
-  register("getFarm", (c) => resources.getFarm(c.get("ownerId"), id(c)));
-  register("updateFarm", (c, body) =>
-    resources.updateFarm(c.get("ownerId"), id(c), body),
-  );
-  register("createAssessment", (c, body) =>
-    resources.createAssessment(
-      c.get("ownerId"),
-      body,
-      c.get("idempotencyKey"),
-      c.req.raw.signal,
-    ),
-  );
-  register("getAssessment", (c) =>
-    resources.getAssessment(c.get("ownerId"), id(c)),
-  );
-  register("compare", (c, body) =>
-    resources.compare(c.get("ownerId"), id(c), body, c.get("idempotencyKey")),
-  );
-  register("createPlan", (c, body) =>
-    resources.createPlan(c.get("ownerId"), body, c.get("idempotencyKey")),
-  );
-  register("getPlan", (c) => resources.getPlan(c.get("ownerId"), id(c)));
-  register("listPlans", (c) => {
-    const query = listQuerySchema.parse(c.req.query());
-    return resources.listPlans(
-      c.get("ownerId"),
-      Number(query.limit || 20),
-      query.cursor,
+    await next();
+  };
+  const key: MiddlewareHandler<
+    Bindings,
+    string,
+    { in: { header: { "Idempotency-Key": string } }; out: {} }
+  > = async (c, next) => {
+    c.set("idempotencyKey", idSchema.parse(c.req.header("idempotency-key")));
+    await next();
+  };
+  const queryParams: MiddlewareHandler<
+    Bindings,
+    string,
+    {
+      in: { query: z.input<typeof listQuerySchema> };
+      out: { query: z.output<typeof listQuerySchema> };
+    }
+  > = async (c, next) => {
+    c.req.addValidatedData("query", listQuerySchema.parse(c.req.query()));
+    await next();
+  };
+  const id = (c: Ctx) => idSchema.parse(c.req.param("id"));
+  const routes = app
+    .get("/api/v1/health", (c) =>
+      respond(
+        "health",
+        {
+          status: "ok",
+          service: "kavach-api",
+          apiVersion: "v1",
+          checkedAt: now().toISOString(),
+        },
+        c,
+      ),
+    )
+    .get("/api/v1/capabilities", (c) =>
+      respond(
+        "capabilities",
+        {
+          apiVersion: "v1",
+          environment: config.environment,
+          persistence: config.storage,
+          weather: config.weather,
+          ai: "unavailable",
+          conversations: false,
+          supported: [{ district: "Latur", crop: "chickpea" }],
+          sources: sourceReferences,
+        },
+        c,
+      ),
+    )
+    .get("/api/v1/session", async (c) => {
+      let session = c.get("session");
+      if (!session) {
+        await consumeQuota(store, "bootstrap-global", 120, now());
+        const created = await sessions.create(null);
+        session = created.session;
+        writeCookie(c, created.token, created.ttl);
+      }
+      return respond(
+        "session",
+        {
+          status: session.ownerId ? "guest" : "bootstrap",
+          csrfToken: session.csrfToken,
+          expiresAt: session.expiresAt,
+        },
+        c,
+      );
+    })
+    .post(
+      "/api/v1/session",
+      csrf,
+      jsonBody(endpoints.createSession.body),
+      async (c) => {
+        const created = await sessions.authenticate(c.get("session"));
+        const session = created?.session || c.get("session");
+        if (created) writeCookie(c, created.token, created.ttl);
+        return respond(
+          "createSession",
+          {
+            status: "guest",
+            csrfToken: session.csrfToken,
+            expiresAt: session.expiresAt,
+          },
+          c,
+        );
+      },
+    )
+    .delete(
+      "/api/v1/session",
+      csrf,
+      jsonBody(endpoints.revokeSession.body),
+      async (c) => {
+        await sessions.revoke(c.get("session"));
+        deleteCookie(c, config.cookieName, cookieOptions);
+        return respond("revokeSession", { revoked: true }, c);
+      },
+    )
+    .post(
+      "/api/v1/farms",
+      csrf,
+      key,
+      jsonBody(endpoints.createFarm.body),
+      async (c) =>
+        respond(
+          "createFarm",
+          await resources.createFarm(
+            c.get("ownerId"),
+            c.req.valid("json"),
+            c.get("idempotencyKey"),
+          ),
+          c,
+        ),
+    )
+    .get("/api/v1/farms/:id", async (c) =>
+      respond("getFarm", await resources.getFarm(c.get("ownerId"), id(c)), c),
+    )
+    .patch(
+      "/api/v1/farms/:id",
+      csrf,
+      jsonBody(endpoints.updateFarm.body),
+      async (c) =>
+        respond(
+          "updateFarm",
+          await resources.updateFarm(
+            c.get("ownerId"),
+            id(c),
+            c.req.valid("json"),
+          ),
+          c,
+        ),
+    )
+    .post(
+      "/api/v1/assessments",
+      csrf,
+      key,
+      jsonBody(endpoints.createAssessment.body),
+      async (c) =>
+        respond(
+          "createAssessment",
+          await resources.createAssessment(
+            c.get("ownerId"),
+            c.req.valid("json"),
+            c.get("idempotencyKey"),
+            c.req.raw.signal,
+          ),
+          c,
+        ),
+    )
+    .get("/api/v1/assessments/:id", async (c) =>
+      respond(
+        "getAssessment",
+        await resources.getAssessment(c.get("ownerId"), id(c)),
+        c,
+      ),
+    )
+    .post(
+      "/api/v1/assessments/:id/compare",
+      csrf,
+      key,
+      jsonBody(endpoints.compare.body),
+      async (c) =>
+        respond(
+          "compare",
+          await resources.compare(
+            c.get("ownerId"),
+            id(c),
+            c.req.valid("json"),
+            c.get("idempotencyKey"),
+          ),
+          c,
+        ),
+    )
+    .post(
+      "/api/v1/plans",
+      csrf,
+      key,
+      jsonBody(endpoints.createPlan.body),
+      async (c) =>
+        respond(
+          "createPlan",
+          await resources.createPlan(
+            c.get("ownerId"),
+            c.req.valid("json"),
+            c.get("idempotencyKey"),
+          ),
+          c,
+        ),
+    )
+    .get("/api/v1/plans/:id", async (c) =>
+      respond("getPlan", await resources.getPlan(c.get("ownerId"), id(c)), c),
+    )
+    .get("/api/v1/plans", queryParams, async (c) => {
+      const query = c.req.valid("query");
+      return respond(
+        "listPlans",
+        await resources.listPlans(
+          c.get("ownerId"),
+          Number(query.limit || 20),
+          query.cursor,
+        ),
+        c,
+      );
+    })
+    .patch(
+      "/api/v1/plans/:id",
+      csrf,
+      jsonBody(endpoints.updatePlan.body),
+      async (c) =>
+        respond(
+          "updatePlan",
+          await resources.updatePlan(
+            c.get("ownerId"),
+            id(c),
+            c.req.valid("json"),
+          ),
+          c,
+        ),
+    )
+    .get("/api/v1/openapi.json", (c) =>
+      c.json(openApiDocument() as Record<string, unknown>),
     );
-  });
-  register("updatePlan", (c, body) =>
-    resources.updatePlan(c.get("ownerId"), id(c), body),
-  );
-  app.get("/api/v1/openapi.json", (c) => c.json(openApiDocument()));
   app.notFound((c) =>
     c.json(
       errorSchema.parse({
@@ -343,5 +529,5 @@ export function createApp({
       404,
     ),
   );
-  return app;
+  return routes;
 }

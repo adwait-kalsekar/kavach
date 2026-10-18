@@ -16,11 +16,18 @@
     "test": {
       "dependsOn": ["build"],
       "cache": false,
-      "passThroughEnv": ["TEST_FIRESTORE", "FIRESTORE_EMULATOR_HOST", "GOOGLE_CLOUD_PROJECT"]
+      "passThroughEnv": [
+        "TEST_FIRESTORE",
+        "FIRESTORE_EMULATOR_HOST",
+        "GOOGLE_CLOUD_PROJECT"
+      ]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["^build"],
+      "interruptible": true,
+      "passThroughEnv": ["API_ORIGIN"]
     }
   }
 }

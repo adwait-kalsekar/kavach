@@ -1,30 +1,38 @@
 # Infrastructure preparation
 
-These are reviewable templates, not deployed infrastructure. No GCP project is required for the default SQLite API or Firestore emulator tests. See [API guide](../docs/api/README.md) and [architecture](../docs/architecture/backend-foundation.md).
+No GCP account is needed for local SQLite or Firestore emulator tests. [Architecture and recovery](../docs/architecture/gcp-deployment.md) and [owner setup](../docs/deployment/gcp-setup.md) record the active two-service design. Hono never serves React output.
 
-## Local
+## Independent runtime images
 
-- `firebase.json`: Firestore emulator on loopback 8085, no emulator UI.
-- `firestore.rules`: deny direct client access. Server SDKs still use IAM and API ownership checks.
-- `firestore.indexes.json`: saved-plan history index, large-field index exclusions and TTL cleanup fields. The adapter writes `expiresAt` as a Firestore Timestamp and converts it back to ISO in application records.
-- Default local persistence is `.data/kavach.sqlite`. Session/operation/quota expiry is enforced by the application; SQLite has no automatic TTL sweeper in this version. Remove the local data file to reset development records. Never use it as deployed persistence.
+From the repo root:
 
-## Container and GCP later
+```sh
+docker build -f infra/Dockerfile.api --target builder -t kavach-builder .
+docker build -f infra/Dockerfile.api -t kavach-api .
+docker build -f infra/Dockerfile.web -t kavach-web .
+node infra/tests/container-smoke.mjs kavach-api
+node infra/gcp/test-live-smoke.mjs kavach-api kavach-web
+```
 
-Build from the repo root: `docker build -f infra/Dockerfile.api -t kavach-api .`. The image packages the API only while UI is deferred, runs as a non-root user and refuses startup until valid production Firestore/project/origin settings are supplied.
+The shared builder uses the Turbo graph. The API runtime has production Node dependencies and compiled API/contracts/domain. The web runtime has Nginx and static assets only. Both are non-root. API listens on internal 8080, web on 8081, configured through PORT. Each Cloud Run service exposes its own HTTPS URL on 443. Nginx uses API_ORIGIN for public runtime config and exact CSP; Hono uses APP_ORIGIN for exact frontend CORS and CSRF. No API proxy exists on the web service.
 
-For networks with a private certificate authority, the Dockerfile accepts an optional BuildKit secret: `--secret id=npm_ca,src=/path/to/ca.pem`. Supply proxy build arguments through the build environment when required. The CA is mounted only during build steps and is not copied into the image; TLS verification stays enabled. Normal GCP/CI builds need no extra CA.
+For a network using a private CA, pass `--secret id=npm_ca,src=/path/to/ca.pem` to API/builder builds and preserve configured proxy arguments. The CA is mounted only for npm steps, not copied into images. TLS verification stays enabled. Normal GCP/CI builds need no extra CA.
 
-Run `node infra/tests/container-smoke.mjs kavach-api` after building to verify HTTP session/farm/assessment/plan creation and restart persistence. This explicitly overrides the production image into SQLite local mode for the test; production remains Firestore.
+The API smoke overrides production settings to explicit local SQLite, creates owned resources and checks restart persistence. The two-container smoke exercises real Nginx, direct browser API health, exact origin boundaries, CSP, expected release headers and API outage/recovery with web availability. It does not verify real cloud IAM or cookie behavior under custom domains.
 
-`cloudbuild.yaml` builds and publishes an image; it neither deploys Cloud Run nor creates Firestore. An Artifact Registry repository and appropriate build identity must already exist. `cloudrun-service.example.yaml` is a template with explicit placeholders. Replace project, image digest, runtime service account and exact HTTPS origin before applying it. Initial resource settings are a small POC starting point, not load-tested sizing.
+## Local data and Firestore
 
-When project setup is available:
+- `firebase.json`: loopback Firestore emulator on 8085, no emulator UI.
+- `firestore.rules`: deny direct browser/client access; server SDK access uses IAM and Hono ownership checks.
+- `firestore.indexes.json`: plan-history index, field exclusions and TTL cleanup. Expiry is still enforced before TTL deletion.
+- SQLite `.data/kavach.sqlite` is local only, with no automatic TTL sweeper. Production rejects SQLite and emulator/credential-file configuration.
 
-1. Select the database region before creating Firestore; locate Cloud Run near it. Verify resource availability in the actual project.
-2. Enable required APIs and create Artifact Registry, Firestore Standard/Native and a dedicated runtime service account. Grant database access through the narrow role needed by this server; build/deploy identity stays separate.
-3. Publish rules/indexes/TTL definitions deliberately. Server sessions require expiry checks even before TTL cleanup happens.
-4. Build/push and deploy the reviewed image with APP_ENV=production, STORAGE_BACKEND=firestore, GOOGLE_CLOUD_PROJECT and exact APP_ORIGIN. Leave emulator/local credential-file settings unset. Account login and AI are still unavailable in this batch.
-5. Verify the real URL, IAM, indexes, secure cookies, owned-plan persistence across restart, cross-owner denial and rollback. Confirm any future provider usage terms before enabling it.
+## GCP delivery
 
-Live Cloud Run deployment, production IAM/index enforcement and actual model inference are not proven by local/emulator tests.
+`infra/gcp/bootstrap.py` defaults to an offline plan, reserves web/API services and configures separate runtime identities, registry, database/indexes/TTL/rules and constrained GitHub WIF only with --apply. Only API runtime has Firestore permission. No live setup has run. Regenerate the Cloud Shell bundle after changes with `python3 infra/gcp/make-bundle.py`; old combined-service bundles are obsolete.
+
+GitHub Actions verifies and smoke-tests both images, transfers those exact artifacts, pushes immutable digests, stages ready candidates and promotes API then web. Live checks verify both releases. Failure restores web then API, with manual recovery reporting. This is coordinated deployment, not an atomic two-service transaction; retain previous-client compatibility. `cloudbuild.yaml` builds/pushes both images only and must not become a second deploy controller.
+
+`cloudrun-service.example.yaml` and `cloudrun-web.example.yaml` are templates, not applied infrastructure. Replace identities, image digests, project and exact origins. Default URLs support health only; same-site custom domains are required before releasing the guest journey. Domain/load-balancer infrastructure remains deferred. See the owner guide before enabling the main deployment gate.
+
+For the deadline sprint use [the cloud/model runbook](../docs/submission/cloud-and-model.md). `infra/gcp/check-gemini.py --model VERIFIED_ID` previews without cloud/auth access; adding --run makes one small billable request using the active CLI identity and prints no credentials. This proves neither deployed API access nor an implemented AI feature.

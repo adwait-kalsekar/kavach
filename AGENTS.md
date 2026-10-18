@@ -13,14 +13,18 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 
 ## Read first
 
+- **Deadline priority (18 October 2026):** read `docs/submission/README.md` and `docs/submission/build-spec.md` before implementation. The eight-hour POC scope supersedes the broad roadmap order: public synthetic scenario → deterministic checks/comparison → one grounded Google-model explanation. This demo is proposed, not already implemented. Skip login/domain/saved-plan UI work for this sprint.
+
 - `docs/README.md` indexes the project; `docs/architecture/README.md` records the selected stack.
-- Follow `docs/architecture/backend-foundation.md` for the active backend batches and implemented API scope.
+- Read `docs/architecture/backend-foundation.md` for the implemented backend and `docs/architecture/web-foundation.md` for the active web/API setup.
 - Keep architecture documents, Mermaid diagrams, API contracts/examples and actual implementation status synchronized in the same change. Do not describe planned capabilities as implemented.
 
 ## Boundaries
 
-- Browser → Hono only. No browser cloud/auth/AI/weather/storage SDK, service connection, signed upload URL or external telemetry. Serve/proxy assets, sessions, evidence and media through Hono.
-- Target React/Vite + TanStack Router/Query for future UI. This backend batch does not build UI or migrate the existing frontend starter.
+- Browser API/service traffic → Hono only. Static React assets come from the independent web service; Hono must not serve the React build. No browser cloud/auth/AI/weather/storage SDK, direct service connection, signed upload URL or external telemetry. Sessions, evidence and media go through Hono.
+- `apps/web` uses React/Vite + TanStack Router/Query. Follow `docs/architecture/web-foundation.md` for local development, Hono RPC and GCP packaging. `apps/docs` remains a separate Next starter.
+- Browser code imports only `@kavach/api-client` and public contracts, never API implementations. Only `packages/api-client` may import `@kavach/api/rpc` with `import type`; this export has no runtime entry. Keep route chains typed, require mutation headers and run the negative RPC type checks.
+- Run `npm run check:boundaries`; the Vite bundle guard also rejects API/domain/cloud SDK modules. Do not weaken these guards to make a build pass. No service credentials or secrets belong in Vite variables.
 - Keep public Zod contracts in `packages/contracts`, pure decision logic in `packages/domain`, browser-safe HTTP client in `packages/api-client`, and SDKs/config/secrets in `apps/api`.
 - Hono owns validation, sessions and transport; services own orchestration; adapters own provider integration. Validate outgoing as well as incoming payloads.
 - No frontend-owned `ownerId`; derive ownership from validated server session. Enforce ownership for every resource read/write and linked-resource reference.
@@ -30,13 +34,17 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 ## Local / production
 
 - Local development requires no GCP project. Explicit SQLite local storage is allowed; it is not production persistence. In-memory stores are for tests only.
+- Public-demo deadline proposal: only explicitly allowlisted `/api/v1/demo/*` sample calculations may gain cookie-free cross-site access after strict contracts, exact-Origin CORS, body bounds and shared paid-inference quotas are implemented. Keep all existing private-route session/CSRF/ownership checks. Do not broaden the generic API guard or use browser-persisted bearer tokens. See the submission build specification.
+- Production has independent web/API Cloud Run services, ports 8081/8080 internally and HTTPS 443 externally. Default run.app URLs support health only; guest journeys need same-site sibling custom domains. Keep APP_ORIGIN equal to the web origin and API_ORIGIN equal to the API origin. Web runtime has no Firestore/provider permissions.
 - Production uses Firestore, workload identity/ADC and validated configuration. Refuse local storage, emulator configuration or localhost origins in production. Never silently fall back from Firestore to local storage.
 - Keep secrets and runtime databases outside Git; document required variable names in `.env.example`. Never store cloud keys or credentials in frontend configuration.
-- Cloud provisioning remains deferred until the user supplies a project. Emulator/local tests are not live GCP verification.
+- GCP project is `kavach-farmers-market-sense`; see `docs/deployment/gcp-setup.md`. A project ID grants no access. Bootstrap defaults to an offline plan; never use --apply without actual provisioning authorization and verified identity. Emulator/mocked deploy tests are not live GCP verification.
+- CI deployment is gated by successful verify + trusted main + GCP_DEPLOY_ENABLED, with WIF restricted to repository IDs/workflow/production. Deploy only the exact tested image by digest; keep runtime/deploy identities separate. CI must not edit IAM policy. Never create JSON keys or weaken trust/CSP/origin checks to unblock deployment.
 
 ## Work and review
 
 - Plan a bounded batch, implement it, run appropriate checks, review failures and update `docs/architecture/backend-foundation.md` before starting the next batch.
+- For web/API changes, run `npm run build:app`, `npm run check:app` and `npm run test:e2e` (install Chromium first). Browser tests cover direct cross-origin API calls and independent web serving; retain exact two-origin network assertions, credentialed CORS/CSRF tests and CSP.
 - Test contracts, cross-owner denial, CSRF/expiry, optimistic concurrency, idempotency and failure states. Use deterministic clocks/provider fixtures where useful.
 - Keep one integration owner for lockfile/root workspace/deployment changes. Do not delegate unless the user or an applicable instruction explicitly requests it.
 - Use the repository's required npm version (12.2.0); no extra package manager. Read installed framework docs before relying on changing APIs.

@@ -8,7 +8,7 @@ Build a project-free local API with production configuration seams, not a full a
 
 ```mermaid
 flowchart LR
-  UI[Future React / Vite UI] -->|same-origin cookie + CSRF| API[Hono HTTP API]
+  UI[Future React / Vite UI] -->|exact CORS / same-site cookie + CSRF| API[Hono HTTP API]
   API --> C[Shared request / response contracts]
   API --> S[Application services]
   S --> D[Pure decision engine]
@@ -61,8 +61,22 @@ Local process serialization is not distributed locking. SQLite transactions prot
 - Batch 2 complete: full guest → farm → assessment → comparison → plan journey, two-owner denial, linked-resource isolation, revisions, idempotency, CSRF, expiry, storage failures and pagination. API/infrastructure suite passes (16 tests). The same 10 API journey tests also pass against the official Firestore emulator using an isolated demo project, with no GCP account.
 - Review fixes: serialize public SQLite reads behind writes; persist Firestore TTL values as timestamps; reject stale farm revisions before provider calls; replay assessments without fetching new evidence; label sessions as bootstrap/guest rather than account authentication; enforce client mutation/path/key requirements in TypeScript.
 - Batch 3 complete: scoped build/typecheck and OpenAPI drift checks pass. The non-root container builds with a clean workspace-scoped install (audit: zero reported vulnerabilities). Real HTTP guest → farm → assessment → plan flow passes; the guest session, farm and plan survive container restart. CI repeats build, typecheck, tests, OpenAPI drift, emulator parity, container build and HTTP/restart smoke. This workspace required its proxy CA as a temporary BuildKit secret; TLS verification remained enabled.
-- Existing frontend remains the Next starter. The old uncommitted Next API sketch was removed from the application tree. Updated engineering instructions and indexed API/auth/infra documentation accompany the implementation.
+- At completion of the backend batch, the frontend remained the Next starter; [the subsequent web foundation](web-foundation.md) now replaces `apps/web` with React/Vite. The old uncommitted Next API sketch was removed from the application tree. Updated engineering instructions and indexed API/auth/infra documentation accompany the implementation.
 
 ## Remaining gates
 
 No live GCP resources, production IAM/index enforcement, live weather reliability, load performance or model behavior have been verified. The emulator emits an SDK metadata-discovery warning in this workspace; all parity tests pass. SQLite has no automatic expiry cleanup, so it is local tooling only. Guest sessions are not recoverable accounts. Assessments are unreviewed workflow checks, not agronomic prescriptions. Future account-provider and AI implementation must preserve the browser → Hono boundary.
+
+## GCP delivery follow-up
+
+The [owner setup guide](../deployment/gcp-setup.md) and `infra/gcp/` now prepare keyless main-to-Cloud-Run deployment. Local deployment/rollback guard tests and application checks are distinct from live IAM/WIF/provisioning verification. The latter remains blocked by missing GCP identity; no cloud resources have been created.
+
+## Independent serving follow-up
+
+The owner's later requirement supersedes combined static/API serving. Hono no longer mounts web output. React assets are served by independent Nginx, with an exact configurable API origin and browser-safe typed RPC. Deployment stages two images/revisions and restores both services in reverse order on promotion/live-check failure; it does not claim atomic rollout or data rollback. Web has a separate runtime identity without Firestore permissions. See [deployment/recovery decision](gcp-deployment.md). Default run.app links verify health only; guest journeys require a later sibling-domain setup. Current validation results are recorded in the PR and final handoff; live GCP remains unverified.
+
+Local review for the independent-serving batch: build/type/lint and OpenAPI checks passed; 31 contract/domain/client/API/infrastructure tests, 12 Firestore-emulator tests, 12 desktop/mobile/built-web browser checks, and 19 deployment/bootstrap guards passed. Both runtime images built; API HTTP workflow/restart persistence and the real Nginx/Hono browser smoke passed, including wrong-release rejection and API pause/recovery while web remains available. Runtime checks confirmed non-root users, no backend/Node runtime in the web image, and no web output/Vite/TypeScript in the API image. Mocked rollback tests are not live cloud verification. Existing builder-only development-tool audit advisories remain outside this change; no complete container vulnerability scan is claimed.
+
+## Deadline handoff — 18 October 2026
+
+The [eight-hour sprint](../submission/README.md) specifies the next implementation batch and intentionally cuts domain/auth/saved-plan UI from the public sample demo. No new public demo route, model adapter or farmer screen was implemented in this documentation handoff. A plan-only-by-default Google model diagnostic was added; offline tests cover identifier validation, Google endpoint selection and zero credential/network access without --run. It has not made a live provider call in Codex. Console access/billing are owner-confirmed, while actual runtime/model access remains to verify.

@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 const envSchema = z.object({
+  RELEASE_SHA: z
+    .string()
+    .regex(/^[a-f0-9]{40}$/)
+    .optional(),
   APP_ENV: z.enum(["local", "test", "production"]).default("local"),
   PORT: z.coerce.number().int().min(1).max(65535).default(8080),
   APP_ORIGIN: z.url().default("http://localhost:8080"),
@@ -54,6 +58,7 @@ export function loadConfig(env: Record<string, string | undefined>) {
       throw new Error("Production requires an explicit APP_ORIGIN.");
   }
   return Object.freeze({
+    releaseSha: c.RELEASE_SHA,
     environment: c.APP_ENV,
     port: c.PORT,
     origin: c.APP_ORIGIN,

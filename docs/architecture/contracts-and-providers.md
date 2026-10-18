@@ -2,7 +2,7 @@
 
 Implementation target, 17 October 2026. Read [stack decision](stack-and-gcp.md) first.
 
-Current implementation status: [backend foundation](backend-foundation.md) and [API guide](../api/README.md). The backend is implemented; the frontend/AI sections below remain targets. Local development defaults to durable SQLite with an optional Firestore emulator; production remains Firestore. Account login is deferred behind Hono-managed guest ownership. The generated [OpenAPI specification](../api/openapi.json) is authoritative for current HTTP payloads.
+Current implementation status: [backend foundation](backend-foundation.md) and [API guide](../api/README.md). The backend and React/Vite health screen are implemented; farmer-facing screens and AI remain targets. [Web/RPC setup](web-foundation.md) defines the type-only server contract exception to the general ban on browser imports from API modules. Local development defaults to durable SQLite with an optional Firestore emulator; production remains Firestore. Account login is deferred behind Hono-managed guest ownership. The generated [OpenAPI specification](../api/openapi.json) is authoritative for current HTTP payloads.
 
 ## Dependency rules
 
@@ -25,7 +25,7 @@ apps/web/src/
   features/assessments/
   features/conversation/
   features/plans/
-  lib/api/                # Same-origin HTTP client, cookie session + CSRF
+  lib/api/                # Configured Hono-origin HTTP client, cookie session + CSRF
   lib/query/              # Query keys/options, invalidation rules
 
 apps/api/src/
@@ -52,7 +52,7 @@ All private operations derive ownership from a server-validated opaque cookie se
 
 | Operation                                 | Intended behavior                                                                                                |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `GET /api/v1/session`                     | Resolve current session and issue a same-origin CSRF bootstrap token; no private cache                           |
+| `GET /api/v1/session`                     | Resolve current session and issue a origin-bound CSRF bootstrap token; no private cache                           |
 | `POST /api/v1/session`                    | Validate origin/CSRF bootstrap, create guest owner/session and set HTTP-only cookie                              |
 | `DELETE /api/v1/session`                  | Validate origin/CSRF, revoke session and clear cookie                                                            |
 | `GET /api/v1/capabilities`                | Supported district/crop combinations and public capabilities; no credentials                                     |
@@ -143,4 +143,4 @@ Use the Firestore emulator and real Hono session endpoints for integration work.
 
 ## Browser network boundary
 
-Every application connection targets Hono. This includes session creation, conversation streams, model output, source retrieval, weather, media uploads and downloads. No client SDK or direct/signed URL can bypass that policy. Frontend Vite proxying is for local development only; production uses relative same-origin endpoints and restrictive CSP. Server-side adapters remain the only outbound service clients. Include a browser network assertion in end-to-end tests, not only a code-review convention.
+Every application connection targets Hono. This includes session creation, conversation streams, model output, source retrieval, weather, media uploads and downloads. No client SDK or direct/signed URL can bypass that policy. Frontend assets are served independently, and the browser uses the configured API origin with exact credentialed CORS and restrictive CSP. Guest cookies require same-site sibling domains; default run.app URLs support health only. Server-side adapters remain the only outbound service clients. Include a browser network assertion in end-to-end tests, not only a code-review convention.

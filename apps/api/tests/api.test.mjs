@@ -481,3 +481,91 @@ test("Hono test interface supports health, readiness, OpenAPI and structured API
     await h.store.close();
   }
 });
+
+test("public typed health contract and RPC routes match the OpenAPI endpoint registry", async () => {
+  const h = await harness({ RELEASE_SHA: "a".repeat(40) });
+  try {
+    const response = await h.app.request("/api/v1/health");
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("x-release-sha"), "a".repeat(40));
+    const body = endpoints.health.response.parse(await response.json());
+    assert.equal(body.data.service, "kavach-api");
+    assert.equal(body.data.status, "ok");
+    assert.equal(response.headers.get("set-cookie"), null);
+    for (const endpoint of Object.values(endpoints)) {
+      assert.ok(
+        h.app.routes.some(
+          (route) =>
+            route.method === endpoint.method &&
+            route.path === endpoint.path.replace("{id}", ":id"),
+        ),
+        `${endpoint.method} ${endpoint.path} missing from the typed route chain`,
+      );
+    }
+  } finally {
+    await h.store.close();
+  }
+});
+
+test("CORS permits only the UI origin; cross-site health is public but guest cookies stay blocked", async () => {
+  const h = await harness({ APP_ORIGIN: "https://app.example.com" });
+  try {
+    const headers = {
+      Origin: "https://app.example.com",
+      "Sec-Fetch-Site": "same-site",
+    };
+    const allowed = await h.app.request("/api/v1/health", { headers });
+    assert.equal(
+      allowed.headers.get("access-control-allow-origin"),
+      headers.Origin,
+    );
+    assert.equal(
+      allowed.headers.get("access-control-allow-credentials"),
+      "true",
+    );
+    const preflight = await h.app.request("/api/v1/session", {
+      method: "OPTIONS",
+      headers: {
+        ...headers,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "content-type,x-csrf-token",
+      },
+    });
+    assert.equal(preflight.status, 204);
+    for (const origin of ["https://evil.example", "null"]) {
+      const denied = await h.app.request("/api/v1/health", {
+        headers: { Origin: origin },
+      });
+      assert.equal(denied.status, 403);
+      assert.equal(denied.headers.get("access-control-allow-origin"), null);
+    }
+    const badHeader = await h.app.request("/api/v1/session", {
+      method: "OPTIONS",
+      headers: {
+        ...headers,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization",
+      },
+    });
+    assert.equal(badHeader.status, 403);
+    assert.equal(
+      (
+        await h.app.request("/api/v1/health", {
+          headers: { ...headers, "Sec-Fetch-Site": "cross-site" },
+        })
+      ).status,
+      200,
+    );
+    assert.equal(
+      (
+        await h.app.request("/api/v1/session", {
+          headers: { ...headers, "Sec-Fetch-Site": "cross-site" },
+        })
+      ).status,
+      403,
+    );
+    assert.equal((await h.app.request("/")).status, 404);
+  } finally {
+    await h.store.close();
+  }
+});
