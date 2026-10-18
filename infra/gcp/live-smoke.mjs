@@ -86,8 +86,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
         );
         await page
           .getByRole("button", {
-            name: "What should I check next?",
-            exact: true,
+            name: /^Find my next crop checks/,
           })
           .click();
         const result = await (await explanationResponse).json();
@@ -116,8 +115,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
         );
         await page
           .getByRole("button", {
-            name: "What should I check next?",
-            exact: true,
+            name: /^Find my next crop checks/,
           })
           .click();
         const unavailable = await (await unavailableResponse).json();
