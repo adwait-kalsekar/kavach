@@ -269,7 +269,7 @@
   background: #dcebe9;
   position: relative;
 }
-.fp-farm-scene .field-art {
+.fp-farm-scene .fp-field-art {
   position: static;
   inset: auto;
   width: 100%;
@@ -1380,4 +1380,583 @@
   .fp-outcome-summary > p {
     font-size: 10px !important;
   }
+}
+
+/* Seasonal decisions: focused views, roomy touch choices, provenance close to facts. */
+.fp-season-page {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.fp-season-intro {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+.fp-season-intro > div:first-child {
+  flex: 1;
+}
+.fp-season-intro h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(32px, 4vw, 46px);
+  letter-spacing: -1px;
+}
+.fp-season-intro p {
+  color: var(--fp-muted);
+  max-width: 56ch;
+  margin-top: 12px;
+}
+.fp-season-art {
+  width: 230px;
+  flex: none;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.fp-season-art svg {
+  width: 100%;
+  height: auto;
+}
+.fp-season-profile {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid var(--fp-line);
+}
+.fp-season-profile .fp-form-grid {
+  margin-bottom: 12px;
+}
+.fp-season-profile label,
+.fp-field-inputs label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+.fp-season-profile select,
+.fp-field-inputs select {
+  width: 100%;
+  min-height: 50px;
+  padding: 10px 12px;
+  background: #f8fbfc;
+  border: 1px solid #bccfd6;
+  border-radius: 10px;
+}
+.fp-intent-section {
+  margin: 28px 0 18px;
+}
+.fp-intent-section h2 {
+  font-size: 19px;
+  margin-bottom: 12px;
+}
+.fp-intent-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.fp-intent-options button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 12px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #cbdade;
+  border-radius: 14px;
+  font-weight: 600;
+}
+.fp-intent-options button > span {
+  font-size: 28px;
+  color: #37715a;
+}
+.fp-intent-options button[aria-pressed="true"] {
+  background: #e5f0e4;
+  border-color: #51856a;
+  box-shadow: inset 0 0 0 1px #51856a;
+}
+.fp-field-inputs {
+  border-bottom: 1px solid var(--fp-line);
+  padding: 14px 0 20px;
+}
+.fp-field-inputs summary {
+  cursor: pointer;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.fp-field-inputs summary span {
+  font-weight: 400;
+  color: var(--fp-muted);
+  margin-left: 12px;
+  font-size: 14px;
+}
+.fp-field-inputs .fp-form-grid {
+  padding: 20px 0 0;
+  gap: 20px;
+}
+.fp-season-view-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 20px 0;
+  scrollbar-width: thin;
+}
+.fp-season-view-nav button {
+  white-space: nowrap;
+  background: transparent;
+  font-size: 14px;
+  border: 1px solid transparent;
+  min-height: 44px;
+  padding: 9px 14px;
+}
+.fp-season-view-nav button[aria-pressed="true"] {
+  background: #173f4c;
+  color: white;
+}
+.fp-season-overview {
+  display: grid;
+  gap: 20px;
+}
+.fp-readiness-callout {
+  display: flex;
+  gap: 18px;
+  background: #fff5df;
+  border: 1px solid #e6d7b3;
+  padding: 24px;
+  border-radius: 18px;
+}
+.fp-readiness-callout h2 {
+  font-size: 23px;
+}
+.fp-readiness-callout p {
+  margin-top: 10px;
+  max-width: 65ch;
+}
+.fp-readiness-callout button {
+  margin-top: 16px;
+  background: #eadbb8;
+  color: #4a3a20;
+}
+.fp-sprout {
+  font-size: 38px;
+  color: #986b24;
+}
+.fp-season-cards {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.fp-season-card {
+  padding: 28px;
+  background: #fff;
+  border: 1px solid var(--fp-line);
+  border-radius: 20px;
+  min-width: 0;
+}
+.fp-season-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fp-season-symbol {
+  font-size: 32px;
+  color: #377390;
+}
+.fp-period {
+  font-size: 14px;
+  color: var(--fp-muted);
+  margin-top: 8px !important;
+}
+.fp-rain-pair {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 24px 0 12px;
+}
+.fp-rain-pair > div {
+  display: grid;
+  gap: 4px;
+}
+.fp-rain-pair > div > span {
+  font-size: 14px;
+  color: var(--fp-muted);
+}
+.fp-rain-pair strong {
+  font-size: 38px;
+  font-weight: 650;
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+.fp-rain-pair small {
+  font-size: 16px;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.fp-rain-pair > span {
+  font-size: 36px;
+  color: #c4d1d8;
+}
+.fp-rain-meaning {
+  font-weight: 650;
+  color: #965d21;
+  margin-bottom: 12px !important;
+}
+.fp-season-link-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.fp-history-chart {
+  margin: 28px 0;
+  display: grid;
+  gap: 18px;
+}
+.fp-history-row {
+  display: grid;
+  grid-template-columns: 92px 1fr 82px;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+.fp-history-row strong {
+  text-align: right;
+  font-weight: 600;
+}
+.fp-history-row small {
+  font-weight: 400;
+}
+.fp-history-track {
+  height: 20px;
+  background: #edf3f5;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.fp-history-track i {
+  display: block;
+  height: 100%;
+  background: #8ab4b1;
+  border-radius: 6px;
+}
+.fp-history-track i[data-current="true"] {
+  background: #a8713b;
+}
+.fp-season-card details {
+  margin-top: 18px;
+  border-top: 1px solid #e2e9ec;
+  padding-top: 14px;
+}
+.fp-season-card summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 32px;
+}
+.fp-season-card details p {
+  margin: 10px 0;
+}
+.fp-source-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: #17618a;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.fp-evidence-values {
+  display: grid;
+  gap: 18px;
+  margin: 24px 0;
+}
+.fp-evidence-values div {
+  border-bottom: 1px solid #e2e9ec;
+  padding-bottom: 16px;
+}
+.fp-evidence-values dt {
+  font-weight: 600;
+}
+.fp-evidence-values dd {
+  margin: 8px 0 0;
+  font-size: 24px;
+  color: #275b70;
+}
+.fp-evidence-values small {
+  font-size: 14px;
+  display: block;
+  color: var(--fp-muted);
+}
+.fp-action-list {
+  display: grid;
+  gap: 24px;
+  margin: 24px 0;
+}
+.fp-action-list article {
+  display: flex;
+  gap: 16px;
+}
+.fp-action-number {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5eee4;
+  color: #356143;
+  font-weight: 650;
+}
+.fp-action-list h3 {
+  font-size: 19px;
+  line-height: 1.3;
+}
+.fp-action-list p {
+  margin-top: 10px;
+}
+.fp-action-when {
+  display: block;
+  font-size: 13px;
+  color: #795a2a;
+  margin-top: 10px;
+}
+.fp-source-record {
+  padding: 22px 0;
+  border-bottom: 1px solid #dce5e8;
+  display: grid;
+  gap: 10px;
+}
+.fp-source-record h3 {
+  font-size: 19px;
+}
+.fp-source-record a {
+  color: #17618a;
+  overflow-wrap: anywhere;
+}
+.fp-conversation .fp-season-card {
+  padding: 20px;
+  max-width: 100%;
+}
+.fp-conversation .fp-season-cards {
+  margin-top: 14px;
+}
+.fp-conversation .fp-season-card h2 {
+  font-size: 21px;
+}
+.fp-conversation .fp-history-row {
+  grid-template-columns: 65px 1fr 75px;
+  gap: 8px;
+}
+.fp-tour-replay {
+  margin-top: 24px;
+  background: transparent !important;
+  font-size: 13px !important;
+  color: var(--fp-muted) !important;
+  text-decoration: underline;
+}
+.fp-main-talk > .fp-tour-replay {
+  display: none;
+}
+.fp-tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  isolation: isolate;
+}
+.fp-tour-highlight {
+  position: fixed;
+  pointer-events: none;
+  border: 3px solid #e2b24b;
+  border-radius: 16px;
+  box-shadow: 0 0 0 9999px #102b39b8;
+  transition: none;
+}
+.fp-tour-dialog {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  padding: 24px;
+  background: #fffdf7;
+  border: 1px solid #eadcb8;
+  border-radius: 20px;
+  box-shadow: 0 16px 60px #0003;
+}
+.fp-tour-dialog h2 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 12px 0;
+}
+.fp-tour-dialog p {
+  color: #49616b;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.fp-tour-progress,
+.fp-tour-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.fp-tour-progress > span {
+  font-size: 13px;
+  color: #7e6539;
+}
+.fp-tour-progress button {
+  background: transparent;
+  min-height: 40px;
+  padding: 8px;
+}
+.fp-tour-controls {
+  margin-top: 20px;
+}
+@media (max-width: 700px) {
+  .fp-season-intro {
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .fp-season-art {
+    width: 90px;
+    align-self: flex-end;
+  }
+  .fp-season-intro h1 {
+    font-size: 33px;
+  }
+  .fp-season-intro p {
+    font-size: 14px;
+  }
+  .fp-season-profile {
+    padding: 18px;
+  }
+  .fp-season-profile .fp-form-grid {
+    gap: 12px;
+  }
+  .fp-intent-options {
+    gap: 8px;
+  }
+  .fp-intent-options button {
+    display: grid;
+    padding: 14px 10px;
+    font-size: 13px;
+    align-content: start;
+    gap: 6px;
+  }
+  .fp-intent-options button > span {
+    font-size: 24px;
+  }
+  .fp-season-card {
+    padding: 20px;
+  }
+  .fp-readiness-callout {
+    padding: 20px;
+    gap: 12px;
+  }
+  .fp-sprout {
+    display: none;
+  }
+  .fp-rain-pair {
+    gap: 20px;
+  }
+  .fp-rain-pair strong {
+    font-size: 32px;
+  }
+  .fp-history-row {
+    grid-template-columns: 72px 1fr 74px;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .fp-season-view-nav {
+    margin-right: -12px;
+  }
+  .fp-season-view-nav button {
+    padding: 8px 11px;
+    font-size: 13px;
+  }
+  .fp-season-link-row > * {
+    flex: 1;
+    text-align: center;
+  }
+  .fp-action-list article {
+    gap: 12px;
+  }
+  .fp-action-list h3 {
+    font-size: 18px;
+  }
+  .fp-tour-dialog {
+    bottom: 16px;
+    padding: 20px;
+  }
+  .fp-tour-dialog h2 {
+    font-size: 21px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .planning-app * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+.fp-regional-stress {
+  margin-top: 18px;
+  border-left: 4px solid #b98337;
+  padding: 12px 16px;
+  background: #faf1de;
+  border-radius: 0 10px 10px 0;
+  display: grid;
+  gap: 5px;
+}
+.fp-regional-stress[data-level="moderate"] {
+  background: #f8f3e6;
+  border-color: #bf9d54;
+}
+.fp-regional-stress[data-level="lower"] {
+  background: #eef3f4;
+  border-color: #7d9ca3;
+}
+.fp-regional-stress > span {
+  font-size: 12px;
+  color: #635435;
+}
+.fp-regional-stress details {
+  font-size: 13px;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.fp-crop-options {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0 30px;
+}
+.fp-crop-options > h3 {
+  font-size: 21px;
+}
+.fp-crop-option {
+  padding: 18px;
+  background: #f5f8f4;
+  border: 1px solid #d2dfd0;
+  border-radius: 14px;
+}
+.fp-crop-option[data-status="different-context"] {
+  background: #f7f8f8;
+  border-color: #e1e6e8;
+}
+.fp-crop-option[data-status="needs-input"] {
+  background: #fbf7ec;
+  border-color: #e6ddc6;
+}
+.fp-crop-option h3 {
+  margin: 8px 0;
+  font-size: 18px;
+}
+.fp-crop-option p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.fp-option-status {
+  font-size: 12px;
+  color: #536947;
+  font-weight: 600;
+}
+.fp-crop-option a {
+  overflow-wrap: anywhere;
+  color: #17618a;
+  font-size: 14px;
 }

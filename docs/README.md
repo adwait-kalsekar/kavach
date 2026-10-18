@@ -2,6 +2,10 @@
 
 Start with the [visual product overview](product/overview.html). Download/open it in any browser; it is a standalone HTML document with no build, network, or API dependencies.
 
+## Seasonal-readiness implementation
+
+The user’s [original Kavach brief](reference/original-project-brief.md) defines the target: Sense → Compare → Decide → Explain across ten Maharashtra districts and three crops. Start with the [alignment matrix](architecture/brief-alignment.md) and [source/method architecture](architecture/season-readiness.md). These explicitly distinguish the implemented prototype from remaining scientific and source-coverage requirements.
+
 ## Active submission sprint
 
 [Current POC implementation](architecture/poc-implementation.md) records the locally validated voice-first sample, Google integration, evidence and production limitations. The original sprint/build specifications are historical planning context; subsequent user approval added bounded voice and three languages.

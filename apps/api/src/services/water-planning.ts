@@ -8,17 +8,28 @@ import {
   type DemoLocale,
 } from "@kavach/contracts";
 import { calculateWaterPlan } from "@kavach/domain";
+import seasonRegions from "../evidence/season-readiness/regions.json" with { type: "json" };
 import latur from "../evidence/latur-rainfall.json" with { type: "json" };
 import beed from "../evidence/beed-rainfall.json" with { type: "json" };
 import nanded from "../evidence/nanded-rainfall.json" with { type: "json" };
 import type { ExplanationProvider } from "../ports/explanation.js";
 import type { SpeechProvider } from "../ports/speech.js";
 import type { DemoService } from "./demo.js";
-const regions = [
+const legacyRegions = [
   { id: "latur", name: "Latur", climate: climateSchema.parse(latur) },
   { id: "beed", name: "Beed", climate: climateSchema.parse(beed) },
   { id: "nanded", name: "Nanded", climate: climateSchema.parse(nanded) },
 ] as const;
+const regions = seasonRegions.map((r) => ({
+  id: r.regionId,
+  name: r.name,
+  climate: legacyRegions.find((v) => v.id === r.regionId)?.climate || {
+    status: "unavailable" as const,
+    reason:
+      "This water helper has no legacy NASA snapshot for this location. Seasonal CHIRPS evidence is available in My season.",
+    retryable: false,
+  },
+}));
 const silence = {
   status: "unavailable" as const,
   reason: "Voice playback was not requested.",

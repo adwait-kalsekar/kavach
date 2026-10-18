@@ -85,7 +85,7 @@ const en = {
   qAssumptions: "What should I check about these assumptions?",
   qChecks: "What should I check next?",
   question: "Your question",
-  send: "Ask about my comparison",
+  send: "Send question",
   record: "Tap to speak",
   finish: "Tap to finish",
   recording: "Listening. Tap to finish, or cancel.",
@@ -181,7 +181,7 @@ export const planningCopy: Record<DemoLocale, typeof en> = {
     details: "स्रोत और सीमाएं",
     helpTitle: "तुलना समझने में मदद",
     question: "आपका सवाल",
-    send: "तुलना के बारे में पूछें",
+    send: "सवाल पूछें",
     record: "बोलने के लिए दबाएं",
     finish: "रोकने के लिए दबाएं",
     voice: "जवाब सुनाएं",
@@ -258,7 +258,7 @@ export const planningCopy: Record<DemoLocale, typeof en> = {
     details: "स्रोत आणि मर्यादा",
     helpTitle: "तुलना समजण्यासाठी मदत",
     question: "तुमचा प्रश्न",
-    send: "तुलनेबद्दल विचारा",
+    send: "प्रश्न विचारा",
     record: "बोलण्यासाठी दाबा",
     finish: "थांबवण्यासाठी दाबा",
     voice: "उत्तर ऐकवा",
@@ -270,12 +270,12 @@ export const planningCopy: Record<DemoLocale, typeof en> = {
 };
 export const cropNames: Record<DemoLocale, Record<string, string>> = {
   "en-IN": {
-    chickpea: "Chickpea",
-    sorghum: "Sorghum",
+    chickpea: "Gram / chickpea",
+    sorghum: "Rabi jowar",
     wheat: "Wheat",
   },
-  "hi-IN": { chickpea: "चना", sorghum: "ज्वार", wheat: "गेहूं" },
-  "mr-IN": { chickpea: "हरभरा", sorghum: "ज्वारी", wheat: "गहू" },
+  "hi-IN": { chickpea: "चना", sorghum: "रबी ज्वार", wheat: "गेहूं" },
+  "mr-IN": { chickpea: "हरभरा", sorghum: "रब्बी ज्वारी", wheat: "गहू" },
 };
 
 Object.assign(planningCopy["hi-IN"], {

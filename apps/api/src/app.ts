@@ -4,6 +4,8 @@ import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { z } from "zod";
 import {
+  seasonInputSchema,
+  seasonExplainInputSchema,
   waterPlanningInputSchema,
   waterExplainInputSchema,
   demoInputSchema,
@@ -29,6 +31,7 @@ import {
   equalSecret,
   type Session,
 } from "./services/session.js";
+import { SeasonReadinessService } from "./services/season-readiness.js";
 import { WaterPlanningService } from "./services/water-planning.js";
 import { DemoService } from "./services/demo.js";
 import { readVoice } from "./services/voice-upload.js";
@@ -125,6 +128,14 @@ export function createApp({
     speech,
     config.explanationProvider === "google",
   );
+  const readiness = new SeasonReadinessService(
+    demo,
+    explanation,
+    speech,
+    config.explanationProvider === "google",
+    now,
+    planning,
+  );
   const cookieOptions = {
     httpOnly: true,
     secure: config.environment === "production",
@@ -209,6 +220,8 @@ export function createApp({
 
   app.use("/api/v1/*", async (c, next) => {
     const demoMethods: Record<string, string> = {
+      "/api/v1/demo/readiness": "POST",
+      "/api/v1/demo/readiness/explain": "POST",
       "/api/v1/demo/planning": "GET",
       "/api/v1/demo/water-plan": "POST",
       "/api/v1/demo/water-plan/explain": "POST",
@@ -407,6 +420,19 @@ export function createApp({
     await next();
   };
   const routes = app
+    .post("/api/v1/demo/readiness", jsonBody(seasonInputSchema), (c) =>
+      respond("demoReadiness", readiness.assess(c.req.valid("json")), c),
+    )
+    .post(
+      "/api/v1/demo/readiness/explain",
+      jsonBody(seasonExplainInputSchema),
+      async (c) =>
+        respond(
+          "demoReadinessExplain",
+          await readiness.explain(c.req.valid("json"), c.req.raw.signal),
+          c,
+        ),
+    )
     .get("/api/v1/demo/planning", (c) =>
       respond("planningCatalog", planning.catalog(), c),
     )

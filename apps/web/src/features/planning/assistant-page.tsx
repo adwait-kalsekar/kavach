@@ -1,14 +1,22 @@
+import { SeasonCards } from "./season-cards";
+import { seasonCopy } from "./season-copy";
 import { KavachApiError } from "@kavach/api-client";
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import type { ResponseBody, WaterExplainInput } from "@kavach/contracts";
+import type { ResponseBody, SeasonExplainInput } from "@kavach/contracts";
 import { usePlanning, planningApi, cls as c } from "./state";
 import { planningCopy, cropNames } from "./planning-copy";
 import { beginRecording } from "../demo/recorder";
 import { Icon } from "../demo/ui";
 export function AssistantRoute() {
   const app = usePlanning();
-  return <AssistantPage key={app.locale + JSON.stringify(app.input)} />;
+  return (
+    <AssistantPage
+      key={
+        app.locale + JSON.stringify(app.seasonInput) + JSON.stringify(app.input)
+      }
+    />
+  );
 }
 export function AssistantPage() {
   const app = usePlanning(),
@@ -21,14 +29,14 @@ export function AssistantPage() {
     [starting, setStarting] = useState(false),
     [error, setError] = useState(""),
     [answer, setAnswer] = useState<
-      ResponseBody<"demoWaterExplain">["data"] | null
+      ResponseBody<"demoReadinessExplain">["data"] | null
     >(null),
     [url, setUrl] = useState("");
   const mode = useRef<
     "idle" | "starting" | "recording" | "transcribing" | "answering"
   >("idle");
   const lastRequest = useRef<{
-    question: WaterExplainInput["question"];
+    question: SeasonExplainInput["question"];
     text?: string;
   } | null>(null);
   const thread = useRef<HTMLDivElement>(null);
@@ -63,7 +71,7 @@ export function AssistantPage() {
           ? "जवाब नहीं मिला। आपकी तुलना यहीं है। फिर कोशिश करें।"
           : "We could not get a reply. Your comparison is still here. Try again.";
   async function ask(
-    question: WaterExplainInput["question"],
+    question: SeasonExplainInput["question"],
     questionText?: string,
     fromVoice = false,
   ) {
@@ -86,10 +94,10 @@ export function AssistantPage() {
     setUrl("");
     const label =
       questionText ||
-      (question === "explain-coverage"
-        ? t.qCoverage
-        : question === "explain-assumptions"
-          ? t.qAssumptions
+      (question === "season"
+        ? seasonCopy[app.locale].talk
+        : question === "history"
+          ? seasonCopy[app.locale].history
           : t.qChecks);
     app.setChat((rows) => [
       ...rows.slice(-11),
@@ -102,9 +110,10 @@ export function AssistantPage() {
     ]);
     setText("");
     try {
-      const response = await planningApi.waterExplain(
+      const response = await planningApi.readinessExplain(
         {
-          ...app.input,
+          ...app.seasonInput,
+          water: app.input,
           locale: app.locale,
           voice,
           question,
@@ -127,9 +136,33 @@ export function AssistantPage() {
             text: explanation.summary,
             locale: app.locale,
             model: explanation.model.id,
+            seasonAnswer: {
+              assessment: response.data.assessment,
+              views: response.data.components.views,
+              ...(response.data.waterPlan
+                ? { waterPlan: response.data.waterPlan }
+                : {}),
+            },
           },
         ]);
       }
+      if (response.data.explanation.status !== "available")
+        app.setChat((rows) => [
+          ...rows.slice(-11),
+          {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            text: seasonCopy[app.locale].context,
+            locale: app.locale,
+            seasonAnswer: {
+              assessment: response.data.assessment,
+              views: response.data.components.views,
+              ...(response.data.waterPlan
+                ? { waterPlan: response.data.waterPlan }
+                : {}),
+            },
+          },
+        ]);
       if (response.data.audio.status === "available") {
         const audio = response.data.audio;
         setUrl(
@@ -173,7 +206,7 @@ export function AssistantPage() {
       if (!alive.current || ctrl.signal.aborted) return;
       if (result.data.status === "unavailable")
         throw new Error(result.data.reason);
-      await ask("explain-coverage", result.data.transcript, true);
+      await ask("season", result.data.transcript, true);
     } catch (e) {
       if (alive.current && !ctrl.signal.aborted) setError(message(e));
     } finally {
@@ -278,14 +311,17 @@ export function AssistantPage() {
             </h2>
             <p>
               {app.locale === "en-IN"
-                ? "Ask a question, or tap the microphone and speak. I'll help explain your water comparison and what to check next."
-                : t.helpIntro}
+                ? "Ask about your season, past El Niño years, crop checks or water options. Your answers include evidence cards; tap the microphone to speak."
+                : app.locale === "mr-IN"
+                  ? "तुमच्या हंगामाबद्दल, मागील वर्षांबद्दल किंवा आवश्यक तपासण्यांबद्दल प्रश्न विचारा. लिहा किंवा मायक्रोफोन वापरा."
+                  : "अपने मौसम, पिछले वर्षों या ज़रूरी जाँच के बारे में पूछें। लिखें या माइक्रोफोन का उपयोग करें।"}
             </p>
             <div className={c("question-pills")}>
               {(
                 [
-                  ["explain-coverage", t.qCoverage],
-                  ["explain-next-checks", t.qChecks],
+                  ["season", seasonCopy[app.locale].talk],
+                  ["history", seasonCopy[app.locale].history],
+                  ["actions", t.qChecks],
                 ] as const
               ).map(([q, label]) => (
                 <button
@@ -309,6 +345,13 @@ export function AssistantPage() {
             lang={row.locale}
           >
             <p>{row.text}</p>
+            {row.seasonAnswer ? (
+              <SeasonCards
+                assessment={row.seasonAnswer.assessment}
+                views={row.seasonAnswer.views}
+                waterPlan={row.seasonAnswer.waterPlan}
+              />
+            ) : null}
             {row.model && (
               <small>
                 {app.locale === "en-IN"
@@ -374,7 +417,7 @@ export function AssistantPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (text.trim()) void ask("explain-coverage", text.trim());
+            if (text.trim()) void ask("season", text.trim());
           }}
         >
           <label className="sr-only" htmlFor="plan-question">
@@ -398,7 +441,7 @@ export function AssistantPage() {
               ) {
                 e.preventDefault();
                 if (text.trim() && !busy && !recording && !starting)
-                  void ask("explain-coverage", text.trim());
+                  void ask("season", text.trim());
               }
             }}
           />

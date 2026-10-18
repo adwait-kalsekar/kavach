@@ -1,0 +1,626 @@
+[
+  {
+    "regionId": "latur",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Latur: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2028%20-Latur-%2031-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "aaf46d29eea07791a585237d48b3b38aa68f184efa9090fbc2381fbee1e9c4f9"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 4,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "latur",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Latur: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2028%20-Latur-%2031-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "aaf46d29eea07791a585237d48b3b38aa68f184efa9090fbc2381fbee1e9c4f9"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 4,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "latur",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Latur: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2028%20-Latur-%2031-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "aaf46d29eea07791a585237d48b3b38aa68f184efa9090fbc2381fbee1e9c4f9"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201320",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 4,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "beed",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Beed: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2027-Beed-3%201-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "facf8d9c70783f31ad5093cf18f75af261d7655cd8e96187c9fd5061626e91f5"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 1,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "beed",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Beed: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2027-Beed-3%201-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "facf8d9c70783f31ad5093cf18f75af261d7655cd8e96187c9fd5061626e91f5"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 1,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "beed",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Beed: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2027-Beed-3%201-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "facf8d9c70783f31ad5093cf18f75af261d7655cd8e96187c9fd5061626e91f5"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201320",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 1,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "nanded",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Nanded: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2029-Nanded-%2031-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "e4fbcf557dd1b79b9469c3824ab0af062165f84602dd9f5b55ecb8d099edbf1f"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 5,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "nanded",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Nanded: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2029-Nanded-%2031-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "e4fbcf557dd1b79b9469c3824ab0af062165f84602dd9f5b55ecb8d099edbf1f"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 5,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "nanded",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Nanded: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2029-Nanded-%2031-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "e4fbcf557dd1b79b9469c3824ab0af062165f84602dd9f5b55ecb8d099edbf1f"
+    },
+    "rainfedWindow": "October 15\u201330",
+    "irrigatedWindow": "November 15\u2013December 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 5,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "dharashiv",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Osmanabad: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2030-Osmanabad-%2031-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "d7ecceb9b9e2e85d19200804f2f0c29cd3b7eb210d58e7c752e96d9125f1bb83"
+    },
+    "rainfedWindow": "October 15\u201330",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 8,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "dharashiv",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Osmanabad: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2030-Osmanabad-%2031-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "d7ecceb9b9e2e85d19200804f2f0c29cd3b7eb210d58e7c752e96d9125f1bb83"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 8,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "dharashiv",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Osmanabad: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2030-Osmanabad-%2031-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "d7ecceb9b9e2e85d19200804f2f0c29cd3b7eb210d58e7c752e96d9125f1bb83"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201320",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 8,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "parbhani",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Parbhani: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2031-Parbhani-%2031-12-2011.pdf",
+      "pdfPage": 7,
+      "publishedYear": 2011,
+      "sha256": "797525b972ee5aa01cf8cdf02d7ea19e91ea07f5c2c3dd9c1113a1df080033f8"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 6,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "parbhani",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Parbhani: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2031-Parbhani-%2031-12-2011.pdf",
+      "pdfPage": 7,
+      "publishedYear": 2011,
+      "sha256": "797525b972ee5aa01cf8cdf02d7ea19e91ea07f5c2c3dd9c1113a1df080033f8"
+    },
+    "rainfedWindow": "September 23\u2013October 15",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 6,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "parbhani",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Parbhani: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2031-Parbhani-%2031-12-2011.pdf",
+      "pdfPage": 7,
+      "publishedYear": 2011,
+      "sha256": "797525b972ee5aa01cf8cdf02d7ea19e91ea07f5c2c3dd9c1113a1df080033f8"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201320",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 6,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "hingoli",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Hingoli: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2032-Hingoli-%2031-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "4d0b7cb5fdd45711b3e5977863cf237719802594ec891c5de36d5fd4e46f7a76"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 2,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "hingoli",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Hingoli: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2032-Hingoli-%2031-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "4d0b7cb5fdd45711b3e5977863cf237719802594ec891c5de36d5fd4e46f7a76"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 2,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "hingoli",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Hingoli: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2032-Hingoli-%2031-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "4d0b7cb5fdd45711b3e5977863cf237719802594ec891c5de36d5fd4e46f7a76"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201320",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 2,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "jalna",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Jalna: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2033-Jalna-31-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "5e0723c1ce166a29120beb43d7f52e30e086460772ba5be14dc32173c5c29605"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 3,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "jalna",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Jalna: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2033-Jalna-31-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "5e0723c1ce166a29120beb43d7f52e30e086460772ba5be14dc32173c5c29605"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 3,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "jalna",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Jalna: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2033-Jalna-31-12-2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "5e0723c1ce166a29120beb43d7f52e30e086460772ba5be14dc32173c5c29605"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201320",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 3,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "sambhajinagar",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Aurangabad: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2026-Aurangabad-3%201-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "856b3e7f3a5aa22ae59d75d878cf6cb3233684da7652199d5494260a03dc8056"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 7,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "sambhajinagar",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Aurangabad: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2026-Aurangabad-3%201-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "856b3e7f3a5aa22ae59d75d878cf6cb3233684da7652199d5494260a03dc8056"
+    },
+    "rainfedWindow": "October 1\u201315",
+    "irrigatedWindow": "October 15\u2013November 15",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 7,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "sambhajinagar",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Aurangabad: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2026-Aurangabad-3%201-12-2011.pdf",
+      "pdfPage": 5,
+      "publishedYear": 2011,
+      "sha256": "856b3e7f3a5aa22ae59d75d878cf6cb3233684da7652199d5494260a03dc8056"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201320",
+    "bulletin": {
+      "url": "https://www.vnmkv.ac.in/uploads/weather/6ace1c94bf535_1791892628.pdf",
+      "pdfPage": 7,
+      "issued": "2026-10-13",
+      "forecastThrough": "2026-10-18",
+      "sowingWindowThrough": "2026-10-15"
+    }
+  },
+  {
+    "regionId": "solapur",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Solapur: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MPKVV,%20Rahuri/MH1-Solapur%203.2.2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "2628f117a4d5db753962f8ff3f1e54e15021ef56c8fe61bcbd16a80ee69a9adc"
+    },
+    "rainfedWindow": "September 25\u2013October 15",
+    "irrigatedWindow": "October 20\u2013November 20",
+    "bulletin": null
+  },
+  {
+    "regionId": "solapur",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Solapur: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MPKVV,%20Rahuri/MH1-Solapur%203.2.2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "2628f117a4d5db753962f8ff3f1e54e15021ef56c8fe61bcbd16a80ee69a9adc"
+    },
+    "rainfedWindow": "September 15\u2013October 15",
+    "irrigatedWindow": "September 30\u2013October 15",
+    "bulletin": null
+  },
+  {
+    "regionId": "solapur",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Solapur: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MPKVV,%20Rahuri/MH1-Solapur%203.2.2011.pdf",
+      "pdfPage": 6,
+      "publishedYear": 2011,
+      "sha256": "2628f117a4d5db753962f8ff3f1e54e15021ef56c8fe61bcbd16a80ee69a9adc"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 15\u2013December 15",
+    "bulletin": null
+  },
+  {
+    "regionId": "ahilyanagar",
+    "crop": "chickpea",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Ahmednagar: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MPKVV,%20Rahuri/MH2-AHMEDNAGAR%2031.03.2011.pdf",
+      "pdfPage": 7,
+      "publishedYear": 2011,
+      "sha256": "18c3da361ba442876bbcc577e532def9d83b316bb5773a5b0a05fb27aaba2798"
+    },
+    "rainfedWindow": "September 15\u201325",
+    "irrigatedWindow": "October 20\u2013November 10",
+    "bulletin": null
+  },
+  {
+    "regionId": "ahilyanagar",
+    "crop": "sorghum",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Ahmednagar: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MPKVV,%20Rahuri/MH2-AHMEDNAGAR%2031.03.2011.pdf",
+      "pdfPage": 7,
+      "publishedYear": 2011,
+      "sha256": "18c3da361ba442876bbcc577e532def9d83b316bb5773a5b0a05fb27aaba2798"
+    },
+    "rainfedWindow": "September 15\u2013October 15",
+    "irrigatedWindow": null,
+    "bulletin": null
+  },
+  {
+    "regionId": "ahilyanagar",
+    "crop": "wheat",
+    "version": "maharashtra-rabi-context/1",
+    "review": "unreviewed",
+    "source": {
+      "title": "ICAR-CRIDA Ahmednagar: historical rabi calendar (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MPKVV,%20Rahuri/MH2-AHMEDNAGAR%2031.03.2011.pdf",
+      "pdfPage": 7,
+      "publishedYear": 2011,
+      "sha256": "18c3da361ba442876bbcc577e532def9d83b316bb5773a5b0a05fb27aaba2798"
+    },
+    "rainfedWindow": null,
+    "irrigatedWindow": "November 1\u201315",
+    "bulletin": null
+  }
+]

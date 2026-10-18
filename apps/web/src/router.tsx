@@ -1,7 +1,7 @@
+import { SeasonPage as ReadinessPage } from "./features/planning/season-page";
 import { PlanningProvider } from "./features/planning/state";
 import {
   PlanningLayout,
-  SituationPage,
   ComparePage as WaterComparePage,
   NextStepsPage,
   EvidencePage,
@@ -51,7 +51,7 @@ const planningRoute = createRoute({
 const situationRoute = createRoute({
   getParentRoute: () => planningRoute,
   path: "/situation",
-  component: SituationPage,
+  component: ReadinessPage,
 });
 const waterCompareRoute = createRoute({
   getParentRoute: () => planningRoute,

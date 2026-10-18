@@ -1,3 +1,5 @@
+> **Seasonal-readiness update (18 October 2026):** My season now uses actual ten-region CHIRPS/ERA5/NOAA evidence, thirty historical crop-context entries seven source-conditioned crop discussion rules, experimental regional stress and verification tasks, with grounded Google visual answers and first-use highlights. See [current method, sources and limits](season-readiness.md). Earlier water-planning verification below is historical. Calibrated field risk, expert-reviewed prescriptions, crop-masked greenness, reservoir access and insurance deadlines remain unimplemented.
+
 # Farmer planning POC
 
 Updated 18 October 2026. The first farmer-planning release (`f534908`) deployed successfully through CI run 39130726106. The current UI refinement replaces dialog chat with a full Talk route; its rollout must be verified against the new commit rather than inferred from the earlier release. Research and design artifacts remain git-ignored under `.context/`.
@@ -43,7 +45,7 @@ The print view preserves inputs, units, method version, limitations, open checks
 
 ## Public transport and inference
 
-Nine exact method/path pairs are public synthetic operations: four new planning/catalog/calculation/explanation/transcription routes and five legacy sample routes. Exact configured Origin, strict contracts, bounded bodies, route-specific preflights, shared overall request quota and cookie-free client behavior remain. Other routes retain session, CSRF and ownership handling; no general cross-site exemption was added. Contracts and OpenAPI cover both available and missing-input results.
+Eleven exact method/path pairs are public synthetic operations: four new planning/catalog/calculation/explanation/transcription routes and five legacy sample routes. Exact configured Origin, strict contracts, bounded bodies, route-specific preflights, shared overall request quota and cookie-free client behavior remain. Other routes retain session, CSRF and ownership handling; no general cross-site exemption was added. Contracts and OpenAPI cover both available and missing-input results.
 
 New explanation uses a bounded question enum and optional text (1,200 characters) plus at most six 600-character history items. The server treats all conversational text as untrusted, recomputes the plan and passes canonical qualitative facts/budget states to Google. Model output is schema-validated, topic references are allowlisted and unsupported numeric/dose/date claims are rejected. These checks reduce unsupported output; they are not scientific validation. The deterministic cards remain authoritative when AI is unavailable. Runtime validation also covers outgoing responses.
 

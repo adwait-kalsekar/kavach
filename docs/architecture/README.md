@@ -31,3 +31,5 @@ GCP project is kavach-farmers-market-sense; region is Mumbai. Account access, bi
 ## Required browser boundary
 
 User requirement: all browser service/API requests go to Hono. React assets come from an independent Nginx web service; Hono never serves the frontend. No direct auth, database, AI, weather, object-storage, telemetry or signed-upload connection is permitted from frontend code. This requirement supersedes the earlier browser-side Firebase Authentication suggestion.
+
+The current seasonal-readiness POC is documented in [methods and data](season-readiness.md) and the [original-brief alignment matrix](brief-alignment.md). Use those for current evidence/rule scope and explicit unfinished scientific requirements; earlier deadline documents describe the initial water-planning slice.

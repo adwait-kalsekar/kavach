@@ -1,4 +1,10 @@
 import {
+  seasonInputSchema,
+  seasonAssessmentSchema,
+  seasonExplainInputSchema,
+  seasonExplanationSchema,
+} from "./season-readiness.js";
+import {
   planningTranscriptSchema,
   planningCatalogSchema,
   waterPlanningInputSchema,
@@ -40,8 +46,25 @@ import {
 export * from "./core.js";
 export * from "./demo.js";
 export * from "./water-planning.js";
+export * from "./season-readiness.js";
 
 export const endpoints = {
+  demoReadiness: {
+    method: "POST",
+    path: "/api/v1/demo/readiness",
+    publicDemo: true,
+    body: seasonInputSchema,
+    response: envelope(seasonAssessmentSchema),
+    status: 200,
+  },
+  demoReadinessExplain: {
+    method: "POST",
+    path: "/api/v1/demo/readiness/explain",
+    publicDemo: true,
+    body: seasonExplainInputSchema,
+    response: envelope(seasonExplanationSchema),
+    status: 200,
+  },
   planningTranscribe: {
     method: "POST",
     path: "/api/v1/demo/planning/transcribe",

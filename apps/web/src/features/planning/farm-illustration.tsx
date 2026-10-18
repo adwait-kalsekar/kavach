@@ -2,7 +2,7 @@
 export function FarmIllustration() {
   return (
     <svg
-      className="field-art"
+      className="fp-field-art"
       viewBox="0 0 600 200"
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"

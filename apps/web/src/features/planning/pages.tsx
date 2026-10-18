@@ -1,3 +1,5 @@
+import { seasonCopy } from "./season-copy";
+import { GuidedTour } from "./guided-tour";
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Link, Navigate, Outlet, useLocation } from "@tanstack/react-router";
 import { usePlanning, useFormat, cls as c } from "./state";
@@ -24,8 +26,16 @@ export function PlanningLayout() {
     <>
       {(
         [
-          { to: "/situation", label: t.situation, icon: "sample" },
-          { to: "/compare", label: t.compare, icon: "water" },
+          {
+            to: "/situation",
+            label: seasonCopy[app.locale].home,
+            icon: "sample",
+          },
+          {
+            to: "/compare",
+            label: seasonCopy[app.locale].options,
+            icon: "water",
+          },
           {
             to: "/talk",
             label:
@@ -39,6 +49,13 @@ export function PlanningLayout() {
         ] as const
       ).map((v) => (
         <Link
+          data-tour={
+            v.to === "/compare"
+              ? "options"
+              : v.to === "/talk"
+                ? "talk"
+                : undefined
+          }
           className={c("nav-button")}
           aria-current={
             v.to === "/compare" && path === "/discussion-sheet"
@@ -99,6 +116,7 @@ export function PlanningLayout() {
             className={c(isTalk ? "main main-talk" : "main")}
           >
             <Outlet />
+            <GuidedTour />
           </main>
           <nav className={c("bottomnav")} aria-label="Mobile navigation">
             {nav}

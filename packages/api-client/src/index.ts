@@ -136,6 +136,8 @@ export function createDemoClient(
   const base = apiBase(origin);
   async function call<
     K extends
+      | "demoReadiness"
+      | "demoReadinessExplain"
       | "planningCatalog"
       | "demoWaterPlan"
       | "demoWaterExplain"
@@ -178,6 +180,23 @@ export function createDemoClient(
     return readRpcResponse(operation, response);
   }
   return {
+    readiness: (input: RequestBody<"demoReadiness">, signal?: AbortSignal) =>
+      call(
+        "demoReadiness",
+        JSON.stringify(endpoints.demoReadiness.body.parse(input)),
+        undefined,
+        signal,
+      ),
+    readinessExplain: (
+      input: RequestBody<"demoReadinessExplain">,
+      signal?: AbortSignal,
+    ) =>
+      call(
+        "demoReadinessExplain",
+        JSON.stringify(endpoints.demoReadinessExplain.body.parse(input)),
+        undefined,
+        signal,
+      ),
     planning: (signal?: AbortSignal) =>
       call("planningCatalog", undefined, undefined, signal),
     waterPlan: (input: RequestBody<"demoWaterPlan">, signal?: AbortSignal) =>

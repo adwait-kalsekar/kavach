@@ -5,7 +5,18 @@ import {
   explanationSchema,
   audioSchema,
 } from "./demo.js";
-export const planningRegionSchema = z.enum(["latur", "beed", "nanded"]);
+export const planningRegionSchema = z.enum([
+  "latur",
+  "beed",
+  "nanded",
+  "dharashiv",
+  "parbhani",
+  "hingoli",
+  "jalna",
+  "sambhajinagar",
+  "solapur",
+  "ahilyanagar",
+]);
 export const planningCropSchema = z.enum(["chickpea", "sorghum", "wheat"]);
 const positive = (max: number) => z.number().finite().positive().max(max);
 export const waterPlanningInputSchema = z.strictObject({
@@ -65,7 +76,7 @@ export const planningCatalogSchema = z.strictObject({
         climate: climateSchema,
       }),
     )
-    .length(3),
+    .length(10),
   crops: z
     .array(z.strictObject({ id: planningCropSchema, name: z.string() }))
     .length(3),

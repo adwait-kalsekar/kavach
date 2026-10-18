@@ -1,0 +1,3332 @@
+[
+  {
+    "regionId": "latur",
+    "name": "Latur",
+    "latitude": 18.4088,
+    "longitude": 76.5604,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 773.0569117683386,
+      "totalMm": 439.28342431306373,
+      "departurePct": -43.175797586723675,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 931.5243358239532
+        },
+        {
+          "year": 1992,
+          "totalMm": 608.137529575266
+        },
+        {
+          "year": 1993,
+          "totalMm": 663.6173111461103
+        },
+        {
+          "year": 1994,
+          "totalMm": 738.6980552747846
+        },
+        {
+          "year": 1995,
+          "totalMm": 827.8714196644723
+        },
+        {
+          "year": 1996,
+          "totalMm": 865.3983151003486
+        },
+        {
+          "year": 1997,
+          "totalMm": 609.0508513581008
+        },
+        {
+          "year": 1998,
+          "totalMm": 891.0183653321219
+        },
+        {
+          "year": 1999,
+          "totalMm": 790.6690546255559
+        },
+        {
+          "year": 2000,
+          "totalMm": 869.5886764228344
+        },
+        {
+          "year": 2001,
+          "totalMm": 697.7996717207134
+        },
+        {
+          "year": 2002,
+          "totalMm": 546.4806550581998
+        },
+        {
+          "year": 2003,
+          "totalMm": 578.988929560408
+        },
+        {
+          "year": 2004,
+          "totalMm": 474.3488232754171
+        },
+        {
+          "year": 2005,
+          "totalMm": 928.201886808034
+        },
+        {
+          "year": 2006,
+          "totalMm": 958.2993503222242
+        },
+        {
+          "year": 2007,
+          "totalMm": 1081.514657896012
+        },
+        {
+          "year": 2008,
+          "totalMm": 695.9218161838362
+        },
+        {
+          "year": 2009,
+          "totalMm": 668.87652188832
+        },
+        {
+          "year": 2010,
+          "totalMm": 1001.0317540178075
+        },
+        {
+          "year": 2011,
+          "totalMm": 719.066626352258
+        },
+        {
+          "year": 2012,
+          "totalMm": 660.4852698231116
+        },
+        {
+          "year": 2013,
+          "totalMm": 1027.2992963083088
+        },
+        {
+          "year": 2014,
+          "totalMm": 598.9899903011392
+        },
+        {
+          "year": 2015,
+          "totalMm": 583.7130604442518
+        },
+        {
+          "year": 2016,
+          "totalMm": 965.9347348177107
+        },
+        {
+          "year": 2017,
+          "totalMm": 738.5439928807318
+        },
+        {
+          "year": 2018,
+          "totalMm": 741.7680642530322
+        },
+        {
+          "year": 2019,
+          "totalMm": 791.8854675073526
+        },
+        {
+          "year": 2020,
+          "totalMm": 936.9828693077434
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 546.4806550581998,
+          "departurePct": -29.309130189633027,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 668.87652188832,
+          "departurePct": -13.476419173552168,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 583.7130604442518,
+          "departurePct": -24.492873479517808,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 842.3129300187575,
+          "departurePct": 8.958721821915837,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.40909546746148,
+      "baselineMoisture": 0.4268414666917589,
+      "meanDailyMaxC": 29.24208679199222,
+      "baselineDailyMaxC": 28.202470957438177,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.30239469740125874
+        },
+        {
+          "year": 1992,
+          "value": 0.3685231314765083
+        },
+        {
+          "year": 1993,
+          "value": 0.45654858483208555
+        },
+        {
+          "year": 1994,
+          "value": 0.39751122792561844
+        },
+        {
+          "year": 1995,
+          "value": 0.43535624610053175
+        },
+        {
+          "year": 1996,
+          "value": 0.4534520043267144
+        },
+        {
+          "year": 1997,
+          "value": 0.36917803022596574
+        },
+        {
+          "year": 1998,
+          "value": 0.4638020409478082
+        },
+        {
+          "year": 1999,
+          "value": 0.4551631503634982
+        },
+        {
+          "year": 2000,
+          "value": 0.3865110185411241
+        },
+        {
+          "year": 2001,
+          "value": 0.42409547170003264
+        },
+        {
+          "year": 2002,
+          "value": 0.37131582895914705
+        },
+        {
+          "year": 2003,
+          "value": 0.4035165362887912
+        },
+        {
+          "year": 2004,
+          "value": 0.4477110332912869
+        },
+        {
+          "year": 2005,
+          "value": 0.45567304823133686
+        },
+        {
+          "year": 2006,
+          "value": 0.44668358696831595
+        },
+        {
+          "year": 2007,
+          "value": 0.4743059582180447
+        },
+        {
+          "year": 2008,
+          "value": 0.453852801852756
+        },
+        {
+          "year": 2009,
+          "value": 0.42116088867187507
+        },
+        {
+          "year": 2010,
+          "value": 0.4732600106133355
+        },
+        {
+          "year": 2011,
+          "value": 0.43844068315294055
+        },
+        {
+          "year": 2012,
+          "value": 0.4221510145399306
+        },
+        {
+          "year": 2013,
+          "value": 0.4277446111043295
+        },
+        {
+          "year": 2014,
+          "value": 0.43984913296169714
+        },
+        {
+          "year": 2015,
+          "value": 0.4116701549953884
+        },
+        {
+          "year": 2016,
+          "value": 0.44488620758056635
+        },
+        {
+          "year": 2017,
+          "value": 0.46004863315158423
+        },
+        {
+          "year": 2018,
+          "value": 0.3717476950751411
+        },
+        {
+          "year": 2019,
+          "value": 0.4682030995686849
+        },
+        {
+          "year": 2020,
+          "value": 0.46048747168646925
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "beed",
+    "name": "Beed",
+    "latitude": 18.9891,
+    "longitude": 75.7601,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 657.4441560944314,
+      "totalMm": 266.91958710437757,
+      "departurePct": -59.40041680649774,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 724.3620414406832
+        },
+        {
+          "year": 1992,
+          "totalMm": 548.6102808727883
+        },
+        {
+          "year": 1993,
+          "totalMm": 509.0590613184031
+        },
+        {
+          "year": 1994,
+          "totalMm": 678.2864001789712
+        },
+        {
+          "year": 1995,
+          "totalMm": 648.3372194189578
+        },
+        {
+          "year": 1996,
+          "totalMm": 730.9792141813668
+        },
+        {
+          "year": 1997,
+          "totalMm": 470.8350717534777
+        },
+        {
+          "year": 1998,
+          "totalMm": 735.4428249325138
+        },
+        {
+          "year": 1999,
+          "totalMm": 702.0422608099616
+        },
+        {
+          "year": 2000,
+          "totalMm": 712.5974427461624
+        },
+        {
+          "year": 2001,
+          "totalMm": 563.5536914840341
+        },
+        {
+          "year": 2002,
+          "totalMm": 408.07790305721574
+        },
+        {
+          "year": 2003,
+          "totalMm": 578.4243973825596
+        },
+        {
+          "year": 2004,
+          "totalMm": 526.5451808422804
+        },
+        {
+          "year": 2005,
+          "totalMm": 710.884655110538
+        },
+        {
+          "year": 2006,
+          "totalMm": 802.1672525145113
+        },
+        {
+          "year": 2007,
+          "totalMm": 887.1323085008189
+        },
+        {
+          "year": 2008,
+          "totalMm": 640.5104412023211
+        },
+        {
+          "year": 2009,
+          "totalMm": 629.0448948778212
+        },
+        {
+          "year": 2010,
+          "totalMm": 787.3735886468203
+        },
+        {
+          "year": 2011,
+          "totalMm": 586.9917551323306
+        },
+        {
+          "year": 2012,
+          "totalMm": 602.3824945078231
+        },
+        {
+          "year": 2013,
+          "totalMm": 812.1337340474129
+        },
+        {
+          "year": 2014,
+          "totalMm": 564.9961706551258
+        },
+        {
+          "year": 2015,
+          "totalMm": 625.3463050457649
+        },
+        {
+          "year": 2016,
+          "totalMm": 812.6801578883315
+        },
+        {
+          "year": 2017,
+          "totalMm": 668.9232840500772
+        },
+        {
+          "year": 2018,
+          "totalMm": 508.2519783247262
+        },
+        {
+          "year": 2019,
+          "totalMm": 656.1793946577236
+        },
+        {
+          "year": 2020,
+          "totalMm": 891.1732772514224
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 408.07790305721574,
+          "departurePct": -37.92964782265068,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 629.0448948778212,
+          "departurePct": -4.31964615600463,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 625.3463050457649,
+          "departurePct": -4.8822171056086106,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 571.3120623975992,
+          "departurePct": -13.101050925526925,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.32742729187011715,
+      "baselineMoisture": 0.39255516476101343,
+      "meanDailyMaxC": 30.314473978678393,
+      "baselineDailyMaxC": 29.017827402750672,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.2422279993693034
+        },
+        {
+          "year": 1992,
+          "value": 0.32879170311821826
+        },
+        {
+          "year": 1993,
+          "value": 0.42510509490966797
+        },
+        {
+          "year": 1994,
+          "value": 0.3690411885579427
+        },
+        {
+          "year": 1995,
+          "value": 0.3941165924072266
+        },
+        {
+          "year": 1996,
+          "value": 0.4268302493625217
+        },
+        {
+          "year": 1997,
+          "value": 0.28099276224772135
+        },
+        {
+          "year": 1998,
+          "value": 0.45578153398301874
+        },
+        {
+          "year": 1999,
+          "value": 0.41117083231608065
+        },
+        {
+          "year": 2000,
+          "value": 0.3370379553900825
+        },
+        {
+          "year": 2001,
+          "value": 0.3419258329603407
+        },
+        {
+          "year": 2002,
+          "value": 0.35288249121771914
+        },
+        {
+          "year": 2003,
+          "value": 0.3673471874660916
+        },
+        {
+          "year": 2004,
+          "value": 0.41531185574001733
+        },
+        {
+          "year": 2005,
+          "value": 0.42824988894992394
+        },
+        {
+          "year": 2006,
+          "value": 0.4276586956448025
+        },
+        {
+          "year": 2007,
+          "value": 0.4490186267428928
+        },
+        {
+          "year": 2008,
+          "value": 0.4319766574435764
+        },
+        {
+          "year": 2009,
+          "value": 0.38966564602322057
+        },
+        {
+          "year": 2010,
+          "value": 0.4491941028171116
+        },
+        {
+          "year": 2011,
+          "value": 0.4121751573350693
+        },
+        {
+          "year": 2012,
+          "value": 0.4057252671983507
+        },
+        {
+          "year": 2013,
+          "value": 0.4110568788316514
+        },
+        {
+          "year": 2014,
+          "value": 0.3820510864257812
+        },
+        {
+          "year": 2015,
+          "value": 0.3952887429131401
+        },
+        {
+          "year": 2016,
+          "value": 0.425151358710395
+        },
+        {
+          "year": 2017,
+          "value": 0.4209400812784831
+        },
+        {
+          "year": 2018,
+          "value": 0.2970115661621094
+        },
+        {
+          "year": 2019,
+          "value": 0.4611286375257704
+        },
+        {
+          "year": 2020,
+          "value": 0.4417992697821722
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "nanded",
+    "name": "Nanded",
+    "latitude": 19.1383,
+    "longitude": 77.321,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 904.5634175218202,
+      "totalMm": 543.7381878101733,
+      "departurePct": -39.889434253286396,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 945.3779428475536
+        },
+        {
+          "year": 1992,
+          "totalMm": 800.4329340229742
+        },
+        {
+          "year": 1993,
+          "totalMm": 851.9726839594077
+        },
+        {
+          "year": 1994,
+          "totalMm": 902.1214262512513
+        },
+        {
+          "year": 1995,
+          "totalMm": 912.9585374890594
+        },
+        {
+          "year": 1996,
+          "totalMm": 970.411654163152
+        },
+        {
+          "year": 1997,
+          "totalMm": 684.198886414832
+        },
+        {
+          "year": 1998,
+          "totalMm": 1030.9491461296566
+        },
+        {
+          "year": 1999,
+          "totalMm": 809.3734787085559
+        },
+        {
+          "year": 2000,
+          "totalMm": 985.5047992347972
+        },
+        {
+          "year": 2001,
+          "totalMm": 827.7520092967898
+        },
+        {
+          "year": 2002,
+          "totalMm": 734.9428537337808
+        },
+        {
+          "year": 2003,
+          "totalMm": 839.801428321749
+        },
+        {
+          "year": 2004,
+          "totalMm": 661.256782816723
+        },
+        {
+          "year": 2005,
+          "totalMm": 1207.8522330961423
+        },
+        {
+          "year": 2006,
+          "totalMm": 1125.2569274296984
+        },
+        {
+          "year": 2007,
+          "totalMm": 1070.1760234348476
+        },
+        {
+          "year": 2008,
+          "totalMm": 791.3583302184124
+        },
+        {
+          "year": 2009,
+          "totalMm": 650.0787898115814
+        },
+        {
+          "year": 2010,
+          "totalMm": 1152.4796449653804
+        },
+        {
+          "year": 2011,
+          "totalMm": 924.2655720000621
+        },
+        {
+          "year": 2012,
+          "totalMm": 870.0075923334807
+        },
+        {
+          "year": 2013,
+          "totalMm": 1186.9624212123454
+        },
+        {
+          "year": 2014,
+          "totalMm": 654.4378634180757
+        },
+        {
+          "year": 2015,
+          "totalMm": 725.1875340961851
+        },
+        {
+          "year": 2016,
+          "totalMm": 1193.8961555585265
+        },
+        {
+          "year": 2017,
+          "totalMm": 805.0340530877002
+        },
+        {
+          "year": 2018,
+          "totalMm": 879.1193409487605
+        },
+        {
+          "year": 2019,
+          "totalMm": 955.3599454183131
+        },
+        {
+          "year": 2020,
+          "totalMm": 988.3755352348089
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 734.9428537337808,
+          "departurePct": -18.751649746431156,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 650.0787898115814,
+          "departurePct": -28.13342025343403,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 725.1875340961851,
+          "departurePct": -19.83010587771289,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 966.6246802508831,
+          "departurePct": 6.860907873003375,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.410218408372667,
+      "baselineMoisture": 0.4315313148498535,
+      "meanDailyMaxC": 30.54915262858077,
+      "baselineDailyMaxC": 29.540578172471815,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.3086083941989474
+        },
+        {
+          "year": 1992,
+          "value": 0.37941712273491757
+        },
+        {
+          "year": 1993,
+          "value": 0.44662479824490015
+        },
+        {
+          "year": 1994,
+          "value": 0.4058985392252604
+        },
+        {
+          "year": 1995,
+          "value": 0.44793230692545577
+        },
+        {
+          "year": 1996,
+          "value": 0.4537978702121311
+        },
+        {
+          "year": 1997,
+          "value": 0.42350614335801856
+        },
+        {
+          "year": 1998,
+          "value": 0.4739091025458441
+        },
+        {
+          "year": 1999,
+          "value": 0.46300099690755214
+        },
+        {
+          "year": 2000,
+          "value": 0.37855521308051204
+        },
+        {
+          "year": 2001,
+          "value": 0.39272018008761944
+        },
+        {
+          "year": 2002,
+          "value": 0.3911200205485025
+        },
+        {
+          "year": 2003,
+          "value": 0.42804027133517797
+        },
+        {
+          "year": 2004,
+          "value": 0.44916316138373474
+        },
+        {
+          "year": 2005,
+          "value": 0.44205589294433606
+        },
+        {
+          "year": 2006,
+          "value": 0.45431681738959423
+        },
+        {
+          "year": 2007,
+          "value": 0.47915261586507163
+        },
+        {
+          "year": 2008,
+          "value": 0.45321311950683596
+        },
+        {
+          "year": 2009,
+          "value": 0.4078834109836154
+        },
+        {
+          "year": 2010,
+          "value": 0.47030946943495
+        },
+        {
+          "year": 2011,
+          "value": 0.44233233133951816
+        },
+        {
+          "year": 2012,
+          "value": 0.44996011522081153
+        },
+        {
+          "year": 2013,
+          "value": 0.4319957945081923
+        },
+        {
+          "year": 2014,
+          "value": 0.4279804865519206
+        },
+        {
+          "year": 2015,
+          "value": 0.4367872450086805
+        },
+        {
+          "year": 2016,
+          "value": 0.4530365837944878
+        },
+        {
+          "year": 2017,
+          "value": 0.4481366687350804
+        },
+        {
+          "year": 2018,
+          "value": 0.36905235714382595
+        },
+        {
+          "year": 2019,
+          "value": 0.4708272722032335
+        },
+        {
+          "year": 2020,
+          "value": 0.46660514407687725
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "dharashiv",
+    "name": "Dharashiv / Osmanabad",
+    "latitude": 18.1861,
+    "longitude": 76.0419,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 704.7921899567506,
+      "totalMm": 354.367883162573,
+      "departurePct": -49.72023126642213,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 890.6639876755653
+        },
+        {
+          "year": 1992,
+          "totalMm": 611.1709644217044
+        },
+        {
+          "year": 1993,
+          "totalMm": 552.9540698900819
+        },
+        {
+          "year": 1994,
+          "totalMm": 750.7251905798912
+        },
+        {
+          "year": 1995,
+          "totalMm": 696.8651325032115
+        },
+        {
+          "year": 1996,
+          "totalMm": 757.0451490348205
+        },
+        {
+          "year": 1997,
+          "totalMm": 533.4590064454824
+        },
+        {
+          "year": 1998,
+          "totalMm": 914.7125661373138
+        },
+        {
+          "year": 1999,
+          "totalMm": 673.8844390511513
+        },
+        {
+          "year": 2000,
+          "totalMm": 800.7900796048343
+        },
+        {
+          "year": 2001,
+          "totalMm": 649.6089276149869
+        },
+        {
+          "year": 2002,
+          "totalMm": 503.70799016579986
+        },
+        {
+          "year": 2003,
+          "totalMm": 506.89903072081506
+        },
+        {
+          "year": 2004,
+          "totalMm": 453.4725413369015
+        },
+        {
+          "year": 2005,
+          "totalMm": 860.0950818189885
+        },
+        {
+          "year": 2006,
+          "totalMm": 821.2586695144419
+        },
+        {
+          "year": 2007,
+          "totalMm": 939.023158043623
+        },
+        {
+          "year": 2008,
+          "totalMm": 629.458112699911
+        },
+        {
+          "year": 2009,
+          "totalMm": 681.7950237802579
+        },
+        {
+          "year": 2010,
+          "totalMm": 910.7139217688236
+        },
+        {
+          "year": 2011,
+          "totalMm": 641.2329123038799
+        },
+        {
+          "year": 2012,
+          "totalMm": 454.5677661728114
+        },
+        {
+          "year": 2013,
+          "totalMm": 880.9100993280299
+        },
+        {
+          "year": 2014,
+          "totalMm": 591.3801571233198
+        },
+        {
+          "year": 2015,
+          "totalMm": 450.3299522436355
+        },
+        {
+          "year": 2016,
+          "totalMm": 911.5088886544108
+        },
+        {
+          "year": 2017,
+          "totalMm": 769.8265637308359
+        },
+        {
+          "year": 2018,
+          "totalMm": 667.9692485406995
+        },
+        {
+          "year": 2019,
+          "totalMm": 708.3546332940459
+        },
+        {
+          "year": 2020,
+          "totalMm": 929.382434502244
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 503.70799016579986,
+          "departurePct": -28.530991497407232,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 681.7950237802579,
+          "departurePct": -3.26297119976654,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 450.3299522436355,
+          "departurePct": -36.10457682976455,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 694.3267587204464,
+          "departurePct": -1.4848960282812462,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.2242635515001085,
+      "baselineMoisture": 0.3299704325640643,
+      "meanDailyMaxC": 30.556425984700525,
+      "baselineDailyMaxC": 28.394627143012176,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.1500032212999132
+        },
+        {
+          "year": 1992,
+          "value": 0.2603056589762369
+        },
+        {
+          "year": 1993,
+          "value": 0.37534393734402133
+        },
+        {
+          "year": 1994,
+          "value": 0.3069679896036784
+        },
+        {
+          "year": 1995,
+          "value": 0.3408047993977865
+        },
+        {
+          "year": 1996,
+          "value": 0.384342024061415
+        },
+        {
+          "year": 1997,
+          "value": 0.18190816243489583
+        },
+        {
+          "year": 1998,
+          "value": 0.3906138949924045
+        },
+        {
+          "year": 1999,
+          "value": 0.3497859742906358
+        },
+        {
+          "year": 2000,
+          "value": 0.3089605331420898
+        },
+        {
+          "year": 2001,
+          "value": 0.29309605492485896
+        },
+        {
+          "year": 2002,
+          "value": 0.2717292361789279
+        },
+        {
+          "year": 2003,
+          "value": 0.2826953676011828
+        },
+        {
+          "year": 2004,
+          "value": 0.34554044935438366
+        },
+        {
+          "year": 2005,
+          "value": 0.37946927812364367
+        },
+        {
+          "year": 2006,
+          "value": 0.3509499867757162
+        },
+        {
+          "year": 2007,
+          "value": 0.394577768113878
+        },
+        {
+          "year": 2008,
+          "value": 0.37648824055989577
+        },
+        {
+          "year": 2009,
+          "value": 0.35664450327555336
+        },
+        {
+          "year": 2010,
+          "value": 0.4062288072374132
+        },
+        {
+          "year": 2011,
+          "value": 0.34583971235487193
+        },
+        {
+          "year": 2012,
+          "value": 0.2927620357937284
+        },
+        {
+          "year": 2013,
+          "value": 0.33538670010036903
+        },
+        {
+          "year": 2014,
+          "value": 0.33132379319932725
+        },
+        {
+          "year": 2015,
+          "value": 0.30998766157362195
+        },
+        {
+          "year": 2016,
+          "value": 0.3479373296101888
+        },
+        {
+          "year": 2017,
+          "value": 0.38115414513481993
+        },
+        {
+          "year": 2018,
+          "value": 0.24897295633951827
+        },
+        {
+          "year": 2019,
+          "value": 0.40555432637532557
+        },
+        {
+          "year": 2020,
+          "value": 0.3937384287516276
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "parbhani",
+    "name": "Parbhani",
+    "latitude": 19.2608,
+    "longitude": 76.7748,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 863.7525135453252,
+      "totalMm": 429.60160995740443,
+      "departurePct": -50.26334474048843,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 980.4707462927327
+        },
+        {
+          "year": 1992,
+          "totalMm": 720.9088116101921
+        },
+        {
+          "year": 1993,
+          "totalMm": 758.1433946657926
+        },
+        {
+          "year": 1994,
+          "totalMm": 866.6424197927117
+        },
+        {
+          "year": 1995,
+          "totalMm": 915.5288004279137
+        },
+        {
+          "year": 1996,
+          "totalMm": 913.4017086904496
+        },
+        {
+          "year": 1997,
+          "totalMm": 627.9124037092552
+        },
+        {
+          "year": 1998,
+          "totalMm": 990.2051886506088
+        },
+        {
+          "year": 1999,
+          "totalMm": 916.8726291178027
+        },
+        {
+          "year": 2000,
+          "totalMm": 904.5464555261424
+        },
+        {
+          "year": 2001,
+          "totalMm": 801.7222013594583
+        },
+        {
+          "year": 2002,
+          "totalMm": 743.6907121688128
+        },
+        {
+          "year": 2003,
+          "totalMm": 835.7472881898284
+        },
+        {
+          "year": 2004,
+          "totalMm": 593.9787846133113
+        },
+        {
+          "year": 2005,
+          "totalMm": 1187.4539982937276
+        },
+        {
+          "year": 2006,
+          "totalMm": 1052.8527465499938
+        },
+        {
+          "year": 2007,
+          "totalMm": 1025.5119455382228
+        },
+        {
+          "year": 2008,
+          "totalMm": 762.9336092341691
+        },
+        {
+          "year": 2009,
+          "totalMm": 686.71160747041
+        },
+        {
+          "year": 2010,
+          "totalMm": 1080.4127145521343
+        },
+        {
+          "year": 2011,
+          "totalMm": 896.4533332795836
+        },
+        {
+          "year": 2012,
+          "totalMm": 833.3571216794662
+        },
+        {
+          "year": 2013,
+          "totalMm": 1076.1358894146979
+        },
+        {
+          "year": 2014,
+          "totalMm": 636.7132295248302
+        },
+        {
+          "year": 2015,
+          "totalMm": 714.6162268923654
+        },
+        {
+          "year": 2016,
+          "totalMm": 1041.1699094408832
+        },
+        {
+          "year": 2017,
+          "totalMm": 771.1389416307211
+        },
+        {
+          "year": 2018,
+          "totalMm": 771.8630439671688
+        },
+        {
+          "year": 2019,
+          "totalMm": 839.7268242635764
+        },
+        {
+          "year": 2020,
+          "totalMm": 965.7527198127937
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 743.6907121688128,
+          "departurePct": -13.900023385600512,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 686.71160747041,
+          "departurePct": -20.496716744503583,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 714.6162268923654,
+          "departurePct": -17.26609003322268,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 786.4488195311278,
+          "departurePct": -8.949750397472034,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.34747399224175357,
+      "baselineMoisture": 0.4146176790308069,
+      "meanDailyMaxC": 31.20306447347008,
+      "baselineDailyMaxC": 29.707634870741124,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.27358220418294266
+        },
+        {
+          "year": 1992,
+          "value": 0.3339576297336155
+        },
+        {
+          "year": 1993,
+          "value": 0.4478628158569336
+        },
+        {
+          "year": 1994,
+          "value": 0.38946287367079
+        },
+        {
+          "year": 1995,
+          "value": 0.4163269254896376
+        },
+        {
+          "year": 1996,
+          "value": 0.44707090589735254
+        },
+        {
+          "year": 1997,
+          "value": 0.3753426445855034
+        },
+        {
+          "year": 1998,
+          "value": 0.4681609471638996
+        },
+        {
+          "year": 1999,
+          "value": 0.4377111858791776
+        },
+        {
+          "year": 2000,
+          "value": 0.34972373114691835
+        },
+        {
+          "year": 2001,
+          "value": 0.36452795664469406
+        },
+        {
+          "year": 2002,
+          "value": 0.3678076638115776
+        },
+        {
+          "year": 2003,
+          "value": 0.4002518124050564
+        },
+        {
+          "year": 2004,
+          "value": 0.4402778413560655
+        },
+        {
+          "year": 2005,
+          "value": 0.4479275385538736
+        },
+        {
+          "year": 2006,
+          "value": 0.4529647191365559
+        },
+        {
+          "year": 2007,
+          "value": 0.47582113477918836
+        },
+        {
+          "year": 2008,
+          "value": 0.4471144994099935
+        },
+        {
+          "year": 2009,
+          "value": 0.3857959959242078
+        },
+        {
+          "year": 2010,
+          "value": 0.4602196375528971
+        },
+        {
+          "year": 2011,
+          "value": 0.4194532818264431
+        },
+        {
+          "year": 2012,
+          "value": 0.4310698615180122
+        },
+        {
+          "year": 2013,
+          "value": 0.4302407370673286
+        },
+        {
+          "year": 2014,
+          "value": 0.4301058875189886
+        },
+        {
+          "year": 2015,
+          "value": 0.41388051774766704
+        },
+        {
+          "year": 2016,
+          "value": 0.426760482788086
+        },
+        {
+          "year": 2017,
+          "value": 0.4383325576782226
+        },
+        {
+          "year": 2018,
+          "value": 0.3336238861083983
+        },
+        {
+          "year": 2019,
+          "value": 0.47230707804361977
+        },
+        {
+          "year": 2020,
+          "value": 0.4608454174465602
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "hingoli",
+    "name": "Hingoli",
+    "latitude": 19.7174,
+    "longitude": 77.1494,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 878.7865305989627,
+      "totalMm": 530.1676286136499,
+      "departurePct": -39.6704876379593,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 984.5183446935844
+        },
+        {
+          "year": 1992,
+          "totalMm": 825.8503084573895
+        },
+        {
+          "year": 1993,
+          "totalMm": 791.1256945771165
+        },
+        {
+          "year": 1994,
+          "totalMm": 905.8526551914401
+        },
+        {
+          "year": 1995,
+          "totalMm": 901.1824063961394
+        },
+        {
+          "year": 1996,
+          "totalMm": 806.9442175067961
+        },
+        {
+          "year": 1997,
+          "totalMm": 660.5069538781245
+        },
+        {
+          "year": 1998,
+          "totalMm": 986.2332305759192
+        },
+        {
+          "year": 1999,
+          "totalMm": 804.1645416021347
+        },
+        {
+          "year": 2000,
+          "totalMm": 810.2837847589981
+        },
+        {
+          "year": 2001,
+          "totalMm": 772.4705248972168
+        },
+        {
+          "year": 2002,
+          "totalMm": 805.8365482203662
+        },
+        {
+          "year": 2003,
+          "totalMm": 813.2331096976995
+        },
+        {
+          "year": 2004,
+          "totalMm": 571.5824054814875
+        },
+        {
+          "year": 2005,
+          "totalMm": 1177.2562225349975
+        },
+        {
+          "year": 2006,
+          "totalMm": 1085.532904729247
+        },
+        {
+          "year": 2007,
+          "totalMm": 1005.3488930677995
+        },
+        {
+          "year": 2008,
+          "totalMm": 759.0016757042613
+        },
+        {
+          "year": 2009,
+          "totalMm": 605.178268134594
+        },
+        {
+          "year": 2010,
+          "totalMm": 1125.1476856190711
+        },
+        {
+          "year": 2011,
+          "totalMm": 870.9646630845964
+        },
+        {
+          "year": 2012,
+          "totalMm": 900.7958045201376
+        },
+        {
+          "year": 2013,
+          "totalMm": 1213.2399444319308
+        },
+        {
+          "year": 2014,
+          "totalMm": 568.7473531260621
+        },
+        {
+          "year": 2015,
+          "totalMm": 832.4662181866588
+        },
+        {
+          "year": 2016,
+          "totalMm": 1021.0135618387721
+        },
+        {
+          "year": 2017,
+          "totalMm": 746.0785512281582
+        },
+        {
+          "year": 2018,
+          "totalMm": 999.4356937520206
+        },
+        {
+          "year": 2019,
+          "totalMm": 924.1620269259438
+        },
+        {
+          "year": 2020,
+          "totalMm": 1089.4417251502164
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 805.8365482203662,
+          "departurePct": -8.301217626637413,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 605.178268134594,
+          "departurePct": -31.134781080211027,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 832.4662181866588,
+          "departurePct": -5.270940188481599,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 893.6600557789207,
+          "departurePct": 1.6925071859966279,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.4137414720323351,
+      "baselineMoisture": 0.42873691700122973,
+      "meanDailyMaxC": 29.662533060709677,
+      "baselineDailyMaxC": 28.907778337266738,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.31246386633978945
+        },
+        {
+          "year": 1992,
+          "value": 0.3691737492879232
+        },
+        {
+          "year": 1993,
+          "value": 0.4546776665581598
+        },
+        {
+          "year": 1994,
+          "value": 0.4066646787855361
+        },
+        {
+          "year": 1995,
+          "value": 0.4315204196506077
+        },
+        {
+          "year": 1996,
+          "value": 0.4529956605699327
+        },
+        {
+          "year": 1997,
+          "value": 0.4239637798733181
+        },
+        {
+          "year": 1998,
+          "value": 0.46481126149495455
+        },
+        {
+          "year": 1999,
+          "value": 0.44728567335340724
+        },
+        {
+          "year": 2000,
+          "value": 0.3846344629923503
+        },
+        {
+          "year": 2001,
+          "value": 0.3644502851698134
+        },
+        {
+          "year": 2002,
+          "value": 0.3846309661865234
+        },
+        {
+          "year": 2003,
+          "value": 0.4311630037095811
+        },
+        {
+          "year": 2004,
+          "value": 0.4498647265964084
+        },
+        {
+          "year": 2005,
+          "value": 0.4454411188761393
+        },
+        {
+          "year": 2006,
+          "value": 0.4498556984795465
+        },
+        {
+          "year": 2007,
+          "value": 0.4706152386135526
+        },
+        {
+          "year": 2008,
+          "value": 0.45237778557671443
+        },
+        {
+          "year": 2009,
+          "value": 0.4015122519599067
+        },
+        {
+          "year": 2010,
+          "value": 0.45976664225260416
+        },
+        {
+          "year": 2011,
+          "value": 0.4435389624701607
+        },
+        {
+          "year": 2012,
+          "value": 0.4572518454657661
+        },
+        {
+          "year": 2013,
+          "value": 0.44226158989800346
+        },
+        {
+          "year": 2014,
+          "value": 0.41972573598225915
+        },
+        {
+          "year": 2015,
+          "value": 0.43565345340304895
+        },
+        {
+          "year": 2016,
+          "value": 0.44911721547444655
+        },
+        {
+          "year": 2017,
+          "value": 0.4398169835408528
+        },
+        {
+          "year": 2018,
+          "value": 0.3801221211751303
+        },
+        {
+          "year": 2019,
+          "value": 0.4730723275078667
+        },
+        {
+          "year": 2020,
+          "value": 0.463678338792589
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "jalna",
+    "name": "Jalna",
+    "latitude": 19.841,
+    "longitude": 75.8864,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 678.479773771021,
+      "totalMm": 282.508460232988,
+      "departurePct": -58.36155016636777,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 787.4510855007102
+        },
+        {
+          "year": 1992,
+          "totalMm": 631.3641501008897
+        },
+        {
+          "year": 1993,
+          "totalMm": 631.8419479152653
+        },
+        {
+          "year": 1994,
+          "totalMm": 662.9464541422203
+        },
+        {
+          "year": 1995,
+          "totalMm": 624.9606816342566
+        },
+        {
+          "year": 1996,
+          "totalMm": 580.7564923465252
+        },
+        {
+          "year": 1997,
+          "totalMm": 541.8634695708752
+        },
+        {
+          "year": 1998,
+          "totalMm": 699.0139752030373
+        },
+        {
+          "year": 1999,
+          "totalMm": 673.0837845439091
+        },
+        {
+          "year": 2000,
+          "totalMm": 669.145485714078
+        },
+        {
+          "year": 2001,
+          "totalMm": 648.5088751609437
+        },
+        {
+          "year": 2002,
+          "totalMm": 556.8626645619515
+        },
+        {
+          "year": 2003,
+          "totalMm": 551.2309879617515
+        },
+        {
+          "year": 2004,
+          "totalMm": 440.4696660283953
+        },
+        {
+          "year": 2005,
+          "totalMm": 740.3384279585443
+        },
+        {
+          "year": 2006,
+          "totalMm": 890.5360468104482
+        },
+        {
+          "year": 2007,
+          "totalMm": 811.4922777768224
+        },
+        {
+          "year": 2008,
+          "totalMm": 665.4388048438122
+        },
+        {
+          "year": 2009,
+          "totalMm": 527.7384288357571
+        },
+        {
+          "year": 2010,
+          "totalMm": 815.7175182322972
+        },
+        {
+          "year": 2011,
+          "totalMm": 658.4469505185261
+        },
+        {
+          "year": 2012,
+          "totalMm": 568.8821238856763
+        },
+        {
+          "year": 2013,
+          "totalMm": 870.3359203413129
+        },
+        {
+          "year": 2014,
+          "totalMm": 522.3841523975134
+        },
+        {
+          "year": 2015,
+          "totalMm": 656.6414504507557
+        },
+        {
+          "year": 2016,
+          "totalMm": 778.5371444131015
+        },
+        {
+          "year": 2017,
+          "totalMm": 662.3731222219649
+        },
+        {
+          "year": 2018,
+          "totalMm": 637.7699129357934
+        },
+        {
+          "year": 2019,
+          "totalMm": 783.2373469026643
+        },
+        {
+          "year": 2020,
+          "totalMm": 1065.0238642208278
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 556.8626645619515,
+          "departurePct": -17.924942483269046,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 527.7384288357571,
+          "departurePct": -22.217514915358016,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 656.6414504507557,
+          "departurePct": -3.218713978588772,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 604.0382137093693,
+          "departurePct": -10.971817132867812,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.38962629106309676,
+      "baselineMoisture": 0.4224426467330368,
+      "meanDailyMaxC": 29.627700805664062,
+      "baselineDailyMaxC": 29.077976650661913,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.31080911424424923
+        },
+        {
+          "year": 1992,
+          "value": 0.37384499443901903
+        },
+        {
+          "year": 1993,
+          "value": 0.4422166188557943
+        },
+        {
+          "year": 1994,
+          "value": 0.3988065931532118
+        },
+        {
+          "year": 1995,
+          "value": 0.4244844224717882
+        },
+        {
+          "year": 1996,
+          "value": 0.4391034020317925
+        },
+        {
+          "year": 1997,
+          "value": 0.3478978051079646
+        },
+        {
+          "year": 1998,
+          "value": 0.47049212985568584
+        },
+        {
+          "year": 1999,
+          "value": 0.43259190453423396
+        },
+        {
+          "year": 2000,
+          "value": 0.38322991265190975
+        },
+        {
+          "year": 2001,
+          "value": 0.39467559390597867
+        },
+        {
+          "year": 2002,
+          "value": 0.37615449693467884
+        },
+        {
+          "year": 2003,
+          "value": 0.4368096881442601
+        },
+        {
+          "year": 2004,
+          "value": 0.43899519178602425
+        },
+        {
+          "year": 2005,
+          "value": 0.4416463428073458
+        },
+        {
+          "year": 2006,
+          "value": 0.45480721791585277
+        },
+        {
+          "year": 2007,
+          "value": 0.46818040211995443
+        },
+        {
+          "year": 2008,
+          "value": 0.4474688635932075
+        },
+        {
+          "year": 2009,
+          "value": 0.39612263573540585
+        },
+        {
+          "year": 2010,
+          "value": 0.45442477332221143
+        },
+        {
+          "year": 2011,
+          "value": 0.4173822826809353
+        },
+        {
+          "year": 2012,
+          "value": 0.44518589443630646
+        },
+        {
+          "year": 2013,
+          "value": 0.43345898522271054
+        },
+        {
+          "year": 2014,
+          "value": 0.41251176198323575
+        },
+        {
+          "year": 2015,
+          "value": 0.4231593237982855
+        },
+        {
+          "year": 2016,
+          "value": 0.45035143958197704
+        },
+        {
+          "year": 2017,
+          "value": 0.4476298438178168
+        },
+        {
+          "year": 2018,
+          "value": 0.3660235722859701
+        },
+        {
+          "year": 2019,
+          "value": 0.4737512164645726
+        },
+        {
+          "year": 2020,
+          "value": 0.471062978108724
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "sambhajinagar",
+    "name": "Chhatrapati Sambhajinagar / Aurangabad",
+    "latitude": 19.8762,
+    "longitude": 75.3433,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 780.9873295855494,
+      "totalMm": 260.0653138132766,
+      "departurePct": -66.70044391740814,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 871.9157876652898
+        },
+        {
+          "year": 1992,
+          "totalMm": 778.9336400931352
+        },
+        {
+          "year": 1993,
+          "totalMm": 715.3028488834389
+        },
+        {
+          "year": 1994,
+          "totalMm": 732.0323472321033
+        },
+        {
+          "year": 1995,
+          "totalMm": 707.3653451129794
+        },
+        {
+          "year": 1996,
+          "totalMm": 715.6425045286305
+        },
+        {
+          "year": 1997,
+          "totalMm": 574.6684153205715
+        },
+        {
+          "year": 1998,
+          "totalMm": 809.197957884986
+        },
+        {
+          "year": 1999,
+          "totalMm": 631.7969028048683
+        },
+        {
+          "year": 2000,
+          "totalMm": 833.7767196558416
+        },
+        {
+          "year": 2001,
+          "totalMm": 630.7791207488626
+        },
+        {
+          "year": 2002,
+          "totalMm": 544.9981971750385
+        },
+        {
+          "year": 2003,
+          "totalMm": 591.9829111541621
+        },
+        {
+          "year": 2004,
+          "totalMm": 610.9576008990407
+        },
+        {
+          "year": 2005,
+          "totalMm": 843.4658259302378
+        },
+        {
+          "year": 2006,
+          "totalMm": 1019.5990906041116
+        },
+        {
+          "year": 2007,
+          "totalMm": 968.9238005355
+        },
+        {
+          "year": 2008,
+          "totalMm": 754.677680390887
+        },
+        {
+          "year": 2009,
+          "totalMm": 614.1228630830301
+        },
+        {
+          "year": 2010,
+          "totalMm": 963.1167978956364
+        },
+        {
+          "year": 2011,
+          "totalMm": 758.4718349082395
+        },
+        {
+          "year": 2012,
+          "totalMm": 625.7372105216491
+        },
+        {
+          "year": 2013,
+          "totalMm": 1035.417686611414
+        },
+        {
+          "year": 2014,
+          "totalMm": 605.2432712987065
+        },
+        {
+          "year": 2015,
+          "totalMm": 811.2865936917951
+        },
+        {
+          "year": 2016,
+          "totalMm": 892.7956505925395
+        },
+        {
+          "year": 2017,
+          "totalMm": 866.4433065913618
+        },
+        {
+          "year": 2018,
+          "totalMm": 647.111056741327
+        },
+        {
+          "year": 2019,
+          "totalMm": 910.4862854406238
+        },
+        {
+          "year": 2020,
+          "totalMm": 1363.3706335704774
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 544.9981971750385,
+          "departurePct": -30.216768373917734,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 614.1228630830301,
+          "departurePct": -21.365835293521364,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 811.2865936917951,
+          "departurePct": 3.8796102008882505,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 763.1809434219031,
+          "departurePct": -2.2799840009050887,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.3615942213270399,
+      "baselineMoisture": 0.3852320671081543,
+      "meanDailyMaxC": 28.5736053466797,
+      "baselineDailyMaxC": 28.121948971218558,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.27085800170898444
+        },
+        {
+          "year": 1992,
+          "value": 0.3386089324951172
+        },
+        {
+          "year": 1993,
+          "value": 0.4180271996392145
+        },
+        {
+          "year": 1994,
+          "value": 0.3608512030707464
+        },
+        {
+          "year": 1995,
+          "value": 0.375270864698622
+        },
+        {
+          "year": 1996,
+          "value": 0.4070678922865126
+        },
+        {
+          "year": 1997,
+          "value": 0.30655776129828555
+        },
+        {
+          "year": 1998,
+          "value": 0.4273107952541776
+        },
+        {
+          "year": 1999,
+          "value": 0.3948039372762045
+        },
+        {
+          "year": 2000,
+          "value": 0.34852303398980033
+        },
+        {
+          "year": 2001,
+          "value": 0.35957650078667525
+        },
+        {
+          "year": 2002,
+          "value": 0.35063251919216576
+        },
+        {
+          "year": 2003,
+          "value": 0.392660140991211
+        },
+        {
+          "year": 2004,
+          "value": 0.398033947414822
+        },
+        {
+          "year": 2005,
+          "value": 0.40464941660563153
+        },
+        {
+          "year": 2006,
+          "value": 0.42510965135362416
+        },
+        {
+          "year": 2007,
+          "value": 0.4248915142483181
+        },
+        {
+          "year": 2008,
+          "value": 0.4169522391425239
+        },
+        {
+          "year": 2009,
+          "value": 0.3648205863104925
+        },
+        {
+          "year": 2010,
+          "value": 0.4211217880249024
+        },
+        {
+          "year": 2011,
+          "value": 0.3980227788289387
+        },
+        {
+          "year": 2012,
+          "value": 0.4104877683851454
+        },
+        {
+          "year": 2013,
+          "value": 0.40903574625651046
+        },
+        {
+          "year": 2014,
+          "value": 0.379719607035319
+        },
+        {
+          "year": 2015,
+          "value": 0.3460512373182508
+        },
+        {
+          "year": 2016,
+          "value": 0.4122631072998048
+        },
+        {
+          "year": 2017,
+          "value": 0.40556831359863277
+        },
+        {
+          "year": 2018,
+          "value": 0.3184414333767361
+        },
+        {
+          "year": 2019,
+          "value": 0.4410732905069986
+        },
+        {
+          "year": 2020,
+          "value": 0.42997080485026035
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "solapur",
+    "name": "Solapur",
+    "latitude": 17.6599,
+    "longitude": 75.9064,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 609.0443421957057,
+      "totalMm": 304.9076728783548,
+      "departurePct": -49.93670382371304,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 834.4308834541589
+        },
+        {
+          "year": 1992,
+          "totalMm": 492.22430788876954
+        },
+        {
+          "year": 1993,
+          "totalMm": 518.9825215265155
+        },
+        {
+          "year": 1994,
+          "totalMm": 534.2788388133049
+        },
+        {
+          "year": 1995,
+          "totalMm": 644.3037320074509
+        },
+        {
+          "year": 1996,
+          "totalMm": 640.0909025855362
+        },
+        {
+          "year": 1997,
+          "totalMm": 344.465533929877
+        },
+        {
+          "year": 1998,
+          "totalMm": 817.6024930219864
+        },
+        {
+          "year": 1999,
+          "totalMm": 507.1282540259417
+        },
+        {
+          "year": 2000,
+          "totalMm": 768.5511209405959
+        },
+        {
+          "year": 2001,
+          "totalMm": 592.3373228963464
+        },
+        {
+          "year": 2002,
+          "totalMm": 429.90977197140455
+        },
+        {
+          "year": 2003,
+          "totalMm": 366.95712591707706
+        },
+        {
+          "year": 2004,
+          "totalMm": 481.3779754890129
+        },
+        {
+          "year": 2005,
+          "totalMm": 701.0623456956819
+        },
+        {
+          "year": 2006,
+          "totalMm": 628.1820121135097
+        },
+        {
+          "year": 2007,
+          "totalMm": 929.5310012124246
+        },
+        {
+          "year": 2008,
+          "totalMm": 530.0986898600531
+        },
+        {
+          "year": 2009,
+          "totalMm": 575.2216943678795
+        },
+        {
+          "year": 2010,
+          "totalMm": 900.6263768589124
+        },
+        {
+          "year": 2011,
+          "totalMm": 460.32368540391326
+        },
+        {
+          "year": 2012,
+          "totalMm": 381.4413372431882
+        },
+        {
+          "year": 2013,
+          "totalMm": 818.2573113366961
+        },
+        {
+          "year": 2014,
+          "totalMm": 522.773264374584
+        },
+        {
+          "year": 2015,
+          "totalMm": 403.58809069457493
+        },
+        {
+          "year": 2016,
+          "totalMm": 842.9330178312957
+        },
+        {
+          "year": 2017,
+          "totalMm": 625.090991217643
+        },
+        {
+          "year": 2018,
+          "totalMm": 570.4017131067812
+        },
+        {
+          "year": 2019,
+          "totalMm": 567.4363003554754
+        },
+        {
+          "year": 2020,
+          "totalMm": 841.7216497305781
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 429.90977197140455,
+          "departurePct": -29.4124019900573,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 575.2216943678795,
+          "departurePct": -5.553396605884209,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 403.58809069457493,
+          "departurePct": -33.73420246552607,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 552.5875504496507,
+          "departurePct": -9.26973421056977,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.16707986195882157,
+      "baselineMoisture": 0.33310549276846424,
+      "meanDailyMaxC": 32.64990539550786,
+      "baselineDailyMaxC": 29.699421793619816,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.10774737464057074
+        },
+        {
+          "year": 1992,
+          "value": 0.22805692884657117
+        },
+        {
+          "year": 1993,
+          "value": 0.4094685872395835
+        },
+        {
+          "year": 1994,
+          "value": 0.26118481953938805
+        },
+        {
+          "year": 1995,
+          "value": 0.39600654178195527
+        },
+        {
+          "year": 1996,
+          "value": 0.41875485314263233
+        },
+        {
+          "year": 1997,
+          "value": 0.14175796508789062
+        },
+        {
+          "year": 1998,
+          "value": 0.4293965657552083
+        },
+        {
+          "year": 1999,
+          "value": 0.3447851816813151
+        },
+        {
+          "year": 2000,
+          "value": 0.2654370201958551
+        },
+        {
+          "year": 2001,
+          "value": 0.26575601365831164
+        },
+        {
+          "year": 2002,
+          "value": 0.24174567328559032
+        },
+        {
+          "year": 2003,
+          "value": 0.21882368723551432
+        },
+        {
+          "year": 2004,
+          "value": 0.3810299979315863
+        },
+        {
+          "year": 2005,
+          "value": 0.4245275285508896
+        },
+        {
+          "year": 2006,
+          "value": 0.338856930202908
+        },
+        {
+          "year": 2007,
+          "value": 0.4436290952894421
+        },
+        {
+          "year": 2008,
+          "value": 0.4100044250488281
+        },
+        {
+          "year": 2009,
+          "value": 0.37739503648546013
+        },
+        {
+          "year": 2010,
+          "value": 0.46367662217881944
+        },
+        {
+          "year": 2011,
+          "value": 0.31666897667778865
+        },
+        {
+          "year": 2012,
+          "value": 0.3139831119113498
+        },
+        {
+          "year": 2013,
+          "value": 0.31540039910210493
+        },
+        {
+          "year": 2014,
+          "value": 0.30322806040445965
+        },
+        {
+          "year": 2015,
+          "value": 0.3244387520684137
+        },
+        {
+          "year": 2016,
+          "value": 0.3213015450371636
+        },
+        {
+          "year": 2017,
+          "value": 0.4287171257866753
+        },
+        {
+          "year": 2018,
+          "value": 0.22688670688205295
+        },
+        {
+          "year": 2019,
+          "value": 0.4492049747043187
+        },
+        {
+          "year": 2020,
+          "value": 0.4252942827012804
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  },
+  {
+    "regionId": "ahilyanagar",
+    "name": "Ahilyanagar / Ahmednagar",
+    "latitude": 19.0948,
+    "longitude": 74.748,
+    "rainfall": {
+      "source": {
+        "id": "chirps-jjas-2026",
+        "title": "CHIRPS v3 rainfall \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL",
+        "retrievedAt": "2026-10-18T13:59:24.512956+00:00",
+        "product": "UCSB-CHC/CHIRPS/V3/DAILY_RNL",
+        "scope": "Approximate town-centre grid, not district mean or field rainfall",
+        "resolution": "0.05\u00b0 / approximately 5.6 km",
+        "limitation": "Satellite/station-based rainfall estimates; daily ERA5 partitioning. Same June\u2013September window and product for every year. Not a forecast.",
+        "sha256": "efddbd6700a75d77beb74a93877ea08bbcef35bd942e828e83ce1293b0c13481"
+      },
+      "start": "2026-06-01",
+      "end": "2026-09-30",
+      "baselineStart": 1991,
+      "baselineEnd": 2020,
+      "baselineMeanMm": 511.0148060406101,
+      "totalMm": 259.3571952627972,
+      "departurePct": -49.2466378279094,
+      "completeDays": 122,
+      "baselineTotals": [
+        {
+          "year": 1991,
+          "totalMm": 442.4865375472218
+        },
+        {
+          "year": 1992,
+          "totalMm": 486.07276416022796
+        },
+        {
+          "year": 1993,
+          "totalMm": 411.39972159639
+        },
+        {
+          "year": 1994,
+          "totalMm": 493.35577550530434
+        },
+        {
+          "year": 1995,
+          "totalMm": 489.1789433285594
+        },
+        {
+          "year": 1996,
+          "totalMm": 521.7400461627403
+        },
+        {
+          "year": 1997,
+          "totalMm": 418.1737294869963
+        },
+        {
+          "year": 1998,
+          "totalMm": 572.7127223387361
+        },
+        {
+          "year": 1999,
+          "totalMm": 438.8165483439807
+        },
+        {
+          "year": 2000,
+          "totalMm": 573.006967420748
+        },
+        {
+          "year": 2001,
+          "totalMm": 390.9012575126253
+        },
+        {
+          "year": 2002,
+          "totalMm": 273.7255778647959
+        },
+        {
+          "year": 2003,
+          "totalMm": 307.19532536086626
+        },
+        {
+          "year": 2004,
+          "totalMm": 452.93376836180687
+        },
+        {
+          "year": 2005,
+          "totalMm": 548.7492722049356
+        },
+        {
+          "year": 2006,
+          "totalMm": 709.1476316899061
+        },
+        {
+          "year": 2007,
+          "totalMm": 754.1178275570273
+        },
+        {
+          "year": 2008,
+          "totalMm": 546.0639002263342
+        },
+        {
+          "year": 2009,
+          "totalMm": 508.25463101640344
+        },
+        {
+          "year": 2010,
+          "totalMm": 710.0499699432403
+        },
+        {
+          "year": 2011,
+          "totalMm": 410.6524015413597
+        },
+        {
+          "year": 2012,
+          "totalMm": 325.7494553453289
+        },
+        {
+          "year": 2013,
+          "totalMm": 604.6540284240618
+        },
+        {
+          "year": 2014,
+          "totalMm": 439.4682488909348
+        },
+        {
+          "year": 2015,
+          "totalMm": 498.6750080182683
+        },
+        {
+          "year": 2016,
+          "totalMm": 620.8185505298898
+        },
+        {
+          "year": 2017,
+          "totalMm": 664.5680232578889
+        },
+        {
+          "year": 2018,
+          "totalMm": 336.0485432809219
+        },
+        {
+          "year": 2019,
+          "totalMm": 546.6952373310924
+        },
+        {
+          "year": 2020,
+          "totalMm": 835.0317669697106
+        }
+      ],
+      "history": [
+        {
+          "year": 2002,
+          "totalMm": 273.7255778647959,
+          "departurePct": -46.434902740754815,
+          "oni": 0.57
+        },
+        {
+          "year": 2009,
+          "totalMm": 508.25463101640344,
+          "departurePct": -0.5401360178959869,
+          "oni": 0.5
+        },
+        {
+          "year": 2015,
+          "totalMm": 498.6750080182683,
+          "departurePct": -2.4147633055785045,
+          "oni": 1.44
+        },
+        {
+          "year": 2023,
+          "totalMm": 455.5626504123211,
+          "departurePct": -10.851379445918097,
+          "oni": 1.0
+        }
+      ]
+    },
+    "surface": {
+      "source": {
+        "id": "era5-september-2026",
+        "title": "ERA5-Land surface moisture and air heat \u00b7 Google Earth Engine",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        "retrievedAt": "2026-10-18T14:00:34.933914+00:00",
+        "product": "ECMWF/ERA5_LAND/DAILY_AGGR",
+        "scope": "Modeled town-centre grid; surface soil layer 0\u20137 cm",
+        "resolution": "Approximately 11 km",
+        "limitation": "September averages, not today\u2019s field condition or root-zone moisture. Air heat is mean daily maximum temperature, not land surface temperature.",
+        "sha256": "e88ccf51dc010e4f1cb41f96e5787690b418841d1abcc10a1d42717b1338e733"
+      },
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "moisture": 0.388426038953993,
+      "baselineMoisture": 0.4128431044684516,
+      "meanDailyMaxC": 28.920642089843795,
+      "baselineDailyMaxC": 28.218178829616996,
+      "completeDays": 30,
+      "baselineMoistureTotals": [
+        {
+          "year": 1991,
+          "value": 0.3008344438340929
+        },
+        {
+          "year": 1992,
+          "value": 0.3472259097629124
+        },
+        {
+          "year": 1993,
+          "value": 0.4511756896972656
+        },
+        {
+          "year": 1994,
+          "value": 0.39143731858995234
+        },
+        {
+          "year": 1995,
+          "value": 0.42242709265814893
+        },
+        {
+          "year": 1996,
+          "value": 0.45124217139350054
+        },
+        {
+          "year": 1997,
+          "value": 0.33193637000189896
+        },
+        {
+          "year": 1998,
+          "value": 0.4746970282660591
+        },
+        {
+          "year": 1999,
+          "value": 0.411030642191569
+        },
+        {
+          "year": 2000,
+          "value": 0.37366852230495884
+        },
+        {
+          "year": 2001,
+          "value": 0.3933596928914388
+        },
+        {
+          "year": 2002,
+          "value": 0.36952711741129557
+        },
+        {
+          "year": 2003,
+          "value": 0.38540426890055346
+        },
+        {
+          "year": 2004,
+          "value": 0.4306494394938151
+        },
+        {
+          "year": 2005,
+          "value": 0.4410372628106012
+        },
+        {
+          "year": 2006,
+          "value": 0.4399178187052408
+        },
+        {
+          "year": 2007,
+          "value": 0.4575622346666124
+        },
+        {
+          "year": 2008,
+          "value": 0.43494069841172955
+        },
+        {
+          "year": 2009,
+          "value": 0.43101444244384773
+        },
+        {
+          "year": 2010,
+          "value": 0.4589311387803819
+        },
+        {
+          "year": 2011,
+          "value": 0.427921485900879
+        },
+        {
+          "year": 2012,
+          "value": 0.42153061760796434
+        },
+        {
+          "year": 2013,
+          "value": 0.43307319217258033
+        },
+        {
+          "year": 2014,
+          "value": 0.39554328918457027
+        },
+        {
+          "year": 2015,
+          "value": 0.3825453016493056
+        },
+        {
+          "year": 2016,
+          "value": 0.43513817257351356
+        },
+        {
+          "year": 2017,
+          "value": 0.44411407046847867
+        },
+        {
+          "year": 2018,
+          "value": 0.31364163292778857
+        },
+        {
+          "year": 2019,
+          "value": 0.47684230804443367
+        },
+        {
+          "year": 2020,
+          "value": 0.4569237603081598
+        }
+      ]
+    },
+    "enso": {
+      "source": {
+        "id": "noaa-oni",
+        "title": "NOAA Oceanic Ni\u00f1o Index",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "retrievedAt": "2026-10-18T14:28:59.982215+00:00",
+        "product": "NOAA ONI",
+        "scope": "Pacific Ni\u00f1o 3.4 sea-surface temperature anomaly",
+        "resolution": "Three-month average",
+        "limitation": "Global climate context, not local drought probability. Selected historical examples use JJA ONI; current context uses JAS. Index baselines can be revised.",
+        "sha256": "5d6fa3a2f857d916550d39c2c686e94cb942430195c82518e6a5d0f5ffbd0665"
+      },
+      "period": "July\u2013September 2026 (JAS)",
+      "anomalyC": 2.16,
+      "limitation": "El Ni\u00f1o is a global influence. These four historical years are selected examples, not all events or evidence of causation."
+    }
+  }
+]

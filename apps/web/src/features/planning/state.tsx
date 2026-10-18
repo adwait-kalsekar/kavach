@@ -1,7 +1,14 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createDemoClient } from "@kavach/api-client";
-import type { WaterPlanningInput, DemoLocale } from "@kavach/contracts";
+import type {
+  SeasonInput,
+  SeasonAssessment,
+  SeasonView,
+  WaterPlan,
+  WaterPlanningInput,
+  DemoLocale,
+} from "@kavach/contracts";
 export const planningApi = createDemoClient(
   window.__KAVACH_CONFIG__?.apiOrigin || "",
 );
@@ -25,8 +32,51 @@ function useStateValue() {
       text: string;
       locale: DemoLocale;
       model?: string;
+      seasonAnswer?: {
+        assessment: SeasonAssessment;
+        views: SeasonView[];
+        waterPlan?: WaterPlan;
+      };
     }[]
   >([]);
+  const [seasonFacts, setSeasonFacts] = useState<
+    Omit<SeasonInput, "regionId" | "crop">
+  >({
+    intent: "sowing",
+    stage: "pre-sowing",
+    soil: "unknown",
+    moisture: "unknown",
+    irrigation: "unknown",
+    soilType: "unknown",
+    wellRecharge: "unknown",
+  });
+  const seasonInput: SeasonInput = {
+    regionId: input.regionId,
+    crop: input.crop,
+    ...seasonFacts,
+  };
+  const season = useQuery({
+    queryKey: ["planning", "readiness", seasonInput],
+    queryFn: ({ signal }) => planningApi.readiness(seasonInput, signal),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  const updateSeason = (patch: Partial<typeof seasonFacts>) => {
+    setSeasonFacts((v) => ({
+      ...v,
+      ...patch,
+      ...(patch.stage && patch.intent === undefined && v.intent !== "water"
+        ? {
+            intent:
+              patch.stage === "pre-sowing"
+                ? ("sowing" as const)
+                : ("growing" as const),
+          }
+        : {}),
+    }));
+    setChat([]);
+    setSelected(null);
+  };
   const [selected, setSelected] = useState<"planned" | "alternative" | null>(
     null,
   );
@@ -44,12 +94,28 @@ function useStateValue() {
     refetchOnWindowFocus: false,
   });
   const confirm = (value: WaterPlanningInput) => {
+    if (value.regionId !== input.regionId)
+      setSeasonFacts((v) => ({
+        ...v,
+        soil: "unknown",
+        soilType: "unknown",
+        wellRecharge: "unknown",
+        moisture: "unknown",
+        irrigation: "unknown",
+        intent: "sowing",
+        stage: "pre-sowing",
+      }));
+    else if (value.crop !== input.crop)
+      setSeasonFacts((v) => ({ ...v, intent: "sowing", stage: "pre-sowing" }));
     setSelected(null);
     setChat([]);
     setInput(value);
   };
   return {
     input,
+    seasonInput,
+    season,
+    updateSeason,
     confirm,
     locale,
     setLocale,

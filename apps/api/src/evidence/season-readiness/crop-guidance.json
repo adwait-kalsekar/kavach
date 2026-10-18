@@ -1,0 +1,221 @@
+[
+  {
+    "id": "gram-sprinkler-stages",
+    "crop": "chickpea",
+    "regionId": null,
+    "stages": [
+      "branching",
+      "pod-development"
+    ],
+    "irrigation": [
+      "one",
+      "limited",
+      "assured"
+    ],
+    "requiresDryField": true,
+    "requiresBlackDeepSoil": false,
+    "requiresLowWellRecharge": false,
+    "title": "Discuss sprinkler planning for branching and pod development",
+    "detail": "ICAR-IIPR reports a study comparing sprinkler irrigation at branching plus pod development against branching alone. Discuss whether this stage-based approach fits your field, recent rain and available supply; no dose or yield benefit is predicted for your farm.",
+    "timing": "At branching or pod development, before deciding the next watering",
+    "sourceCondition": "Chickpea research finding; local soil, recent rain and equipment suitability need confirmation.",
+    "source": {
+      "title": "ICAR-IIPR · Crop Production",
+      "url": "https://www.icar-iipr.org.in/cproduction/",
+      "section": "Precision irrigation in pulse crops",
+      "pdfPage": null,
+      "sha256": "9bcbccd0903a18fd374e4d7ed5fe5ab47cae5eae2acd9e0e1545cb9907cd6678",
+      "scope": "general-crop-guidance"
+    },
+    "review": "unreviewed",
+    "confirmationChecks": [],
+    "requiresTwoStageSupply": true
+  },
+  {
+    "id": "jowar-one-irrigation",
+    "crop": "sorghum",
+    "regionId": null,
+    "stages": [
+      "boot-leaf"
+    ],
+    "irrigation": [
+      "one"
+    ],
+    "requiresDryField": true,
+    "requiresBlackDeepSoil": false,
+    "requiresLowWellRecharge": false,
+    "title": "Discuss the critical stage for your limited irrigation",
+    "detail": "The ICAR-IIMR rabi-sorghum guide discusses flower-primordial or boot-leaf stages when water permits only one irrigation, depending on soil moisture. Confirm the stage and field moisture before deciding; the app does not prescribe an amount.",
+    "timing": "At the boot-leaf stage, before using the limited supply",
+    "sourceCondition": "Rabi sorghum, limited irrigation and soil-moisture-dependent timing; not kharif instructions.",
+    "source": {
+      "title": "ICAR-IIMR · Millets production technologies",
+      "url": "https://millets.res.in/technologies/Bulletin-Millets_chapke.pdf",
+      "section": "Rabi sorghum · Water management",
+      "pdfPage": 24,
+      "sha256": "57677ca44148602fd22b13fea568465041f2b628e51f7f95f4341d5a981af17b",
+      "scope": "general-crop-guidance"
+    },
+    "review": "unreviewed",
+    "confirmationChecks": [],
+    "requiresTwoStageSupply": false
+  },
+  {
+    "id": "wheat-one-irrigation",
+    "crop": "wheat",
+    "regionId": null,
+    "stages": [
+      "crown-root"
+    ],
+    "irrigation": [
+      "one"
+    ],
+    "requiresDryField": true,
+    "requiresBlackDeepSoil": false,
+    "requiresLowWellRecharge": false,
+    "title": "Discuss protecting crown-root initiation",
+    "detail": "The ICAR-IIWBR pocket guide prioritizes crown-root initiation in its one-irrigation schedule. Discuss whether this applies to your crop and current soil moisture before allocating the supply.",
+    "timing": "At crown-root initiation, before committing the available irrigation",
+    "sourceCondition": "Wheat with only one irrigation available; local soil and current conditions require confirmation.",
+    "source": {
+      "title": "ICAR-IIWBR · Wheat Cultivation in India",
+      "url": "https://iiwbr.org.in/wp-content/uploads/2023/08/EB-52-Wheat-Cultivation-in-India-Pocket-Guide.pdf",
+      "section": "Irrigation schedule under different water availability",
+      "pdfPage": 17,
+      "sha256": "cbe436b0c8e06360ae61eaa35a0662c85e45c7b6754ae033d44a4b07082daccd",
+      "scope": "general-crop-guidance"
+    },
+    "review": "unreviewed",
+    "confirmationChecks": [],
+    "requiresTwoStageSupply": false
+  },
+  {
+    "id": "wheat-critical-stage",
+    "crop": "wheat",
+    "regionId": null,
+    "stages": [
+      "crown-root",
+      "flowering"
+    ],
+    "irrigation": [
+      "limited",
+      "assured"
+    ],
+    "requiresDryField": true,
+    "requiresBlackDeepSoil": false,
+    "requiresLowWellRecharge": false,
+    "title": "Discuss irrigation at a moisture-sensitive wheat stage",
+    "detail": "The ICAR-IIWBR guide identifies crown-root initiation and flowering as especially sensitive to moisture stress. Use the confirmed stage, field moisture and remaining supply to discuss a local irrigation plan; no schedule or dose is inferred here.",
+    "timing": "Before the next irrigation decision",
+    "sourceCondition": "Wheat critical-stage guidance; this does not imply that a regional surface model measures root-zone adequacy.",
+    "source": {
+      "title": "ICAR-IIWBR · Wheat Cultivation in India",
+      "url": "https://iiwbr.org.in/wp-content/uploads/2023/08/EB-52-Wheat-Cultivation-in-India-Pocket-Guide.pdf",
+      "section": "Irrigation",
+      "pdfPage": 16,
+      "sha256": "cbe436b0c8e06360ae61eaa35a0662c85e45c7b6754ae033d44a4b07082daccd",
+      "scope": "general-crop-guidance"
+    },
+    "review": "unreviewed",
+    "confirmationChecks": [],
+    "requiresTwoStageSupply": false
+  },
+  {
+    "id": "ahilyanagar-low-recharge-wheat",
+    "crop": "wheat",
+    "regionId": "ahilyanagar",
+    "stages": [
+      "pre-sowing"
+    ],
+    "irrigation": [
+      "one",
+      "limited"
+    ],
+    "requiresDryField": false,
+    "requiresBlackDeepSoil": true,
+    "requiresLowWellRecharge": true,
+    "title": "Discuss the district’s low-recharge wheat/chickpea options",
+    "detail": "The historical Ahmednagar contingency table lists wheat and/or chickpea under insufficient groundwater recharge for open-well irrigation on medium/deep black soil. It also discusses critical-stage irrigation for wheat and sprinkler irrigation for chickpea. This is an option to review locally, not an instruction to change crop.",
+    "timing": "Before buying seed or committing area",
+    "sourceCondition": "Insufficient groundwater recharge due to low rainfall; open-well irrigated medium/deep black soil.",
+    "source": {
+      "title": "ICAR-CRIDA · Ahmednagar district plan (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MPKVV,%20Rahuri/MH2-AHMEDNAGAR%2031.03.2011.pdf",
+      "section": "Insufficient groundwater recharge",
+      "pdfPage": 18,
+      "sha256": "18c3da361ba442876bbcc577e532def9d83b316bb5773a5b0a05fb27aaba2798",
+      "scope": "district-contingency"
+    },
+    "review": "unreviewed",
+    "confirmationChecks": [
+      "open-well-irrigation"
+    ],
+    "requiresTwoStageSupply": false
+  },
+  {
+    "id": "sambhajinagar-low-recharge-gram",
+    "crop": "chickpea",
+    "regionId": "sambhajinagar",
+    "stages": [
+      "pre-sowing"
+    ],
+    "irrigation": [
+      "one",
+      "limited"
+    ],
+    "requiresDryField": false,
+    "requiresBlackDeepSoil": true,
+    "requiresLowWellRecharge": true,
+    "title": "Review the district’s historical gram alternatives",
+    "detail": "The Aurangabad plan’s low-groundwater-recharge table lists retaining chickpea or considering BDN-9-3, Akash, Vijay or Vikas in its stated medium/deep black-soil farming situation. Check current local suitability and availability; these historical names are not a current variety recommendation.",
+    "timing": "Before selecting seed; obtain current local confirmation",
+    "sourceCondition": "Insufficient groundwater recharge; medium/deep black soil in the source’s assured/high-rainfall farming situation, which must be checked locally.",
+    "source": {
+      "title": "ICAR-CRIDA · Aurangabad district plan (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2026-Aurangabad-3%201-12-2011.pdf",
+      "section": "Insufficient groundwater recharge",
+      "pdfPage": 27,
+      "sha256": "856b3e7f3a5aa22ae59d75d878cf6cb3233684da7652199d5494260a03dc8056",
+      "scope": "district-contingency"
+    },
+    "review": "unreviewed",
+    "confirmationChecks": [
+      "source-farming-situation"
+    ],
+    "requiresTwoStageSupply": false
+  },
+  {
+    "id": "hingoli-low-recharge-wheat",
+    "crop": "wheat",
+    "regionId": "hingoli",
+    "stages": [
+      "crown-root",
+      "vegetative",
+      "flowering"
+    ],
+    "irrigation": [
+      "one",
+      "limited"
+    ],
+    "requiresDryField": false,
+    "requiresBlackDeepSoil": true,
+    "requiresLowWellRecharge": true,
+    "title": "Review the district’s critical-stage water contingency",
+    "detail": "The historical Hingoli low-recharge table retains wheat and refers to irrigation at critical growth stages for its medium/deep black-soil farming situation. Confirm the source conditions and current crop stage locally before applying that contingency.",
+    "timing": "Before allocating limited water",
+    "sourceCondition": "Insufficient groundwater recharge; source’s medium/deep black-soil assured/high-rainfall farming situation still needs local confirmation.",
+    "source": {
+      "title": "ICAR-CRIDA · Hingoli district plan (2011)",
+      "url": "https://icar-crida.res.in/CP-2012/statewiseplans/Maharastra(Pdf)/MAU,%20Parbhani/Maharashtra%2032-Hingoli-%2031-12-2011.pdf",
+      "section": "Insufficient groundwater recharge",
+      "pdfPage": 19,
+      "sha256": "4d0b7cb5fdd45711b3e5977863cf237719802594ec891c5de36d5fd4e46f7a76",
+      "scope": "district-contingency"
+    },
+    "review": "unreviewed",
+    "confirmationChecks": [
+      "source-farming-situation"
+    ],
+    "requiresTwoStageSupply": false
+  }
+]

@@ -92,6 +92,3773 @@
     }
   },
   "paths": {
+    "/api/v1/demo/readiness": {
+      "post": {
+        "operationId": "demoReadiness",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "regionId": {
+                    "type": "string",
+                    "enum": [
+                      "latur",
+                      "beed",
+                      "nanded",
+                      "dharashiv",
+                      "parbhani",
+                      "hingoli",
+                      "jalna",
+                      "sambhajinagar",
+                      "solapur",
+                      "ahilyanagar"
+                    ]
+                  },
+                  "crop": {
+                    "type": "string",
+                    "enum": [
+                      "chickpea",
+                      "sorghum",
+                      "wheat"
+                    ]
+                  },
+                  "intent": {
+                    "type": "string",
+                    "enum": [
+                      "sowing",
+                      "growing",
+                      "water"
+                    ]
+                  },
+                  "stage": {
+                    "type": "string",
+                    "enum": [
+                      "pre-sowing",
+                      "vegetative",
+                      "crown-root",
+                      "branching",
+                      "boot-leaf",
+                      "pod-development",
+                      "grain-filling",
+                      "flowering",
+                      "maturity"
+                    ]
+                  },
+                  "soil": {
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "shallow",
+                      "medium-deep"
+                    ]
+                  },
+                  "moisture": {
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "dry",
+                      "moist"
+                    ]
+                  },
+                  "irrigation": {
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "none",
+                      "one",
+                      "limited",
+                      "assured"
+                    ]
+                  },
+                  "soilType": {
+                    "default": "unknown",
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "black",
+                      "other"
+                    ]
+                  },
+                  "wellRecharge": {
+                    "default": "unknown",
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "not-refilled",
+                      "not-applicable"
+                    ]
+                  }
+                },
+                "required": [
+                  "regionId",
+                  "crop",
+                  "intent",
+                  "stage",
+                  "soil",
+                  "moisture",
+                  "irrigation"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "demo": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "persisted": {
+                          "type": "boolean",
+                          "const": false
+                        },
+                        "methodVersion": {
+                          "type": "string",
+                          "const": "season-readiness/1"
+                        },
+                        "assessedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        "input": {
+                          "type": "object",
+                          "properties": {
+                            "regionId": {
+                              "type": "string",
+                              "enum": [
+                                "latur",
+                                "beed",
+                                "nanded",
+                                "dharashiv",
+                                "parbhani",
+                                "hingoli",
+                                "jalna",
+                                "sambhajinagar",
+                                "solapur",
+                                "ahilyanagar"
+                              ]
+                            },
+                            "crop": {
+                              "type": "string",
+                              "enum": [
+                                "chickpea",
+                                "sorghum",
+                                "wheat"
+                              ]
+                            },
+                            "intent": {
+                              "type": "string",
+                              "enum": [
+                                "sowing",
+                                "growing",
+                                "water"
+                              ]
+                            },
+                            "stage": {
+                              "type": "string",
+                              "enum": [
+                                "pre-sowing",
+                                "vegetative",
+                                "crown-root",
+                                "branching",
+                                "boot-leaf",
+                                "pod-development",
+                                "grain-filling",
+                                "flowering",
+                                "maturity"
+                              ]
+                            },
+                            "soil": {
+                              "type": "string",
+                              "enum": [
+                                "unknown",
+                                "shallow",
+                                "medium-deep"
+                              ]
+                            },
+                            "moisture": {
+                              "type": "string",
+                              "enum": [
+                                "unknown",
+                                "dry",
+                                "moist"
+                              ]
+                            },
+                            "irrigation": {
+                              "type": "string",
+                              "enum": [
+                                "unknown",
+                                "none",
+                                "one",
+                                "limited",
+                                "assured"
+                              ]
+                            },
+                            "soilType": {
+                              "default": "unknown",
+                              "type": "string",
+                              "enum": [
+                                "unknown",
+                                "black",
+                                "other"
+                              ]
+                            },
+                            "wellRecharge": {
+                              "default": "unknown",
+                              "type": "string",
+                              "enum": [
+                                "unknown",
+                                "not-refilled",
+                                "not-applicable"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "regionId",
+                            "crop",
+                            "intent",
+                            "stage",
+                            "soil",
+                            "moisture",
+                            "irrigation",
+                            "soilType",
+                            "wellRecharge"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "evidence": {
+                          "type": "object",
+                          "properties": {
+                            "regionId": {
+                              "type": "string",
+                              "enum": [
+                                "latur",
+                                "beed",
+                                "nanded",
+                                "dharashiv",
+                                "parbhani",
+                                "hingoli",
+                                "jalna",
+                                "sambhajinagar",
+                                "solapur",
+                                "ahilyanagar"
+                              ]
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "latitude": {
+                              "type": "number"
+                            },
+                            "longitude": {
+                              "type": "number"
+                            },
+                            "rainfall": {
+                              "type": "object",
+                              "properties": {
+                                "source": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "retrievedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                    },
+                                    "product": {
+                                      "type": "string"
+                                    },
+                                    "scope": {
+                                      "type": "string"
+                                    },
+                                    "resolution": {
+                                      "type": "string"
+                                    },
+                                    "limitation": {
+                                      "type": "string"
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "title",
+                                    "url",
+                                    "retrievedAt",
+                                    "product",
+                                    "scope",
+                                    "resolution",
+                                    "limitation",
+                                    "sha256"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "start": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "end": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "baselineStart": {
+                                  "type": "number",
+                                  "const": 1991
+                                },
+                                "baselineEnd": {
+                                  "type": "number",
+                                  "const": 2020
+                                },
+                                "baselineMeanMm": {
+                                  "type": "number",
+                                  "exclusiveMinimum": 0
+                                },
+                                "totalMm": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "departurePct": {
+                                  "type": "number"
+                                },
+                                "completeDays": {
+                                  "type": "number",
+                                  "const": 122
+                                },
+                                "baselineTotals": {
+                                  "minItems": 30,
+                                  "maxItems": 30,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "year": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "totalMm": {
+                                        "type": "number",
+                                        "minimum": 0
+                                      }
+                                    },
+                                    "required": [
+                                      "year",
+                                      "totalMm"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "history": {
+                                  "minItems": 4,
+                                  "maxItems": 4,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "year": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "totalMm": {
+                                        "type": "number",
+                                        "minimum": 0
+                                      },
+                                      "departurePct": {
+                                        "type": "number"
+                                      },
+                                      "oni": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "required": [
+                                      "year",
+                                      "totalMm",
+                                      "departurePct",
+                                      "oni"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "source",
+                                "start",
+                                "end",
+                                "baselineStart",
+                                "baselineEnd",
+                                "baselineMeanMm",
+                                "totalMm",
+                                "departurePct",
+                                "completeDays",
+                                "baselineTotals",
+                                "history"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "surface": {
+                              "type": "object",
+                              "properties": {
+                                "source": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "retrievedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                    },
+                                    "product": {
+                                      "type": "string"
+                                    },
+                                    "scope": {
+                                      "type": "string"
+                                    },
+                                    "resolution": {
+                                      "type": "string"
+                                    },
+                                    "limitation": {
+                                      "type": "string"
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "title",
+                                    "url",
+                                    "retrievedAt",
+                                    "product",
+                                    "scope",
+                                    "resolution",
+                                    "limitation",
+                                    "sha256"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "start": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "end": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                },
+                                "moisture": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "baselineMoisture": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "meanDailyMaxC": {
+                                  "type": "number"
+                                },
+                                "baselineDailyMaxC": {
+                                  "type": "number"
+                                },
+                                "completeDays": {
+                                  "type": "number",
+                                  "const": 30
+                                },
+                                "baselineMoistureTotals": {
+                                  "minItems": 30,
+                                  "maxItems": 30,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "year": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "value": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "year",
+                                      "value"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "source",
+                                "start",
+                                "end",
+                                "moisture",
+                                "baselineMoisture",
+                                "meanDailyMaxC",
+                                "baselineDailyMaxC",
+                                "completeDays",
+                                "baselineMoistureTotals"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "enso": {
+                              "type": "object",
+                              "properties": {
+                                "source": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "retrievedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                    },
+                                    "product": {
+                                      "type": "string"
+                                    },
+                                    "scope": {
+                                      "type": "string"
+                                    },
+                                    "resolution": {
+                                      "type": "string"
+                                    },
+                                    "limitation": {
+                                      "type": "string"
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "title",
+                                    "url",
+                                    "retrievedAt",
+                                    "product",
+                                    "scope",
+                                    "resolution",
+                                    "limitation",
+                                    "sha256"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "period": {
+                                  "type": "string"
+                                },
+                                "anomalyC": {
+                                  "type": "number"
+                                },
+                                "limitation": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "source",
+                                "period",
+                                "anomalyC",
+                                "limitation"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "regionId",
+                            "name",
+                            "latitude",
+                            "longitude",
+                            "rainfall",
+                            "surface",
+                            "enso"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "cropContext": {
+                          "type": "object",
+                          "properties": {
+                            "regionId": {
+                              "type": "string",
+                              "enum": [
+                                "latur",
+                                "beed",
+                                "nanded",
+                                "dharashiv",
+                                "parbhani",
+                                "hingoli",
+                                "jalna",
+                                "sambhajinagar",
+                                "solapur",
+                                "ahilyanagar"
+                              ]
+                            },
+                            "crop": {
+                              "type": "string",
+                              "enum": [
+                                "chickpea",
+                                "sorghum",
+                                "wheat"
+                              ]
+                            },
+                            "version": {
+                              "type": "string",
+                              "const": "maharashtra-rabi-context/1"
+                            },
+                            "review": {
+                              "type": "string",
+                              "const": "unreviewed"
+                            },
+                            "guidance": {
+                              "default": [],
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "crop": {
+                                    "type": "string",
+                                    "enum": [
+                                      "chickpea",
+                                      "sorghum",
+                                      "wheat"
+                                    ]
+                                  },
+                                  "regionId": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "latur",
+                                          "beed",
+                                          "nanded",
+                                          "dharashiv",
+                                          "parbhani",
+                                          "hingoli",
+                                          "jalna",
+                                          "sambhajinagar",
+                                          "solapur",
+                                          "ahilyanagar"
+                                        ]
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "stages": {
+                                    "minItems": 1,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "enum": [
+                                        "pre-sowing",
+                                        "vegetative",
+                                        "crown-root",
+                                        "branching",
+                                        "boot-leaf",
+                                        "pod-development",
+                                        "grain-filling",
+                                        "flowering",
+                                        "maturity"
+                                      ]
+                                    }
+                                  },
+                                  "irrigation": {
+                                    "minItems": 1,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unknown",
+                                        "none",
+                                        "one",
+                                        "limited",
+                                        "assured"
+                                      ]
+                                    }
+                                  },
+                                  "confirmationChecks": {
+                                    "default": [],
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "requiresTwoStageSupply": {
+                                    "default": false,
+                                    "type": "boolean"
+                                  },
+                                  "requiresDryField": {
+                                    "type": "boolean"
+                                  },
+                                  "requiresBlackDeepSoil": {
+                                    "type": "boolean"
+                                  },
+                                  "requiresLowWellRecharge": {
+                                    "type": "boolean"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "detail": {
+                                    "type": "string"
+                                  },
+                                  "timing": {
+                                    "type": "string"
+                                  },
+                                  "sourceCondition": {
+                                    "type": "string"
+                                  },
+                                  "source": {
+                                    "type": "object",
+                                    "properties": {
+                                      "title": {
+                                        "type": "string"
+                                      },
+                                      "url": {
+                                        "type": "string",
+                                        "format": "uri"
+                                      },
+                                      "section": {
+                                        "type": "string"
+                                      },
+                                      "pdfPage": {
+                                        "anyOf": [
+                                          {
+                                            "type": "integer",
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 9007199254740991
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "sha256": {
+                                        "type": "string"
+                                      },
+                                      "scope": {
+                                        "type": "string",
+                                        "enum": [
+                                          "general-crop-guidance",
+                                          "district-contingency"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "title",
+                                      "url",
+                                      "section",
+                                      "pdfPage",
+                                      "sha256",
+                                      "scope"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "review": {
+                                    "type": "string",
+                                    "const": "unreviewed"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "crop",
+                                  "regionId",
+                                  "stages",
+                                  "irrigation",
+                                  "confirmationChecks",
+                                  "requiresTwoStageSupply",
+                                  "requiresDryField",
+                                  "requiresBlackDeepSoil",
+                                  "requiresLowWellRecharge",
+                                  "title",
+                                  "detail",
+                                  "timing",
+                                  "sourceCondition",
+                                  "source",
+                                  "review"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "source": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "url": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "pdfPage": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "publishedYear": {
+                                  "type": "number",
+                                  "const": 2011
+                                },
+                                "sha256": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "title",
+                                "url",
+                                "pdfPage",
+                                "publishedYear",
+                                "sha256"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "rainfedWindow": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "irrigatedWindow": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "bulletin": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "pdfPage": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "issued": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "forecastThrough": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "sowingWindowThrough": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    }
+                                  },
+                                  "required": [
+                                    "url",
+                                    "pdfPage",
+                                    "issued",
+                                    "forecastThrough",
+                                    "sowingWindowThrough"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "regionId",
+                            "crop",
+                            "version",
+                            "review",
+                            "guidance",
+                            "source",
+                            "rainfedWindow",
+                            "irrigatedWindow",
+                            "bulletin"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "stress": {
+                          "type": "object",
+                          "properties": {
+                            "methodVersion": {
+                              "type": "string",
+                              "const": "experimental-regional-stress/1"
+                            },
+                            "level": {
+                              "type": "string",
+                              "enum": [
+                                "high",
+                                "moderate",
+                                "lower"
+                              ]
+                            },
+                            "rainDryRankPct": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "surfaceDryRankPct": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "limitation": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "methodVersion",
+                            "level",
+                            "rainDryRankPct",
+                            "surfaceDryRankPct",
+                            "limitation"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "cropOptions": {
+                          "maxItems": 8,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "rule": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "crop": {
+                                    "type": "string",
+                                    "enum": [
+                                      "chickpea",
+                                      "sorghum",
+                                      "wheat"
+                                    ]
+                                  },
+                                  "regionId": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "latur",
+                                          "beed",
+                                          "nanded",
+                                          "dharashiv",
+                                          "parbhani",
+                                          "hingoli",
+                                          "jalna",
+                                          "sambhajinagar",
+                                          "solapur",
+                                          "ahilyanagar"
+                                        ]
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "stages": {
+                                    "minItems": 1,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "enum": [
+                                        "pre-sowing",
+                                        "vegetative",
+                                        "crown-root",
+                                        "branching",
+                                        "boot-leaf",
+                                        "pod-development",
+                                        "grain-filling",
+                                        "flowering",
+                                        "maturity"
+                                      ]
+                                    }
+                                  },
+                                  "irrigation": {
+                                    "minItems": 1,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unknown",
+                                        "none",
+                                        "one",
+                                        "limited",
+                                        "assured"
+                                      ]
+                                    }
+                                  },
+                                  "confirmationChecks": {
+                                    "default": [],
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "requiresTwoStageSupply": {
+                                    "default": false,
+                                    "type": "boolean"
+                                  },
+                                  "requiresDryField": {
+                                    "type": "boolean"
+                                  },
+                                  "requiresBlackDeepSoil": {
+                                    "type": "boolean"
+                                  },
+                                  "requiresLowWellRecharge": {
+                                    "type": "boolean"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "detail": {
+                                    "type": "string"
+                                  },
+                                  "timing": {
+                                    "type": "string"
+                                  },
+                                  "sourceCondition": {
+                                    "type": "string"
+                                  },
+                                  "source": {
+                                    "type": "object",
+                                    "properties": {
+                                      "title": {
+                                        "type": "string"
+                                      },
+                                      "url": {
+                                        "type": "string",
+                                        "format": "uri"
+                                      },
+                                      "section": {
+                                        "type": "string"
+                                      },
+                                      "pdfPage": {
+                                        "anyOf": [
+                                          {
+                                            "type": "integer",
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 9007199254740991
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "sha256": {
+                                        "type": "string"
+                                      },
+                                      "scope": {
+                                        "type": "string",
+                                        "enum": [
+                                          "general-crop-guidance",
+                                          "district-contingency"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "title",
+                                      "url",
+                                      "section",
+                                      "pdfPage",
+                                      "sha256",
+                                      "scope"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "review": {
+                                    "type": "string",
+                                    "const": "unreviewed"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "crop",
+                                  "regionId",
+                                  "stages",
+                                  "irrigation",
+                                  "confirmationChecks",
+                                  "requiresTwoStageSupply",
+                                  "requiresDryField",
+                                  "requiresBlackDeepSoil",
+                                  "requiresLowWellRecharge",
+                                  "title",
+                                  "detail",
+                                  "timing",
+                                  "sourceCondition",
+                                  "source",
+                                  "review"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "reported-context-matches",
+                                  "needs-input",
+                                  "different-context"
+                                ]
+                              },
+                              "missing": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "reason": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "rule",
+                              "status",
+                              "missing",
+                              "reason"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "regionalSignal": {
+                          "type": "string",
+                          "enum": [
+                            "below-baseline",
+                            "at-or-above-baseline"
+                          ]
+                        },
+                        "readiness": {
+                          "type": "string",
+                          "enum": [
+                            "needs-field-check",
+                            "needs-water-check",
+                            "needs-current-guidance"
+                          ]
+                        },
+                        "missing": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "field-moisture",
+                              "soil-depth",
+                              "irrigation-certainty",
+                              "current-reviewed-guidance"
+                            ]
+                          }
+                        },
+                        "actions": {
+                          "minItems": 1,
+                          "maxItems": 4,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "field-check",
+                                  "water-check",
+                                  "source-check",
+                                  "crop-check"
+                                ]
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "detail": {
+                                "type": "string"
+                              },
+                              "when": {
+                                "type": "string"
+                              },
+                              "sourceUrl": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "sourceTitle": {
+                                "type": "string"
+                              },
+                              "sourcePage": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "reason": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string",
+                                "const": "verification-needed"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "kind",
+                              "title",
+                              "detail",
+                              "when",
+                              "sourceUrl",
+                              "sourceTitle",
+                              "sourcePage",
+                              "reason",
+                              "status"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "guidanceStatus": {
+                          "type": "string",
+                          "enum": [
+                            "dated-bulletin",
+                            "expired-bulletin",
+                            "historical-only"
+                          ]
+                        },
+                        "limitations": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "demo",
+                        "persisted",
+                        "methodVersion",
+                        "assessedAt",
+                        "input",
+                        "evidence",
+                        "cropContext",
+                        "stress",
+                        "cropOptions",
+                        "regionalSignal",
+                        "readiness",
+                        "missing",
+                        "actions",
+                        "guidanceStatus",
+                        "limitations"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/readiness/explain": {
+      "post": {
+        "operationId": "demoReadinessExplain",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "regionId": {
+                    "type": "string",
+                    "enum": [
+                      "latur",
+                      "beed",
+                      "nanded",
+                      "dharashiv",
+                      "parbhani",
+                      "hingoli",
+                      "jalna",
+                      "sambhajinagar",
+                      "solapur",
+                      "ahilyanagar"
+                    ]
+                  },
+                  "crop": {
+                    "type": "string",
+                    "enum": [
+                      "chickpea",
+                      "sorghum",
+                      "wheat"
+                    ]
+                  },
+                  "intent": {
+                    "type": "string",
+                    "enum": [
+                      "sowing",
+                      "growing",
+                      "water"
+                    ]
+                  },
+                  "stage": {
+                    "type": "string",
+                    "enum": [
+                      "pre-sowing",
+                      "vegetative",
+                      "crown-root",
+                      "branching",
+                      "boot-leaf",
+                      "pod-development",
+                      "grain-filling",
+                      "flowering",
+                      "maturity"
+                    ]
+                  },
+                  "soil": {
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "shallow",
+                      "medium-deep"
+                    ]
+                  },
+                  "moisture": {
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "dry",
+                      "moist"
+                    ]
+                  },
+                  "irrigation": {
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "none",
+                      "one",
+                      "limited",
+                      "assured"
+                    ]
+                  },
+                  "soilType": {
+                    "default": "unknown",
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "black",
+                      "other"
+                    ]
+                  },
+                  "wellRecharge": {
+                    "default": "unknown",
+                    "type": "string",
+                    "enum": [
+                      "unknown",
+                      "not-refilled",
+                      "not-applicable"
+                    ]
+                  },
+                  "water": {
+                    "type": "object",
+                    "properties": {
+                      "regionId": {
+                        "type": "string",
+                        "enum": [
+                          "latur",
+                          "beed",
+                          "nanded",
+                          "dharashiv",
+                          "parbhani",
+                          "hingoli",
+                          "jalna",
+                          "sambhajinagar",
+                          "solapur",
+                          "ahilyanagar"
+                        ]
+                      },
+                      "crop": {
+                        "type": "string",
+                        "enum": [
+                          "chickpea",
+                          "sorghum",
+                          "wheat"
+                        ]
+                      },
+                      "plannedAreaAcres": {
+                        "type": "number",
+                        "minimum": 0.1,
+                        "maximum": 100
+                      },
+                      "alternativeAreaAcres": {
+                        "type": "number",
+                        "minimum": 0.1,
+                        "maximum": 100
+                      },
+                      "usableWaterLitres": {
+                        "anyOf": [
+                          {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100000000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "netApplicationMm": {
+                        "anyOf": [
+                          {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 300
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "efficiencyPct": {
+                        "anyOf": [
+                          {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 100
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "regionId",
+                      "crop",
+                      "plannedAreaAcres",
+                      "alternativeAreaAcres",
+                      "usableWaterLitres",
+                      "netApplicationMm",
+                      "efficiencyPct"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "en-IN",
+                      "hi-IN",
+                      "mr-IN"
+                    ]
+                  },
+                  "voice": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "question": {
+                    "type": "string",
+                    "enum": [
+                      "season",
+                      "history",
+                      "actions",
+                      "water"
+                    ]
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1200
+                  },
+                  "history": {
+                    "maxItems": 6,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "user",
+                            "assistant"
+                          ]
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 600
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "text"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "regionId",
+                  "crop",
+                  "intent",
+                  "stage",
+                  "soil",
+                  "moisture",
+                  "irrigation",
+                  "locale",
+                  "question"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "assessment": {
+                          "type": "object",
+                          "properties": {
+                            "demo": {
+                              "type": "boolean",
+                              "const": true
+                            },
+                            "persisted": {
+                              "type": "boolean",
+                              "const": false
+                            },
+                            "methodVersion": {
+                              "type": "string",
+                              "const": "season-readiness/1"
+                            },
+                            "assessedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                            },
+                            "input": {
+                              "type": "object",
+                              "properties": {
+                                "regionId": {
+                                  "type": "string",
+                                  "enum": [
+                                    "latur",
+                                    "beed",
+                                    "nanded",
+                                    "dharashiv",
+                                    "parbhani",
+                                    "hingoli",
+                                    "jalna",
+                                    "sambhajinagar",
+                                    "solapur",
+                                    "ahilyanagar"
+                                  ]
+                                },
+                                "crop": {
+                                  "type": "string",
+                                  "enum": [
+                                    "chickpea",
+                                    "sorghum",
+                                    "wheat"
+                                  ]
+                                },
+                                "intent": {
+                                  "type": "string",
+                                  "enum": [
+                                    "sowing",
+                                    "growing",
+                                    "water"
+                                  ]
+                                },
+                                "stage": {
+                                  "type": "string",
+                                  "enum": [
+                                    "pre-sowing",
+                                    "vegetative",
+                                    "crown-root",
+                                    "branching",
+                                    "boot-leaf",
+                                    "pod-development",
+                                    "grain-filling",
+                                    "flowering",
+                                    "maturity"
+                                  ]
+                                },
+                                "soil": {
+                                  "type": "string",
+                                  "enum": [
+                                    "unknown",
+                                    "shallow",
+                                    "medium-deep"
+                                  ]
+                                },
+                                "moisture": {
+                                  "type": "string",
+                                  "enum": [
+                                    "unknown",
+                                    "dry",
+                                    "moist"
+                                  ]
+                                },
+                                "irrigation": {
+                                  "type": "string",
+                                  "enum": [
+                                    "unknown",
+                                    "none",
+                                    "one",
+                                    "limited",
+                                    "assured"
+                                  ]
+                                },
+                                "soilType": {
+                                  "default": "unknown",
+                                  "type": "string",
+                                  "enum": [
+                                    "unknown",
+                                    "black",
+                                    "other"
+                                  ]
+                                },
+                                "wellRecharge": {
+                                  "default": "unknown",
+                                  "type": "string",
+                                  "enum": [
+                                    "unknown",
+                                    "not-refilled",
+                                    "not-applicable"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "regionId",
+                                "crop",
+                                "intent",
+                                "stage",
+                                "soil",
+                                "moisture",
+                                "irrigation",
+                                "soilType",
+                                "wellRecharge"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "evidence": {
+                              "type": "object",
+                              "properties": {
+                                "regionId": {
+                                  "type": "string",
+                                  "enum": [
+                                    "latur",
+                                    "beed",
+                                    "nanded",
+                                    "dharashiv",
+                                    "parbhani",
+                                    "hingoli",
+                                    "jalna",
+                                    "sambhajinagar",
+                                    "solapur",
+                                    "ahilyanagar"
+                                  ]
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "latitude": {
+                                  "type": "number"
+                                },
+                                "longitude": {
+                                  "type": "number"
+                                },
+                                "rainfall": {
+                                  "type": "object",
+                                  "properties": {
+                                    "source": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "title": {
+                                          "type": "string"
+                                        },
+                                        "url": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        "retrievedAt": {
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                        },
+                                        "product": {
+                                          "type": "string"
+                                        },
+                                        "scope": {
+                                          "type": "string"
+                                        },
+                                        "resolution": {
+                                          "type": "string"
+                                        },
+                                        "limitation": {
+                                          "type": "string"
+                                        },
+                                        "sha256": {
+                                          "type": "string",
+                                          "pattern": "^[a-f0-9]{64}$"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "title",
+                                        "url",
+                                        "retrievedAt",
+                                        "product",
+                                        "scope",
+                                        "resolution",
+                                        "limitation",
+                                        "sha256"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "start": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "end": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "baselineStart": {
+                                      "type": "number",
+                                      "const": 1991
+                                    },
+                                    "baselineEnd": {
+                                      "type": "number",
+                                      "const": 2020
+                                    },
+                                    "baselineMeanMm": {
+                                      "type": "number",
+                                      "exclusiveMinimum": 0
+                                    },
+                                    "totalMm": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "departurePct": {
+                                      "type": "number"
+                                    },
+                                    "completeDays": {
+                                      "type": "number",
+                                      "const": 122
+                                    },
+                                    "baselineTotals": {
+                                      "minItems": 30,
+                                      "maxItems": 30,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "year": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "totalMm": {
+                                            "type": "number",
+                                            "minimum": 0
+                                          }
+                                        },
+                                        "required": [
+                                          "year",
+                                          "totalMm"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "history": {
+                                      "minItems": 4,
+                                      "maxItems": 4,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "year": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "totalMm": {
+                                            "type": "number",
+                                            "minimum": 0
+                                          },
+                                          "departurePct": {
+                                            "type": "number"
+                                          },
+                                          "oni": {
+                                            "type": "number"
+                                          }
+                                        },
+                                        "required": [
+                                          "year",
+                                          "totalMm",
+                                          "departurePct",
+                                          "oni"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "source",
+                                    "start",
+                                    "end",
+                                    "baselineStart",
+                                    "baselineEnd",
+                                    "baselineMeanMm",
+                                    "totalMm",
+                                    "departurePct",
+                                    "completeDays",
+                                    "baselineTotals",
+                                    "history"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "surface": {
+                                  "type": "object",
+                                  "properties": {
+                                    "source": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "title": {
+                                          "type": "string"
+                                        },
+                                        "url": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        "retrievedAt": {
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                        },
+                                        "product": {
+                                          "type": "string"
+                                        },
+                                        "scope": {
+                                          "type": "string"
+                                        },
+                                        "resolution": {
+                                          "type": "string"
+                                        },
+                                        "limitation": {
+                                          "type": "string"
+                                        },
+                                        "sha256": {
+                                          "type": "string",
+                                          "pattern": "^[a-f0-9]{64}$"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "title",
+                                        "url",
+                                        "retrievedAt",
+                                        "product",
+                                        "scope",
+                                        "resolution",
+                                        "limitation",
+                                        "sha256"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "start": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "end": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "moisture": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    "baselineMoisture": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    "meanDailyMaxC": {
+                                      "type": "number"
+                                    },
+                                    "baselineDailyMaxC": {
+                                      "type": "number"
+                                    },
+                                    "completeDays": {
+                                      "type": "number",
+                                      "const": 30
+                                    },
+                                    "baselineMoistureTotals": {
+                                      "minItems": 30,
+                                      "maxItems": 30,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "year": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "value": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 1
+                                          }
+                                        },
+                                        "required": [
+                                          "year",
+                                          "value"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "source",
+                                    "start",
+                                    "end",
+                                    "moisture",
+                                    "baselineMoisture",
+                                    "meanDailyMaxC",
+                                    "baselineDailyMaxC",
+                                    "completeDays",
+                                    "baselineMoistureTotals"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "enso": {
+                                  "type": "object",
+                                  "properties": {
+                                    "source": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "title": {
+                                          "type": "string"
+                                        },
+                                        "url": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        "retrievedAt": {
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                        },
+                                        "product": {
+                                          "type": "string"
+                                        },
+                                        "scope": {
+                                          "type": "string"
+                                        },
+                                        "resolution": {
+                                          "type": "string"
+                                        },
+                                        "limitation": {
+                                          "type": "string"
+                                        },
+                                        "sha256": {
+                                          "type": "string",
+                                          "pattern": "^[a-f0-9]{64}$"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "title",
+                                        "url",
+                                        "retrievedAt",
+                                        "product",
+                                        "scope",
+                                        "resolution",
+                                        "limitation",
+                                        "sha256"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "period": {
+                                      "type": "string"
+                                    },
+                                    "anomalyC": {
+                                      "type": "number"
+                                    },
+                                    "limitation": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "source",
+                                    "period",
+                                    "anomalyC",
+                                    "limitation"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "regionId",
+                                "name",
+                                "latitude",
+                                "longitude",
+                                "rainfall",
+                                "surface",
+                                "enso"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "cropContext": {
+                              "type": "object",
+                              "properties": {
+                                "regionId": {
+                                  "type": "string",
+                                  "enum": [
+                                    "latur",
+                                    "beed",
+                                    "nanded",
+                                    "dharashiv",
+                                    "parbhani",
+                                    "hingoli",
+                                    "jalna",
+                                    "sambhajinagar",
+                                    "solapur",
+                                    "ahilyanagar"
+                                  ]
+                                },
+                                "crop": {
+                                  "type": "string",
+                                  "enum": [
+                                    "chickpea",
+                                    "sorghum",
+                                    "wheat"
+                                  ]
+                                },
+                                "version": {
+                                  "type": "string",
+                                  "const": "maharashtra-rabi-context/1"
+                                },
+                                "review": {
+                                  "type": "string",
+                                  "const": "unreviewed"
+                                },
+                                "guidance": {
+                                  "default": [],
+                                  "maxItems": 8,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "crop": {
+                                        "type": "string",
+                                        "enum": [
+                                          "chickpea",
+                                          "sorghum",
+                                          "wheat"
+                                        ]
+                                      },
+                                      "regionId": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "enum": [
+                                              "latur",
+                                              "beed",
+                                              "nanded",
+                                              "dharashiv",
+                                              "parbhani",
+                                              "hingoli",
+                                              "jalna",
+                                              "sambhajinagar",
+                                              "solapur",
+                                              "ahilyanagar"
+                                            ]
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "stages": {
+                                        "minItems": 1,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "enum": [
+                                            "pre-sowing",
+                                            "vegetative",
+                                            "crown-root",
+                                            "branching",
+                                            "boot-leaf",
+                                            "pod-development",
+                                            "grain-filling",
+                                            "flowering",
+                                            "maturity"
+                                          ]
+                                        }
+                                      },
+                                      "irrigation": {
+                                        "minItems": 1,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "enum": [
+                                            "unknown",
+                                            "none",
+                                            "one",
+                                            "limited",
+                                            "assured"
+                                          ]
+                                        }
+                                      },
+                                      "confirmationChecks": {
+                                        "default": [],
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "requiresTwoStageSupply": {
+                                        "default": false,
+                                        "type": "boolean"
+                                      },
+                                      "requiresDryField": {
+                                        "type": "boolean"
+                                      },
+                                      "requiresBlackDeepSoil": {
+                                        "type": "boolean"
+                                      },
+                                      "requiresLowWellRecharge": {
+                                        "type": "boolean"
+                                      },
+                                      "title": {
+                                        "type": "string"
+                                      },
+                                      "detail": {
+                                        "type": "string"
+                                      },
+                                      "timing": {
+                                        "type": "string"
+                                      },
+                                      "sourceCondition": {
+                                        "type": "string"
+                                      },
+                                      "source": {
+                                        "type": "object",
+                                        "properties": {
+                                          "title": {
+                                            "type": "string"
+                                          },
+                                          "url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                          },
+                                          "section": {
+                                            "type": "string"
+                                          },
+                                          "pdfPage": {
+                                            "anyOf": [
+                                              {
+                                                "type": "integer",
+                                                "exclusiveMinimum": 0,
+                                                "maximum": 9007199254740991
+                                              },
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "sha256": {
+                                            "type": "string"
+                                          },
+                                          "scope": {
+                                            "type": "string",
+                                            "enum": [
+                                              "general-crop-guidance",
+                                              "district-contingency"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "title",
+                                          "url",
+                                          "section",
+                                          "pdfPage",
+                                          "sha256",
+                                          "scope"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      "review": {
+                                        "type": "string",
+                                        "const": "unreviewed"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "crop",
+                                      "regionId",
+                                      "stages",
+                                      "irrigation",
+                                      "confirmationChecks",
+                                      "requiresTwoStageSupply",
+                                      "requiresDryField",
+                                      "requiresBlackDeepSoil",
+                                      "requiresLowWellRecharge",
+                                      "title",
+                                      "detail",
+                                      "timing",
+                                      "sourceCondition",
+                                      "source",
+                                      "review"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "source": {
+                                  "type": "object",
+                                  "properties": {
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "pdfPage": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "publishedYear": {
+                                      "type": "number",
+                                      "const": 2011
+                                    },
+                                    "sha256": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "title",
+                                    "url",
+                                    "pdfPage",
+                                    "publishedYear",
+                                    "sha256"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "rainfedWindow": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "irrigatedWindow": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "bulletin": {
+                                  "anyOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "url": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        "pdfPage": {
+                                          "type": "integer",
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991
+                                        },
+                                        "issued": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        },
+                                        "forecastThrough": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        },
+                                        "sowingWindowThrough": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        }
+                                      },
+                                      "required": [
+                                        "url",
+                                        "pdfPage",
+                                        "issued",
+                                        "forecastThrough",
+                                        "sowingWindowThrough"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "regionId",
+                                "crop",
+                                "version",
+                                "review",
+                                "guidance",
+                                "source",
+                                "rainfedWindow",
+                                "irrigatedWindow",
+                                "bulletin"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "stress": {
+                              "type": "object",
+                              "properties": {
+                                "methodVersion": {
+                                  "type": "string",
+                                  "const": "experimental-regional-stress/1"
+                                },
+                                "level": {
+                                  "type": "string",
+                                  "enum": [
+                                    "high",
+                                    "moderate",
+                                    "lower"
+                                  ]
+                                },
+                                "rainDryRankPct": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 100
+                                },
+                                "surfaceDryRankPct": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 100
+                                },
+                                "limitation": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "methodVersion",
+                                "level",
+                                "rainDryRankPct",
+                                "surfaceDryRankPct",
+                                "limitation"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "cropOptions": {
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "rule": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "crop": {
+                                        "type": "string",
+                                        "enum": [
+                                          "chickpea",
+                                          "sorghum",
+                                          "wheat"
+                                        ]
+                                      },
+                                      "regionId": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "enum": [
+                                              "latur",
+                                              "beed",
+                                              "nanded",
+                                              "dharashiv",
+                                              "parbhani",
+                                              "hingoli",
+                                              "jalna",
+                                              "sambhajinagar",
+                                              "solapur",
+                                              "ahilyanagar"
+                                            ]
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "stages": {
+                                        "minItems": 1,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "enum": [
+                                            "pre-sowing",
+                                            "vegetative",
+                                            "crown-root",
+                                            "branching",
+                                            "boot-leaf",
+                                            "pod-development",
+                                            "grain-filling",
+                                            "flowering",
+                                            "maturity"
+                                          ]
+                                        }
+                                      },
+                                      "irrigation": {
+                                        "minItems": 1,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "enum": [
+                                            "unknown",
+                                            "none",
+                                            "one",
+                                            "limited",
+                                            "assured"
+                                          ]
+                                        }
+                                      },
+                                      "confirmationChecks": {
+                                        "default": [],
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "requiresTwoStageSupply": {
+                                        "default": false,
+                                        "type": "boolean"
+                                      },
+                                      "requiresDryField": {
+                                        "type": "boolean"
+                                      },
+                                      "requiresBlackDeepSoil": {
+                                        "type": "boolean"
+                                      },
+                                      "requiresLowWellRecharge": {
+                                        "type": "boolean"
+                                      },
+                                      "title": {
+                                        "type": "string"
+                                      },
+                                      "detail": {
+                                        "type": "string"
+                                      },
+                                      "timing": {
+                                        "type": "string"
+                                      },
+                                      "sourceCondition": {
+                                        "type": "string"
+                                      },
+                                      "source": {
+                                        "type": "object",
+                                        "properties": {
+                                          "title": {
+                                            "type": "string"
+                                          },
+                                          "url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                          },
+                                          "section": {
+                                            "type": "string"
+                                          },
+                                          "pdfPage": {
+                                            "anyOf": [
+                                              {
+                                                "type": "integer",
+                                                "exclusiveMinimum": 0,
+                                                "maximum": 9007199254740991
+                                              },
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "sha256": {
+                                            "type": "string"
+                                          },
+                                          "scope": {
+                                            "type": "string",
+                                            "enum": [
+                                              "general-crop-guidance",
+                                              "district-contingency"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "title",
+                                          "url",
+                                          "section",
+                                          "pdfPage",
+                                          "sha256",
+                                          "scope"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      "review": {
+                                        "type": "string",
+                                        "const": "unreviewed"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "crop",
+                                      "regionId",
+                                      "stages",
+                                      "irrigation",
+                                      "confirmationChecks",
+                                      "requiresTwoStageSupply",
+                                      "requiresDryField",
+                                      "requiresBlackDeepSoil",
+                                      "requiresLowWellRecharge",
+                                      "title",
+                                      "detail",
+                                      "timing",
+                                      "sourceCondition",
+                                      "source",
+                                      "review"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "reported-context-matches",
+                                      "needs-input",
+                                      "different-context"
+                                    ]
+                                  },
+                                  "missing": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "reason": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "rule",
+                                  "status",
+                                  "missing",
+                                  "reason"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "regionalSignal": {
+                              "type": "string",
+                              "enum": [
+                                "below-baseline",
+                                "at-or-above-baseline"
+                              ]
+                            },
+                            "readiness": {
+                              "type": "string",
+                              "enum": [
+                                "needs-field-check",
+                                "needs-water-check",
+                                "needs-current-guidance"
+                              ]
+                            },
+                            "missing": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "field-moisture",
+                                  "soil-depth",
+                                  "irrigation-certainty",
+                                  "current-reviewed-guidance"
+                                ]
+                              }
+                            },
+                            "actions": {
+                              "minItems": 1,
+                              "maxItems": 4,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "field-check",
+                                      "water-check",
+                                      "source-check",
+                                      "crop-check"
+                                    ]
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "detail": {
+                                    "type": "string"
+                                  },
+                                  "when": {
+                                    "type": "string"
+                                  },
+                                  "sourceUrl": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  },
+                                  "sourceTitle": {
+                                    "type": "string"
+                                  },
+                                  "sourcePage": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "reason": {
+                                    "type": "string"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "const": "verification-needed"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "kind",
+                                  "title",
+                                  "detail",
+                                  "when",
+                                  "sourceUrl",
+                                  "sourceTitle",
+                                  "sourcePage",
+                                  "reason",
+                                  "status"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "guidanceStatus": {
+                              "type": "string",
+                              "enum": [
+                                "dated-bulletin",
+                                "expired-bulletin",
+                                "historical-only"
+                              ]
+                            },
+                            "limitations": {
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "demo",
+                            "persisted",
+                            "methodVersion",
+                            "assessedAt",
+                            "input",
+                            "evidence",
+                            "cropContext",
+                            "stress",
+                            "cropOptions",
+                            "regionalSignal",
+                            "readiness",
+                            "missing",
+                            "actions",
+                            "guidanceStatus",
+                            "limitations"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "waterPlan": {
+                          "type": "object",
+                          "properties": {
+                            "demo": {
+                              "type": "boolean",
+                              "const": true
+                            },
+                            "persisted": {
+                              "type": "boolean",
+                              "const": false
+                            },
+                            "calculation": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "inputs": {
+                                      "type": "object",
+                                      "properties": {
+                                        "regionId": {
+                                          "type": "string",
+                                          "enum": [
+                                            "latur",
+                                            "beed",
+                                            "nanded",
+                                            "dharashiv",
+                                            "parbhani",
+                                            "hingoli",
+                                            "jalna",
+                                            "sambhajinagar",
+                                            "solapur",
+                                            "ahilyanagar"
+                                          ]
+                                        },
+                                        "crop": {
+                                          "type": "string",
+                                          "enum": [
+                                            "chickpea",
+                                            "sorghum",
+                                            "wheat"
+                                          ]
+                                        },
+                                        "plannedAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "alternativeAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "usableWaterLitres": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "maximum": 100000000
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "netApplicationMm": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 300
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "efficiencyPct": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 100
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "regionId",
+                                        "crop",
+                                        "plannedAreaAcres",
+                                        "alternativeAreaAcres",
+                                        "usableWaterLitres",
+                                        "netApplicationMm",
+                                        "efficiencyPct"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "methodVersion": {
+                                      "type": "string",
+                                      "const": "water-volume/1"
+                                    },
+                                    "assumptionsStatus": {
+                                      "type": "string",
+                                      "const": "illustrative"
+                                    },
+                                    "agronomicReview": {
+                                      "type": "string",
+                                      "const": "unreviewed"
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "const": "needs-input"
+                                    },
+                                    "missingInputs": {
+                                      "minItems": 1,
+                                      "maxItems": 3,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "enum": [
+                                          "usable-water",
+                                          "application-depth",
+                                          "efficiency"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "inputs",
+                                    "methodVersion",
+                                    "assumptionsStatus",
+                                    "agronomicReview",
+                                    "status",
+                                    "missingInputs"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "inputs": {
+                                      "type": "object",
+                                      "properties": {
+                                        "regionId": {
+                                          "type": "string",
+                                          "enum": [
+                                            "latur",
+                                            "beed",
+                                            "nanded",
+                                            "dharashiv",
+                                            "parbhani",
+                                            "hingoli",
+                                            "jalna",
+                                            "sambhajinagar",
+                                            "solapur",
+                                            "ahilyanagar"
+                                          ]
+                                        },
+                                        "crop": {
+                                          "type": "string",
+                                          "enum": [
+                                            "chickpea",
+                                            "sorghum",
+                                            "wheat"
+                                          ]
+                                        },
+                                        "plannedAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "alternativeAreaAcres": {
+                                          "type": "number",
+                                          "minimum": 0.1,
+                                          "maximum": 100
+                                        },
+                                        "usableWaterLitres": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "maximum": 100000000
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "netApplicationMm": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 300
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "efficiencyPct": {
+                                          "anyOf": [
+                                            {
+                                              "type": "number",
+                                              "minimum": 1,
+                                              "maximum": 100
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "regionId",
+                                        "crop",
+                                        "plannedAreaAcres",
+                                        "alternativeAreaAcres",
+                                        "usableWaterLitres",
+                                        "netApplicationMm",
+                                        "efficiencyPct"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "methodVersion": {
+                                      "type": "string",
+                                      "const": "water-volume/1"
+                                    },
+                                    "assumptionsStatus": {
+                                      "type": "string",
+                                      "const": "illustrative"
+                                    },
+                                    "agronomicReview": {
+                                      "type": "string",
+                                      "const": "unreviewed"
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "coveredAreaAcres": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "options": {
+                                      "minItems": 2,
+                                      "maxItems": 2,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "enum": [
+                                              "planned",
+                                              "alternative"
+                                            ]
+                                          },
+                                          "areaAcres": {
+                                            "type": "number",
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 100
+                                          },
+                                          "requiredWaterLitres": {
+                                            "type": "number",
+                                            "exclusiveMinimum": 0
+                                          },
+                                          "balanceLitres": {
+                                            "type": "number"
+                                          },
+                                          "coverageFraction": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 1
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "areaAcres",
+                                          "requiredWaterLitres",
+                                          "balanceLitres",
+                                          "coverageFraction"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "inputs",
+                                    "methodVersion",
+                                    "assumptionsStatus",
+                                    "agronomicReview",
+                                    "status",
+                                    "coveredAreaAcres",
+                                    "options"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "regionName": {
+                              "type": "string"
+                            },
+                            "climate": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "version": {
+                                      "type": "number",
+                                      "const": 1
+                                    },
+                                    "provider": {
+                                      "type": "string"
+                                    },
+                                    "product": {
+                                      "type": "string"
+                                    },
+                                    "sourceUrl": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "retrievedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                    },
+                                    "period": {
+                                      "type": "object",
+                                      "properties": {
+                                        "start": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        },
+                                        "end": {
+                                          "type": "string",
+                                          "format": "date",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                        },
+                                        "label": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "start",
+                                        "end",
+                                        "label"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "baseline": {
+                                      "type": "object",
+                                      "properties": {
+                                        "startYear": {
+                                          "type": "integer",
+                                          "minimum": -9007199254740991,
+                                          "maximum": 9007199254740991
+                                        },
+                                        "endYear": {
+                                          "type": "integer",
+                                          "minimum": -9007199254740991,
+                                          "maximum": 9007199254740991
+                                        },
+                                        "meanMm": {
+                                          "type": "number",
+                                          "minimum": 0
+                                        },
+                                        "years": {
+                                          "type": "integer",
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991
+                                        }
+                                      },
+                                      "required": [
+                                        "startYear",
+                                        "endYear",
+                                        "meanMm",
+                                        "years"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "totalMm": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "departurePct": {
+                                      "type": "number"
+                                    },
+                                    "location": {
+                                      "type": "object",
+                                      "properties": {
+                                        "latitude": {
+                                          "type": "number"
+                                        },
+                                        "longitude": {
+                                          "type": "number"
+                                        },
+                                        "scope": {
+                                          "type": "string",
+                                          "enum": [
+                                            "district-centre",
+                                            "district-mean"
+                                          ]
+                                        },
+                                        "resolution": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "latitude",
+                                        "longitude",
+                                        "scope",
+                                        "resolution"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "annualTotals": {
+                                      "maxItems": 40,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "year": {
+                                            "type": "integer",
+                                            "minimum": -9007199254740991,
+                                            "maximum": 9007199254740991
+                                          },
+                                          "totalMm": {
+                                            "type": "number",
+                                            "minimum": 0
+                                          }
+                                        },
+                                        "required": [
+                                          "year",
+                                          "totalMm"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "completeDays": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "limitations": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "id",
+                                    "version",
+                                    "provider",
+                                    "product",
+                                    "sourceUrl",
+                                    "retrievedAt",
+                                    "period",
+                                    "baseline",
+                                    "totalMm",
+                                    "departurePct",
+                                    "location",
+                                    "annualTotals",
+                                    "completeDays",
+                                    "limitations"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "unavailable"
+                                    },
+                                    "reason": {
+                                      "type": "string"
+                                    },
+                                    "retryable": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "reason",
+                                    "retryable"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "method": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "url": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "limitation": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "title",
+                                "url",
+                                "limitation"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "demo",
+                            "persisted",
+                            "calculation",
+                            "regionName",
+                            "climate",
+                            "method"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "explanation": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "summary": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1200
+                                },
+                                "actionIds": {
+                                  "maxItems": 6,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "model": {
+                                  "type": "object",
+                                  "properties": {
+                                    "provider": {
+                                      "type": "string",
+                                      "const": "google"
+                                    },
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "version": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "generatedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                    },
+                                    "cached": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "provider",
+                                    "id",
+                                    "version",
+                                    "generatedAt",
+                                    "cached"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "summary",
+                                "actionIds",
+                                "model"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "audio": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "mime": {
+                                  "type": "string",
+                                  "const": "audio/mpeg"
+                                },
+                                "base64": {
+                                  "type": "string",
+                                  "maxLength": 699052
+                                },
+                                "voice": {
+                                  "type": "string"
+                                },
+                                "locale": {
+                                  "type": "string",
+                                  "enum": [
+                                    "en-IN",
+                                    "hi-IN",
+                                    "mr-IN"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "mime",
+                                "base64",
+                                "voice",
+                                "locale"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "components": {
+                          "type": "object",
+                          "properties": {
+                            "version": {
+                              "type": "number",
+                              "const": 1
+                            },
+                            "views": {
+                              "minItems": 1,
+                              "maxItems": 4,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "season-summary",
+                                  "rain-history",
+                                  "surface-context",
+                                  "crop-actions",
+                                  "water-comparison"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "version",
+                            "views"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "assessment",
+                        "explanation",
+                        "audio",
+                        "components"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/demo/planning/transcribe": {
       "post": {
         "operationId": "planningTranscribe",
@@ -338,8 +4105,8 @@
                           "const": false
                         },
                         "regions": {
-                          "minItems": 3,
-                          "maxItems": 3,
+                          "minItems": 10,
+                          "maxItems": 10,
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -349,7 +4116,14 @@
                                 "enum": [
                                   "latur",
                                   "beed",
-                                  "nanded"
+                                  "nanded",
+                                  "dharashiv",
+                                  "parbhani",
+                                  "hingoli",
+                                  "jalna",
+                                  "sambhajinagar",
+                                  "solapur",
+                                  "ahilyanagar"
                                 ]
                               },
                               "name": {
@@ -752,7 +4526,14 @@
                     "enum": [
                       "latur",
                       "beed",
-                      "nanded"
+                      "nanded",
+                      "dharashiv",
+                      "parbhani",
+                      "hingoli",
+                      "jalna",
+                      "sambhajinagar",
+                      "solapur",
+                      "ahilyanagar"
                     ]
                   },
                   "crop": {
@@ -857,7 +4638,14 @@
                                       "enum": [
                                         "latur",
                                         "beed",
-                                        "nanded"
+                                        "nanded",
+                                        "dharashiv",
+                                        "parbhani",
+                                        "hingoli",
+                                        "jalna",
+                                        "sambhajinagar",
+                                        "solapur",
+                                        "ahilyanagar"
                                       ]
                                     },
                                     "crop": {
@@ -977,7 +4765,14 @@
                                       "enum": [
                                         "latur",
                                         "beed",
-                                        "nanded"
+                                        "nanded",
+                                        "dharashiv",
+                                        "parbhani",
+                                        "hingoli",
+                                        "jalna",
+                                        "sambhajinagar",
+                                        "solapur",
+                                        "ahilyanagar"
                                       ]
                                     },
                                     "crop": {
@@ -1510,7 +5305,14 @@
                     "enum": [
                       "latur",
                       "beed",
-                      "nanded"
+                      "nanded",
+                      "dharashiv",
+                      "parbhani",
+                      "hingoli",
+                      "jalna",
+                      "sambhajinagar",
+                      "solapur",
+                      "ahilyanagar"
                     ]
                   },
                   "crop": {
@@ -1671,7 +5473,14 @@
                                           "enum": [
                                             "latur",
                                             "beed",
-                                            "nanded"
+                                            "nanded",
+                                            "dharashiv",
+                                            "parbhani",
+                                            "hingoli",
+                                            "jalna",
+                                            "sambhajinagar",
+                                            "solapur",
+                                            "ahilyanagar"
                                           ]
                                         },
                                         "crop": {
@@ -1791,7 +5600,14 @@
                                           "enum": [
                                             "latur",
                                             "beed",
-                                            "nanded"
+                                            "nanded",
+                                            "dharashiv",
+                                            "parbhani",
+                                            "hingoli",
+                                            "jalna",
+                                            "sambhajinagar",
+                                            "solapur",
+                                            "ahilyanagar"
                                           ]
                                         },
                                         "crop": {

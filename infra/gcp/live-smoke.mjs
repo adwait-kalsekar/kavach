@@ -45,12 +45,21 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
       });
       await page
         .getByRole("heading", {
-          name: "Make a plan for the water you have.",
+          name: "Make a plan for your season.",
           exact: true,
         })
         .waitFor();
+      await page.getByRole("button", { name: "Skip", exact: true }).click();
+      await page.getByLabel("District", { exact: true }).selectOption("nanded");
       await page
-        .getByRole("link", { name: "Compare my water options", exact: true })
+        .getByRole("button", { name: "Past El Niño years", exact: true })
+        .click();
+      await page
+        .getByRole("heading", { name: "Past El Niño years", exact: true })
+        .waitFor();
+      await page
+        .getByRole("link", { name: "Water options", exact: true })
+        .first()
         .click();
       await page
         .getByRole("button", { name: "Use this comparison", exact: true })
@@ -72,8 +81,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
           .first()
           .click();
         const explanationResponse = page.waitForResponse(
-          (r) =>
-            new URL(r.url()).pathname === "/api/v1/demo/water-plan/explain",
+          (r) => new URL(r.url()).pathname === "/api/v1/demo/readiness/explain",
           { timeout: 40000 },
         );
         await page
@@ -95,8 +103,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
           .first()
           .click();
         const unavailableResponse = page.waitForResponse(
-          (r) =>
-            new URL(r.url()).pathname === "/api/v1/demo/water-plan/explain",
+          (r) => new URL(r.url()).pathname === "/api/v1/demo/readiness/explain",
         );
         await page
           .getByRole("button", {
@@ -108,7 +115,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
         assert.equal(unavailable.data.explanation.status, "unavailable");
         await page
           .getByText(
-            "Google explanations are not configured. The calculation is still available.",
+            "Google explanations are not configured. Your evidence and checks remain available.",
             { exact: true },
           )
           .waitFor();

@@ -164,3 +164,14 @@ To regenerate the specification after contract changes: `npm run openapi -w @kav
 Firestore parity: Java 21 and Firebase CLI are development dependencies/tooling; `npm run test:firestore` starts the official emulator using `demo-kavach` and runs the same API journey tests against isolated emulator databases. It does not require a real GCP project or use cloud credentials. The emulator does not enforce production composite indexes or IAM, so those remain explicit deployment checks.
 
 For UI integration, set `APP_ORIGIN` to the exact frontend origin. The independently served React app calls the configured Hono API origin directly with credentialed CORS; it never uses an API proxy. Default Cloud Run URLs support health only; guest sessions need same-site sibling custom domains. Do not expose emulator endpoints, cloud credentials or service SDKs to frontend code.
+
+
+## Public seasonal-readiness sample
+
+`POST /api/v1/demo/readiness` accepts:
+
+```json
+{"regionId":"nanded","crop":"wheat","intent":"sowing","stage":"pre-sowing","soil":"unknown","moisture":"unknown","irrigation":"none"}
+```
+
+Returns dated regional evidence, historical comparisons, crop sources and deterministic verification tasks. Ten exact district IDs/three crops are defined in OpenAPI. These are grid samples and unreviewed crop context, not a calibrated farm-risk prediction or sowing prescription. `POST /api/v1/demo/readiness/explain` adds locale (en-IN/hi-IN/mr-IN), voice, question (season/history/actions/water), optional bounded text/history and optional matching water assumptions. Server recomputes results and binds a version-1 allowlisted visual envelope; no model HTML/measurements. Optional water must match region/crop. Exact public guards and credential-omit transport remain; private session/CSRF/ownership is unchanged. See [method/limits](../architecture/season-readiness.md).
