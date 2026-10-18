@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-router";
 import { HealthPage } from "./features/health/health-page";
 import { DemoLayout } from "./features/demo/layout";
-import { ChatPage } from "./features/demo/chat-page";
+import { AssistantRoute } from "./features/planning/assistant-page";
 import { SamplePage, ComparePage } from "./features/demo/sample-page";
 import { SeasonPage, SourcesPage } from "./features/demo/season-page";
 const rootRoute = createRootRoute({
@@ -76,9 +76,9 @@ const indexRoute = createRoute({
   },
 });
 const talkRoute = createRoute({
-  getParentRoute: () => appRoute,
+  getParentRoute: () => planningRoute,
   path: "/talk",
-  component: ChatPage,
+  component: AssistantRoute,
 });
 const sampleRoute = createRoute({
   getParentRoute: () => appRoute,
@@ -117,9 +117,9 @@ export const router = createRouter({
       waterCompareRoute,
       nextStepsRoute,
       evidenceRoute,
+      talkRoute,
     ]),
     appRoute.addChildren([
-      talkRoute,
       sampleRoute,
       compareRoute,
       seasonRoute,

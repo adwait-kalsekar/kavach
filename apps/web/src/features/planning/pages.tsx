@@ -3,16 +3,15 @@ import { Link, Outlet, useLocation } from "@tanstack/react-router";
 import { usePlanning, useFormat, cls as c } from "./state";
 import { planningCopy, cropNames } from "./planning-copy";
 import { InputDialog } from "./input-dialog";
-import { HelpDialog } from "./help-dialog";
-import { Icon, Landscape } from "../demo/ui";
+import { Icon } from "../demo/ui";
+import { FarmIllustration } from "./farm-illustration";
 import type { DemoLocale } from "@kavach/contracts";
 import "./planning.css";
 export function PlanningLayout() {
   const app = usePlanning(),
     t = planningCopy[app.locale],
     path = useLocation({ select: (l) => l.pathname }),
-    [help, setHelp] = useState(false),
-    [edit, setEdit] = useState(false);
+    isTalk = path === "/talk";
   const region = app.catalog.data?.data.regions.find(
     (r) => r.id === app.input.regionId,
   );
@@ -28,6 +27,16 @@ export function PlanningLayout() {
           { to: "/situation", label: t.situation, icon: "sample" },
           { to: "/compare", label: t.compare, icon: "water" },
           { to: "/next-steps", label: t.steps, icon: "check" },
+          {
+            to: "/talk",
+            label:
+              app.locale === "en-IN"
+                ? "Talk"
+                : app.locale === "hi-IN"
+                  ? "बात करें"
+                  : "बोला",
+            icon: "talk",
+          },
         ] as const
       ).map((v) => (
         <Link
@@ -56,9 +65,6 @@ export function PlanningLayout() {
             Kavach
           </Link>
           <nav aria-label="Main navigation">{nav}</nav>
-          <button className={c("secondary")} onClick={() => setHelp(true)}>
-            <Icon name="talk" size={20} /> {t.help}
-          </button>
           <div className={c("rail-foot")}>{t.sample}</div>
         </aside>
         <div className={c("workspace")}>
@@ -83,32 +89,18 @@ export function PlanningLayout() {
               </select>
             </label>
           </header>
-          <main id="planning-main" ref={main} className={c("main")}>
+          <main
+            id="planning-main"
+            ref={main}
+            className={c(isTalk ? "main main-talk" : "main")}
+          >
             <Outlet />
-            <div className={c("context-actions no-print")}>
-              <button className={c("help-entry")} onClick={() => setHelp(true)}>
-                <Icon name="mic" size={19} />
-                {t.help}
-              </button>
-              {path !== "/situation" && (
-                <button className={c("link")} onClick={() => setEdit(true)}>
-                  {t.edit}
-                </button>
-              )}
-            </div>
           </main>
           <nav className={c("bottomnav")} aria-label="Mobile navigation">
             {nav}
           </nav>
         </div>
       </div>
-      {help && (
-        <HelpDialog
-          key={app.locale + JSON.stringify(app.input)}
-          close={() => setHelp(false)}
-        />
-      )}{" "}
-      {edit && <InputDialog close={() => setEdit(false)} />}
     </div>
   );
 }
@@ -194,7 +186,7 @@ export function SituationPage() {
             <span>{t.before}</span>
           </div>
           <div className={c("farm-scene")} data-crop={app.input.crop}>
-            <Landscape />
+            <FarmIllustration />
           </div>
           <div className={c("facts")}>
             <div className={c("fact")}>
@@ -383,6 +375,9 @@ export function ComparePage() {
             </div>
             <div className={c("result-footer stack")}>
               <p className={c("small muted")}>{t.notAdvice}</p>
+              <Link className={c("link")} to="/talk">
+                {t.help}
+              </Link>
               {app.selected ? (
                 <Link className={c("primary button-link")} to="/next-steps">
                   {t.next}

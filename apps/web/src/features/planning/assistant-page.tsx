@@ -1,0 +1,446 @@
+import { KavachApiError } from "@kavach/api-client";
+import { useState, useEffect, useRef } from "react";
+import { Link } from "@tanstack/react-router";
+import type { ResponseBody, WaterExplainInput } from "@kavach/contracts";
+import { usePlanning, planningApi, cls as c } from "./state";
+import { planningCopy, cropNames } from "./planning-copy";
+import { beginRecording } from "../demo/recorder";
+import { Icon } from "../demo/ui";
+export function AssistantRoute() {
+  const app = usePlanning();
+  return <AssistantPage key={app.locale + JSON.stringify(app.input)} />;
+}
+export function AssistantPage() {
+  const app = usePlanning(),
+    t = planningCopy[app.locale];
+  const voice = app.spoken,
+    setVoice = app.setSpoken;
+  const [text, setText] = useState(""),
+    [busy, setBusy] = useState(false),
+    [recording, setRecording] = useState(false),
+    [starting, setStarting] = useState(false),
+    [error, setError] = useState(""),
+    [answer, setAnswer] = useState<
+      ResponseBody<"demoWaterExplain">["data"] | null
+    >(null),
+    [url, setUrl] = useState("");
+  const mode = useRef<
+    "idle" | "starting" | "recording" | "transcribing" | "answering"
+  >("idle");
+  const lastRequest = useRef<{
+    question: WaterExplainInput["question"];
+    text?: string;
+  } | null>(null);
+  const thread = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    thread.current?.scrollTo({ top: thread.current.scrollHeight });
+  }, [app.chat.length, busy]);
+  const controller = useRef<AbortController | null>(null),
+    recorder = useRef<Awaited<ReturnType<typeof beginRecording>> | null>(null),
+    timer = useRef<ReturnType<typeof setTimeout> | null>(null),
+    alive = useRef(true);
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      controller.current?.abort();
+      if (timer.current) clearTimeout(timer.current);
+      void recorder.current?.stop();
+    };
+  }, []);
+  useEffect(
+    () => () => {
+      if (url) URL.revokeObjectURL(url);
+    },
+    [url],
+  );
+  const message = (e: unknown) =>
+    e instanceof KavachApiError
+      ? e.message
+      : app.locale === "mr-IN"
+        ? "उत्तर मिळाले नाही. तुमची तुलना इथेच आहे. पुन्हा प्रयत्न करा."
+        : app.locale === "hi-IN"
+          ? "जवाब नहीं मिला। आपकी तुलना यहीं है। फिर कोशिश करें।"
+          : "We could not get a reply. Your comparison is still here. Try again.";
+  async function ask(
+    question: WaterExplainInput["question"],
+    questionText?: string,
+    fromVoice = false,
+  ) {
+    if (
+      mode.current !== "idle" &&
+      !(fromVoice && mode.current === "transcribing")
+    )
+      return;
+    mode.current = "answering";
+    lastRequest.current = {
+      question,
+      ...(questionText ? { text: questionText } : {}),
+    };
+    controller.current?.abort();
+    const ctrl = new AbortController();
+    controller.current = ctrl;
+    setBusy(true);
+    setError("");
+    setAnswer(null);
+    setUrl("");
+    const label =
+      questionText ||
+      (question === "explain-coverage"
+        ? t.qCoverage
+        : question === "explain-assumptions"
+          ? t.qAssumptions
+          : t.qChecks);
+    app.setChat((rows) => [
+      ...rows.slice(-11),
+      {
+        id: crypto.randomUUID(),
+        role: "user",
+        text: label,
+        locale: app.locale,
+      },
+    ]);
+    setText("");
+    try {
+      const response = await planningApi.waterExplain(
+        {
+          ...app.input,
+          locale: app.locale,
+          voice,
+          question,
+          history: app.chat
+            .slice(-6)
+            .map((row) => ({ role: row.role, text: row.text.slice(0, 600) })),
+          ...(questionText ? { text: questionText } : {}),
+        },
+        ctrl.signal,
+      );
+      if (!alive.current || ctrl.signal.aborted) return;
+      setAnswer(response.data);
+      if (response.data.explanation.status === "available") {
+        const explanation = response.data.explanation;
+        app.setChat((rows) => [
+          ...rows.slice(-11),
+          {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            text: explanation.summary,
+            locale: app.locale,
+            model: explanation.model.id,
+          },
+        ]);
+      }
+      if (response.data.audio.status === "available") {
+        const audio = response.data.audio;
+        setUrl(
+          URL.createObjectURL(
+            new Blob(
+              [Uint8Array.from(atob(audio.base64), (x) => x.charCodeAt(0))],
+              { type: audio.mime },
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (alive.current && !ctrl.signal.aborted) setError(message(e));
+    } finally {
+      if (alive.current && !ctrl.signal.aborted) {
+        mode.current = "idle";
+        setBusy(false);
+      }
+    }
+  }
+  async function finish() {
+    if (mode.current !== "recording") return;
+    mode.current = "transcribing";
+    if (timer.current) clearTimeout(timer.current);
+    const rec = recorder.current;
+    recorder.current = null;
+    setRecording(false);
+    if (!rec) return;
+    setBusy(true);
+    const ctrl = new AbortController();
+    controller.current = ctrl;
+    try {
+      const blob = await rec.stop();
+      if (!alive.current) return;
+      if (!blob) throw new Error(t.noVoice);
+      const result = await planningApi.planningTranscribe(
+        blob,
+        app.locale,
+        ctrl.signal,
+      );
+      if (!alive.current || ctrl.signal.aborted) return;
+      if (result.data.status === "unavailable")
+        throw new Error(result.data.reason);
+      await ask("explain-coverage", result.data.transcript, true);
+    } catch (e) {
+      if (alive.current && !ctrl.signal.aborted) setError(message(e));
+    } finally {
+      if (alive.current && !ctrl.signal.aborted) {
+        mode.current = "idle";
+        setBusy(false);
+      }
+    }
+  }
+  function cancelRecording() {
+    mode.current = "idle";
+    if (timer.current) clearTimeout(timer.current);
+    const rec = recorder.current;
+    recorder.current = null;
+    setRecording(false);
+    void rec?.stop().catch(() => {});
+  }
+  async function record() {
+    if (mode.current === "recording") {
+      await finish();
+      return;
+    }
+    if (mode.current !== "idle") return;
+    mode.current = "starting";
+    setAnswer(null);
+    lastRequest.current = null;
+    setError("");
+    setStarting(true);
+    setUrl("");
+    try {
+      const rec = await beginRecording();
+      if (!alive.current) {
+        await rec.stop();
+        return;
+      }
+      recorder.current = rec;
+      mode.current = "recording";
+      setRecording(true);
+      timer.current = setTimeout(() => {
+        void finish();
+      }, 29000);
+    } catch {
+      if (alive.current) {
+        mode.current = "idle";
+        setError(t.noVoice);
+      }
+    } finally {
+      if (alive.current) setStarting(false);
+    }
+  }
+  return (
+    <section className={c("talk-window")} aria-label={t.helpTitle}>
+      <header className={c("talk-header")}>
+        <div>
+          <h1>
+            {app.locale === "mr-IN"
+              ? "कवचशी बोला"
+              : app.locale === "hi-IN"
+                ? "कवच से बात करें"
+                : "Talk to Kavach"}
+          </h1>
+          <p>
+            {cropNames[app.locale][app.input.crop]} ·{" "}
+            {app.input.regionId[0]!.toUpperCase() + app.input.regionId.slice(1)}
+          </p>
+        </div>
+        <button
+          className={c("sound-toggle")}
+          aria-label={t.voice}
+          aria-pressed={voice}
+          onClick={() => setVoice(!voice)}
+        >
+          <Icon name="sound" size={20} />
+          <span>
+            {voice
+              ? app.locale === "en-IN"
+                ? "Voice on"
+                : "आवाज सुरू"
+              : app.locale === "en-IN"
+                ? "Voice off"
+                : "आवाज बंद"}
+          </span>
+        </button>
+      </header>
+      <div
+        ref={thread}
+        className={c("conversation")}
+        role="log"
+        aria-label="Conversation"
+      >
+        {!app.chat.length && (
+          <div className={c("talk-welcome")}>
+            <div className={c("talk-mark")}>
+              <Icon name="leaf" size={38} />
+            </div>
+            <h2>
+              {app.locale === "mr-IN"
+                ? "चला, तुमची योजना समजून घेऊया."
+                : app.locale === "hi-IN"
+                  ? "आइए, आपकी योजना समझें।"
+                  : "Let's work through your plan."}
+            </h2>
+            <p>
+              {app.locale === "en-IN"
+                ? "Ask a question, or tap the microphone and speak. I'll help explain your water comparison and what to check next."
+                : t.helpIntro}
+            </p>
+            <div className={c("question-pills")}>
+              {(
+                [
+                  ["explain-coverage", t.qCoverage],
+                  ["explain-next-checks", t.qChecks],
+                ] as const
+              ).map(([q, label]) => (
+                <button
+                  disabled={busy || recording || starting}
+                  key={q}
+                  onClick={() => void ask(q)}
+                >
+                  {label}
+                  <Icon name="arrow" size={17} />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {app.chat.map((row) => (
+          <div
+            key={row.id}
+            className={c(
+              row.role === "user" ? "user-message" : "assistant-message",
+            )}
+            lang={row.locale}
+          >
+            <p>{row.text}</p>
+            {row.model && (
+              <small>
+                {app.locale === "en-IN"
+                  ? "Kavach · Google AI"
+                  : "कवच · Google AI"}
+              </small>
+            )}
+          </div>
+        ))}
+        {busy && (
+          <p className={c("thinking")} role="status">
+            {t.thinking}
+          </p>
+        )}
+        {error && (
+          <div className={c("notice")} role="alert">
+            {error}
+            {lastRequest.current && (
+              <button
+                disabled={busy || recording || starting}
+                onClick={() => {
+                  const last = lastRequest.current;
+                  if (last) void ask(last.question, last.text);
+                }}
+              >
+                {t.retry}
+              </button>
+            )}
+          </div>
+        )}
+        {answer?.explanation.status === "unavailable" && (
+          <div className={c("notice")} role="status">
+            <p>{answer.explanation.reason}</p>
+            {answer.explanation.retryable && (
+              <button
+                disabled={busy || recording || starting}
+                onClick={() => {
+                  const last = lastRequest.current;
+                  if (last) void ask(last.question, last.text);
+                }}
+              >
+                {t.retry}
+              </button>
+            )}
+          </div>
+        )}
+        {url && voice && (
+          <audio
+            controls
+            autoPlay
+            src={url}
+            preload="auto"
+            aria-label={t.play}
+          />
+        )}
+        {voice &&
+          answer?.explanation.status === "available" &&
+          answer.audio.status === "unavailable" && (
+            <p className={c("small muted")}>{t.noAudio}</p>
+          )}
+      </div>
+      <div className={c("talk-composer")}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (text.trim()) void ask("explain-coverage", text.trim());
+          }}
+        >
+          <label className="sr-only" htmlFor="plan-question">
+            {t.question}
+          </label>
+          <textarea
+            id="plan-question"
+            placeholder={
+              app.locale === "en-IN" ? "Type your question…" : t.question
+            }
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            maxLength={1200}
+            rows={1}
+            disabled={busy || recording || starting}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" &&
+                !e.shiftKey &&
+                !e.nativeEvent.isComposing
+              ) {
+                e.preventDefault();
+                if (text.trim() && !busy && !recording && !starting)
+                  void ask("explain-coverage", text.trim());
+              }
+            }}
+          />
+          <button
+            type="button"
+            className={c(recording ? "record-active" : "mic-button")}
+            disabled={busy || starting}
+            aria-label={recording ? t.finish : t.record}
+            onClick={() => void record()}
+          >
+            <Icon name={recording ? "check" : "mic"} size={23} />
+          </button>
+          <button
+            className={c("send-button")}
+            disabled={busy || recording || starting || !text.trim()}
+            aria-label={t.send}
+          >
+            <Icon name="arrow" size={22} />
+          </button>
+        </form>
+        <div className={c("composer-hint")}>
+          <span role="status">
+            {recording
+              ? t.recording
+              : app.locale === "en-IN"
+                ? "Tap the mic to speak. Tap again when you're done."
+                : t.record}
+          </span>
+          {recording && (
+            <button
+              type="button"
+              className={c("cancel-recording")}
+              onClick={cancelRecording}
+            >
+              {t.cancel}
+            </button>
+          )}
+          <Link to="/compare">
+            {app.locale === "en-IN" ? "Your comparison" : t.compare}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}

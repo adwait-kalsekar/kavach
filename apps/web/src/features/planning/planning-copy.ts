@@ -268,8 +268,8 @@ export const planningCopy: Record<DemoLocale, typeof en> = {
 };
 export const cropNames: Record<DemoLocale, Record<string, string>> = {
   "en-IN": {
-    chickpea: "Chickpea / gram",
-    sorghum: "Sorghum / jowar",
+    chickpea: "Chickpea",
+    sorghum: "Sorghum",
     wheat: "Wheat",
   },
   "hi-IN": { chickpea: "चना", sorghum: "ज्वार", wheat: "गेहूं" },

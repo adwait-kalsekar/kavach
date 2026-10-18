@@ -68,7 +68,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
       );
       if (provider === "google" && viewport.width > 1000) {
         await page
-          .getByRole("button", { name: "Ask about this", exact: true })
+          .getByRole("link", { name: "Talk", exact: true })
           .first()
           .click();
         const explanationResponse = page.waitForResponse(
@@ -91,7 +91,7 @@ export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
       }
       if (provider === "disabled" && viewport.width > 1000) {
         await page
-          .getByRole("button", { name: "Ask about this", exact: true })
+          .getByRole("link", { name: "Talk", exact: true })
           .first()
           .click();
         const unavailableResponse = page.waitForResponse(

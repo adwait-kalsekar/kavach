@@ -4,7 +4,7 @@ Farmer seasonal-readiness copilot being developed for the Google Cloud AI Builde
 
 ## Eight-hour submission handoff
 
-**Start with [the deadline plan](docs/submission/README.md).** It contains local setup, the hour-by-hour build order, an agent prompt, the proposed public sample-demo contracts, Google-model/cloud setup, and the required deck/video/public-source checklist. The mobile voice-first sample and Google-model/speech integration are implemented and locally validated. See [current POC architecture](docs/architecture/poc-implementation.md); the new sample has not yet been deployed. The deadline route avoids domain/auth work while preserving private API protection.
+**Start with [the deadline plan](docs/submission/README.md).** It contains local setup, the hour-by-hour build order, an agent prompt, the proposed public sample-demo contracts, Google-model/cloud setup, and the required deck/video/public-source checklist. The mobile voice-first sample and Google-model/speech integration are implemented and locally validated. See [current POC architecture](docs/architecture/poc-implementation.md); the first farmer-planning release has deployed, with UI refinements verified separately on each subsequent rollout. The deadline route avoids domain/auth work while preserving private API protection.
 
 ## Run the application
 
@@ -16,7 +16,7 @@ cp apps/api/.env.example apps/api/.env
 npm run dev
 ```
 
-Open **http://localhost:3000** for **My situation → Compare → Next steps**. Select Latur, Beed or Nanded and chickpea, sorghum or wheat. Edit area, usable water and explicitly illustrative application assumptions; compare two areas and print a discussion sheet. **Ask about this** supports typed chat, tap-to-speak questions and optional Google spoken replies, grounded in the current inputs. Language and spoken-reply preferences last for the visit; inputs/chat clear on reload. Crop labels do not select a water dose. `/health` retains independent diagnostics. The browser calls Hono directly on **http://localhost:8080**. Default local mode supports deterministic calculations and dated historical context without cloud credentials; optional Google configuration enables AI/speech. Keep API APP_ORIGIN=http://localhost:3000.
+Open **http://localhost:3000** for **My situation → Compare → Next steps**. Select Latur, Beed or Nanded and chickpea, sorghum or wheat. Edit area, usable water and explicitly illustrative application assumptions; compare two areas and print a discussion sheet. The **Talk** tab supports typed chat, tap-to-speak/tap-to-finish questions and optional Google spoken replies grounded in the current inputs. Language and spoken-reply preferences last for the visit; inputs/chat clear on reload. Crop labels do not select a water dose. `/health` retains independent diagnostics. The browser calls Hono directly on **http://localhost:8080**. Default local mode supports deterministic calculations and dated historical context without cloud credentials; optional Google configuration enables AI/speech. Keep API APP_ORIGIN=http://localhost:3000.
 
 `npm run build:app` builds both packages. `npm run start:api` starts only Hono, which serves no frontend assets. Production uses separate Cloud Run services: Nginx web on internal 8081 and Hono API on 8080, each with its own HTTPS hostname. See [web/RPC architecture](docs/architecture/web-foundation.md), [deployment decision](docs/architecture/gcp-deployment.md) and [container commands](infra/README.md).
 
