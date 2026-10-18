@@ -82,7 +82,7 @@ def apply(c, use_existing_database=False):
         raise RuntimeError("Billing is not enabled. Link a billing account in the console, then rerun.")
     print(f"Applying reviewed setup to {project} ({number}), region {region}. No billing account or region is changed.")
     apis = ["run.googleapis.com", "artifactregistry.googleapis.com", "firestore.googleapis.com", "firebaserules.googleapis.com",
-            "iam.googleapis.com", "iamcredentials.googleapis.com", "sts.googleapis.com", "cloudresourcemanager.googleapis.com", "serviceusage.googleapis.com"]
+            "iam.googleapis.com", "iamcredentials.googleapis.com", "sts.googleapis.com", "cloudresourcemanager.googleapis.com", "serviceusage.googleapis.com", "aiplatform.googleapis.com", "speech.googleapis.com", "texttospeech.googleapis.com"]
     call(["services", "enable", *apis, *common])
     runtime = f"kavach-runtime@{project}.iam.gserviceaccount.com"
     web_runtime = f"kavach-web-runtime@{project}.iam.gserviceaccount.com"
@@ -98,6 +98,8 @@ def apply(c, use_existing_database=False):
     elif database.get("locationId") != region or database.get("type") != "FIRESTORE_NATIVE":
         raise RuntimeError("Existing Firestore location/type differs from settings. Nothing will move or overwrite it; review settings first.")
     call(["projects", "add-iam-policy-binding", project, "--member=serviceAccount:" + runtime, "--role=roles/datastore.user", "--condition=None"])
+    for role in ["roles/aiplatform.user", "roles/speech.client", "roles/serviceusage.serviceUsageConsumer"]:
+        call(["projects", "add-iam-policy-binding", project, "--member=serviceAccount:" + runtime, "--role=" + role, "--condition=None"])
     repository = c["artifactRepository"]
     registry = describe(["artifacts", "repositories", "describe", repository, "--location", region, *common])
     if registry is None:

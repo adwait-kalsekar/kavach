@@ -137,7 +137,7 @@ export function evaluate(input: {
     limitations: [
       "These are workflow checks, not agronomically reviewed recommendations.",
       "No exact sowing date, irrigation dose, yield estimate or crop-loss probability is calculated.",
-      "Historical and seasonal climate feeds are not connected.",
+      "Historical and seasonal climate do not determine these workflow checks.",
       ...(weather.status === "unavailable"
         ? [
             "Weather is unavailable; no weather-dependent conclusion has been calculated.",

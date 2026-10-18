@@ -12,17 +12,19 @@
   },
   "dependencies": {
     "@google-cloud/firestore": "9.3.1",
+    "@google/genai": "2.30.0",
     "@hono/node-server": "2.1.5",
     "@kavach/contracts": "*",
     "@kavach/domain": "*",
+    "google-auth-library": "10.9.1",
     "hono": "4.13.13",
     "zod": "4.6.7"
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
     "@types/node": "26.6.5",
-    "typescript": "7.0.2",
-    "tsx": "4.23.15"
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
   },
   "exports": {
     "./rpc": {

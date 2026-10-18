@@ -92,6 +92,3242 @@
     }
   },
   "paths": {
+    "/api/v1/demo/scenarios": {
+      "get": {
+        "operationId": "demoScenarios",
+        "parameters": [],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "demo": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "persisted": {
+                          "type": "boolean",
+                          "const": false
+                        },
+                        "scenarioId": {
+                          "type": "string",
+                          "const": "latur-chickpea-limited-water"
+                        },
+                        "scenarioVersion": {
+                          "type": "number",
+                          "const": 1
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "context": {
+                          "type": "object",
+                          "properties": {
+                            "district": {
+                              "type": "string",
+                              "const": "Latur"
+                            },
+                            "crop": {
+                              "type": "string",
+                              "const": "chickpea"
+                            },
+                            "stage": {
+                              "type": "string",
+                              "enum": [
+                                "planning",
+                                "vegetative",
+                                "flowering",
+                                "pod-development"
+                              ]
+                            },
+                            "irrigation": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "one",
+                                "assured"
+                              ]
+                            },
+                            "moisture": {
+                              "type": "string",
+                              "enum": [
+                                "unknown",
+                                "dry",
+                                "adequate"
+                              ]
+                            },
+                            "seedAvailable": {
+                              "type": "boolean"
+                            },
+                            "language": {
+                              "type": "string",
+                              "enum": [
+                                "en",
+                                "hi",
+                                "mr"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "district",
+                            "crop",
+                            "stage",
+                            "irrigation",
+                            "moisture",
+                            "seedAvailable",
+                            "language"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "climate": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "version": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "product": {
+                                  "type": "string"
+                                },
+                                "sourceUrl": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "retrievedAt": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                },
+                                "period": {
+                                  "type": "object",
+                                  "properties": {
+                                    "start": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "end": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "label": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "start",
+                                    "end",
+                                    "label"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "baseline": {
+                                  "type": "object",
+                                  "properties": {
+                                    "startYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "endYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "meanMm": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "years": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    }
+                                  },
+                                  "required": [
+                                    "startYear",
+                                    "endYear",
+                                    "meanMm",
+                                    "years"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "totalMm": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "departurePct": {
+                                  "type": "number"
+                                },
+                                "location": {
+                                  "type": "object",
+                                  "properties": {
+                                    "latitude": {
+                                      "type": "number"
+                                    },
+                                    "longitude": {
+                                      "type": "number"
+                                    },
+                                    "scope": {
+                                      "type": "string",
+                                      "enum": [
+                                        "district-centre",
+                                        "district-mean"
+                                      ]
+                                    },
+                                    "resolution": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "latitude",
+                                    "longitude",
+                                    "scope",
+                                    "resolution"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "annualTotals": {
+                                  "maxItems": 40,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "year": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "totalMm": {
+                                        "type": "number",
+                                        "minimum": 0
+                                      }
+                                    },
+                                    "required": [
+                                      "year",
+                                      "totalMm"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "completeDays": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "limitations": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "id",
+                                "version",
+                                "provider",
+                                "product",
+                                "sourceUrl",
+                                "retrievedAt",
+                                "period",
+                                "baseline",
+                                "totalMm",
+                                "departurePct",
+                                "location",
+                                "annualTotals",
+                                "completeDays",
+                                "limitations"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "sources": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "applicability": {
+                                "type": "string"
+                              },
+                              "reviewStatus": {
+                                "type": "string",
+                                "const": "unreviewed"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "title",
+                              "url",
+                              "applicability",
+                              "reviewStatus"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "locales": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "en-IN",
+                              "hi-IN",
+                              "mr-IN"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "demo",
+                        "persisted",
+                        "scenarioId",
+                        "scenarioVersion",
+                        "label",
+                        "context",
+                        "climate",
+                        "sources",
+                        "locales"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/assess": {
+      "post": {
+        "operationId": "demoAssess",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "scenarioId": {
+                    "type": "string",
+                    "const": "latur-chickpea-limited-water"
+                  },
+                  "changes": {
+                    "type": "object",
+                    "properties": {
+                      "irrigation": {
+                        "type": "string",
+                        "enum": [
+                          "none",
+                          "one",
+                          "assured"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "irrigation"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "scenarioId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "demo": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "persisted": {
+                          "type": "boolean",
+                          "const": false
+                        },
+                        "scenarioId": {
+                          "type": "string",
+                          "const": "latur-chickpea-limited-water"
+                        },
+                        "scenarioVersion": {
+                          "type": "number",
+                          "const": 1
+                        },
+                        "baseline": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            "schemaVersion": {
+                              "type": "number",
+                              "const": 1
+                            },
+                            "farmId": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            "farmRevision": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "context": {
+                              "type": "object",
+                              "properties": {
+                                "district": {
+                                  "type": "string",
+                                  "const": "Latur"
+                                },
+                                "crop": {
+                                  "type": "string",
+                                  "const": "chickpea"
+                                },
+                                "stage": {
+                                  "type": "string",
+                                  "enum": [
+                                    "planning",
+                                    "vegetative",
+                                    "flowering",
+                                    "pod-development"
+                                  ]
+                                },
+                                "irrigation": {
+                                  "type": "string",
+                                  "enum": [
+                                    "none",
+                                    "one",
+                                    "assured"
+                                  ]
+                                },
+                                "moisture": {
+                                  "type": "string",
+                                  "enum": [
+                                    "unknown",
+                                    "dry",
+                                    "adequate"
+                                  ]
+                                },
+                                "seedAvailable": {
+                                  "type": "boolean"
+                                },
+                                "language": {
+                                  "type": "string",
+                                  "enum": [
+                                    "en",
+                                    "hi",
+                                    "mr"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "district",
+                                "crop",
+                                "stage",
+                                "irrigation",
+                                "moisture",
+                                "seedAvailable",
+                                "language"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "ruleVersion": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                            },
+                            "mode": {
+                              "type": "string",
+                              "enum": [
+                                "confirmed",
+                                "hypothetical"
+                              ]
+                            },
+                            "basedOnAssessmentId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "readiness": {
+                              "type": "string",
+                              "enum": [
+                                "needs-check",
+                                "constrained",
+                                "planning-review"
+                              ]
+                            },
+                            "headline": {
+                              "type": "string"
+                            },
+                            "reasons": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "actions": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "detail": {
+                                    "type": "string"
+                                  },
+                                  "condition": {
+                                    "type": "string"
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "verify",
+                                      "planning-check",
+                                      "blocked"
+                                    ]
+                                  },
+                                  "reviewStatus": {
+                                    "type": "string",
+                                    "const": "unreviewed"
+                                  },
+                                  "sourceIds": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title",
+                                  "detail",
+                                  "condition",
+                                  "kind",
+                                  "reviewStatus",
+                                  "sourceIds"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "weather": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "days": {
+                                      "minItems": 7,
+                                      "maxItems": 7,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                          },
+                                          "rainMm": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 2000
+                                          },
+                                          "maxC": {
+                                            "type": "number",
+                                            "minimum": -30,
+                                            "maximum": 65
+                                          }
+                                        },
+                                        "required": [
+                                          "date",
+                                          "rainMm",
+                                          "maxC"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "provenance": {
+                                      "type": "object",
+                                      "properties": {
+                                        "provider": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "product": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "productVersion": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "sourceUrl": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        "retrievedAt": {
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                        },
+                                        "forecastIssuedAt": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string",
+                                              "format": "date-time",
+                                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "location": {
+                                          "type": "object",
+                                          "properties": {
+                                            "latitude": {
+                                              "type": "number",
+                                              "minimum": -90,
+                                              "maximum": 90
+                                            },
+                                            "longitude": {
+                                              "type": "number",
+                                              "minimum": -180,
+                                              "maximum": 180
+                                            },
+                                            "scope": {
+                                              "type": "string",
+                                              "const": "district-centre"
+                                            }
+                                          },
+                                          "required": [
+                                            "latitude",
+                                            "longitude",
+                                            "scope"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        "resolutionDescription": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        }
+                                      },
+                                      "required": [
+                                        "provider",
+                                        "product",
+                                        "productVersion",
+                                        "sourceUrl",
+                                        "retrievedAt",
+                                        "forecastIssuedAt",
+                                        "location",
+                                        "resolutionDescription"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "days",
+                                    "provenance"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "unavailable"
+                                    },
+                                    "reason": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    },
+                                    "retryable": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "reason",
+                                    "retryable"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "limitations": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "schemaVersion",
+                            "farmId",
+                            "farmRevision",
+                            "context",
+                            "ruleVersion",
+                            "createdAt",
+                            "mode",
+                            "basedOnAssessmentId",
+                            "readiness",
+                            "headline",
+                            "reasons",
+                            "actions",
+                            "weather",
+                            "limitations"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "comparison": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "schemaVersion": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "farmId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "farmRevision": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "context": {
+                                  "type": "object",
+                                  "properties": {
+                                    "district": {
+                                      "type": "string",
+                                      "const": "Latur"
+                                    },
+                                    "crop": {
+                                      "type": "string",
+                                      "const": "chickpea"
+                                    },
+                                    "stage": {
+                                      "type": "string",
+                                      "enum": [
+                                        "planning",
+                                        "vegetative",
+                                        "flowering",
+                                        "pod-development"
+                                      ]
+                                    },
+                                    "irrigation": {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "one",
+                                        "assured"
+                                      ]
+                                    },
+                                    "moisture": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unknown",
+                                        "dry",
+                                        "adequate"
+                                      ]
+                                    },
+                                    "seedAvailable": {
+                                      "type": "boolean"
+                                    },
+                                    "language": {
+                                      "type": "string",
+                                      "enum": [
+                                        "en",
+                                        "hi",
+                                        "mr"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "district",
+                                    "crop",
+                                    "stage",
+                                    "irrigation",
+                                    "moisture",
+                                    "seedAvailable",
+                                    "language"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "ruleVersion": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                },
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "confirmed",
+                                    "hypothetical"
+                                  ]
+                                },
+                                "basedOnAssessmentId": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "readiness": {
+                                  "type": "string",
+                                  "enum": [
+                                    "needs-check",
+                                    "constrained",
+                                    "planning-review"
+                                  ]
+                                },
+                                "headline": {
+                                  "type": "string"
+                                },
+                                "reasons": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "actions": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "title": {
+                                        "type": "string"
+                                      },
+                                      "detail": {
+                                        "type": "string"
+                                      },
+                                      "condition": {
+                                        "type": "string"
+                                      },
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "verify",
+                                          "planning-check",
+                                          "blocked"
+                                        ]
+                                      },
+                                      "reviewStatus": {
+                                        "type": "string",
+                                        "const": "unreviewed"
+                                      },
+                                      "sourceIds": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "title",
+                                      "detail",
+                                      "condition",
+                                      "kind",
+                                      "reviewStatus",
+                                      "sourceIds"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "weather": {
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "status": {
+                                          "type": "string",
+                                          "const": "available"
+                                        },
+                                        "days": {
+                                          "minItems": 7,
+                                          "maxItems": 7,
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                              },
+                                              "rainMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "maximum": 2000
+                                              },
+                                              "maxC": {
+                                                "type": "number",
+                                                "minimum": -30,
+                                                "maximum": 65
+                                              }
+                                            },
+                                            "required": [
+                                              "date",
+                                              "rainMm",
+                                              "maxC"
+                                            ],
+                                            "additionalProperties": false
+                                          }
+                                        },
+                                        "provenance": {
+                                          "type": "object",
+                                          "properties": {
+                                            "provider": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "product": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "productVersion": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "sourceUrl": {
+                                              "type": "string",
+                                              "format": "uri"
+                                            },
+                                            "retrievedAt": {
+                                              "type": "string",
+                                              "format": "date-time",
+                                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                            },
+                                            "forecastIssuedAt": {
+                                              "anyOf": [
+                                                {
+                                                  "type": "string",
+                                                  "format": "date-time",
+                                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                                },
+                                                {
+                                                  "type": "null"
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "type": "object",
+                                              "properties": {
+                                                "latitude": {
+                                                  "type": "number",
+                                                  "minimum": -90,
+                                                  "maximum": 90
+                                                },
+                                                "longitude": {
+                                                  "type": "number",
+                                                  "minimum": -180,
+                                                  "maximum": 180
+                                                },
+                                                "scope": {
+                                                  "type": "string",
+                                                  "const": "district-centre"
+                                                }
+                                              },
+                                              "required": [
+                                                "latitude",
+                                                "longitude",
+                                                "scope"
+                                              ],
+                                              "additionalProperties": false
+                                            },
+                                            "resolutionDescription": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            }
+                                          },
+                                          "required": [
+                                            "provider",
+                                            "product",
+                                            "productVersion",
+                                            "sourceUrl",
+                                            "retrievedAt",
+                                            "forecastIssuedAt",
+                                            "location",
+                                            "resolutionDescription"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      },
+                                      "required": [
+                                        "status",
+                                        "days",
+                                        "provenance"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "status": {
+                                          "type": "string",
+                                          "const": "unavailable"
+                                        },
+                                        "reason": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "retryable": {
+                                          "type": "boolean"
+                                        }
+                                      },
+                                      "required": [
+                                        "status",
+                                        "reason",
+                                        "retryable"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "limitations": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "schemaVersion",
+                                "farmId",
+                                "farmRevision",
+                                "context",
+                                "ruleVersion",
+                                "createdAt",
+                                "mode",
+                                "basedOnAssessmentId",
+                                "readiness",
+                                "headline",
+                                "reasons",
+                                "actions",
+                                "weather",
+                                "limitations"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "climate": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "version": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "product": {
+                                  "type": "string"
+                                },
+                                "sourceUrl": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "retrievedAt": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                },
+                                "period": {
+                                  "type": "object",
+                                  "properties": {
+                                    "start": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "end": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "label": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "start",
+                                    "end",
+                                    "label"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "baseline": {
+                                  "type": "object",
+                                  "properties": {
+                                    "startYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "endYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "meanMm": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "years": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    }
+                                  },
+                                  "required": [
+                                    "startYear",
+                                    "endYear",
+                                    "meanMm",
+                                    "years"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "totalMm": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "departurePct": {
+                                  "type": "number"
+                                },
+                                "location": {
+                                  "type": "object",
+                                  "properties": {
+                                    "latitude": {
+                                      "type": "number"
+                                    },
+                                    "longitude": {
+                                      "type": "number"
+                                    },
+                                    "scope": {
+                                      "type": "string",
+                                      "enum": [
+                                        "district-centre",
+                                        "district-mean"
+                                      ]
+                                    },
+                                    "resolution": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "latitude",
+                                    "longitude",
+                                    "scope",
+                                    "resolution"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "annualTotals": {
+                                  "maxItems": 40,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "year": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "totalMm": {
+                                        "type": "number",
+                                        "minimum": 0
+                                      }
+                                    },
+                                    "required": [
+                                      "year",
+                                      "totalMm"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "completeDays": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "limitations": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "id",
+                                "version",
+                                "provider",
+                                "product",
+                                "sourceUrl",
+                                "retrievedAt",
+                                "period",
+                                "baseline",
+                                "totalMm",
+                                "departurePct",
+                                "location",
+                                "annualTotals",
+                                "completeDays",
+                                "limitations"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "demo",
+                        "persisted",
+                        "scenarioId",
+                        "scenarioVersion",
+                        "baseline",
+                        "comparison",
+                        "climate"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/explain": {
+      "post": {
+        "operationId": "demoExplain",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "scenarioId": {
+                    "type": "string",
+                    "const": "latur-chickpea-limited-water"
+                  },
+                  "changes": {
+                    "type": "object",
+                    "properties": {
+                      "irrigation": {
+                        "type": "string",
+                        "enum": [
+                          "none",
+                          "one",
+                          "assured"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "irrigation"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "en-IN",
+                      "hi-IN",
+                      "mr-IN"
+                    ]
+                  },
+                  "question": {
+                    "type": "string",
+                    "enum": [
+                      "explain-checks",
+                      "explain-change"
+                    ]
+                  },
+                  "voice": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "scenarioId",
+                  "locale",
+                  "question"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "demo": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "persisted": {
+                          "type": "boolean",
+                          "const": false
+                        },
+                        "scenarioId": {
+                          "type": "string",
+                          "const": "latur-chickpea-limited-water"
+                        },
+                        "scenarioVersion": {
+                          "type": "number",
+                          "const": 1
+                        },
+                        "baseline": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            "schemaVersion": {
+                              "type": "number",
+                              "const": 1
+                            },
+                            "farmId": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            "farmRevision": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "context": {
+                              "type": "object",
+                              "properties": {
+                                "district": {
+                                  "type": "string",
+                                  "const": "Latur"
+                                },
+                                "crop": {
+                                  "type": "string",
+                                  "const": "chickpea"
+                                },
+                                "stage": {
+                                  "type": "string",
+                                  "enum": [
+                                    "planning",
+                                    "vegetative",
+                                    "flowering",
+                                    "pod-development"
+                                  ]
+                                },
+                                "irrigation": {
+                                  "type": "string",
+                                  "enum": [
+                                    "none",
+                                    "one",
+                                    "assured"
+                                  ]
+                                },
+                                "moisture": {
+                                  "type": "string",
+                                  "enum": [
+                                    "unknown",
+                                    "dry",
+                                    "adequate"
+                                  ]
+                                },
+                                "seedAvailable": {
+                                  "type": "boolean"
+                                },
+                                "language": {
+                                  "type": "string",
+                                  "enum": [
+                                    "en",
+                                    "hi",
+                                    "mr"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "district",
+                                "crop",
+                                "stage",
+                                "irrigation",
+                                "moisture",
+                                "seedAvailable",
+                                "language"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "ruleVersion": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                            },
+                            "mode": {
+                              "type": "string",
+                              "enum": [
+                                "confirmed",
+                                "hypothetical"
+                              ]
+                            },
+                            "basedOnAssessmentId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "readiness": {
+                              "type": "string",
+                              "enum": [
+                                "needs-check",
+                                "constrained",
+                                "planning-review"
+                              ]
+                            },
+                            "headline": {
+                              "type": "string"
+                            },
+                            "reasons": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "actions": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "detail": {
+                                    "type": "string"
+                                  },
+                                  "condition": {
+                                    "type": "string"
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "verify",
+                                      "planning-check",
+                                      "blocked"
+                                    ]
+                                  },
+                                  "reviewStatus": {
+                                    "type": "string",
+                                    "const": "unreviewed"
+                                  },
+                                  "sourceIds": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title",
+                                  "detail",
+                                  "condition",
+                                  "kind",
+                                  "reviewStatus",
+                                  "sourceIds"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "weather": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "days": {
+                                      "minItems": 7,
+                                      "maxItems": 7,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                          },
+                                          "rainMm": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 2000
+                                          },
+                                          "maxC": {
+                                            "type": "number",
+                                            "minimum": -30,
+                                            "maximum": 65
+                                          }
+                                        },
+                                        "required": [
+                                          "date",
+                                          "rainMm",
+                                          "maxC"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "provenance": {
+                                      "type": "object",
+                                      "properties": {
+                                        "provider": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "product": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "productVersion": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "sourceUrl": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        "retrievedAt": {
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                        },
+                                        "forecastIssuedAt": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string",
+                                              "format": "date-time",
+                                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "location": {
+                                          "type": "object",
+                                          "properties": {
+                                            "latitude": {
+                                              "type": "number",
+                                              "minimum": -90,
+                                              "maximum": 90
+                                            },
+                                            "longitude": {
+                                              "type": "number",
+                                              "minimum": -180,
+                                              "maximum": 180
+                                            },
+                                            "scope": {
+                                              "type": "string",
+                                              "const": "district-centre"
+                                            }
+                                          },
+                                          "required": [
+                                            "latitude",
+                                            "longitude",
+                                            "scope"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        "resolutionDescription": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        }
+                                      },
+                                      "required": [
+                                        "provider",
+                                        "product",
+                                        "productVersion",
+                                        "sourceUrl",
+                                        "retrievedAt",
+                                        "forecastIssuedAt",
+                                        "location",
+                                        "resolutionDescription"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "days",
+                                    "provenance"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "unavailable"
+                                    },
+                                    "reason": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    },
+                                    "retryable": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "reason",
+                                    "retryable"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "limitations": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "schemaVersion",
+                            "farmId",
+                            "farmRevision",
+                            "context",
+                            "ruleVersion",
+                            "createdAt",
+                            "mode",
+                            "basedOnAssessmentId",
+                            "readiness",
+                            "headline",
+                            "reasons",
+                            "actions",
+                            "weather",
+                            "limitations"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "comparison": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "schemaVersion": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "farmId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "farmRevision": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "context": {
+                                  "type": "object",
+                                  "properties": {
+                                    "district": {
+                                      "type": "string",
+                                      "const": "Latur"
+                                    },
+                                    "crop": {
+                                      "type": "string",
+                                      "const": "chickpea"
+                                    },
+                                    "stage": {
+                                      "type": "string",
+                                      "enum": [
+                                        "planning",
+                                        "vegetative",
+                                        "flowering",
+                                        "pod-development"
+                                      ]
+                                    },
+                                    "irrigation": {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "one",
+                                        "assured"
+                                      ]
+                                    },
+                                    "moisture": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unknown",
+                                        "dry",
+                                        "adequate"
+                                      ]
+                                    },
+                                    "seedAvailable": {
+                                      "type": "boolean"
+                                    },
+                                    "language": {
+                                      "type": "string",
+                                      "enum": [
+                                        "en",
+                                        "hi",
+                                        "mr"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "district",
+                                    "crop",
+                                    "stage",
+                                    "irrigation",
+                                    "moisture",
+                                    "seedAvailable",
+                                    "language"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "ruleVersion": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                },
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "confirmed",
+                                    "hypothetical"
+                                  ]
+                                },
+                                "basedOnAssessmentId": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "readiness": {
+                                  "type": "string",
+                                  "enum": [
+                                    "needs-check",
+                                    "constrained",
+                                    "planning-review"
+                                  ]
+                                },
+                                "headline": {
+                                  "type": "string"
+                                },
+                                "reasons": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "actions": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "title": {
+                                        "type": "string"
+                                      },
+                                      "detail": {
+                                        "type": "string"
+                                      },
+                                      "condition": {
+                                        "type": "string"
+                                      },
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "verify",
+                                          "planning-check",
+                                          "blocked"
+                                        ]
+                                      },
+                                      "reviewStatus": {
+                                        "type": "string",
+                                        "const": "unreviewed"
+                                      },
+                                      "sourceIds": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "title",
+                                      "detail",
+                                      "condition",
+                                      "kind",
+                                      "reviewStatus",
+                                      "sourceIds"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "weather": {
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "status": {
+                                          "type": "string",
+                                          "const": "available"
+                                        },
+                                        "days": {
+                                          "minItems": 7,
+                                          "maxItems": 7,
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                              },
+                                              "rainMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "maximum": 2000
+                                              },
+                                              "maxC": {
+                                                "type": "number",
+                                                "minimum": -30,
+                                                "maximum": 65
+                                              }
+                                            },
+                                            "required": [
+                                              "date",
+                                              "rainMm",
+                                              "maxC"
+                                            ],
+                                            "additionalProperties": false
+                                          }
+                                        },
+                                        "provenance": {
+                                          "type": "object",
+                                          "properties": {
+                                            "provider": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "product": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "productVersion": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "sourceUrl": {
+                                              "type": "string",
+                                              "format": "uri"
+                                            },
+                                            "retrievedAt": {
+                                              "type": "string",
+                                              "format": "date-time",
+                                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                            },
+                                            "forecastIssuedAt": {
+                                              "anyOf": [
+                                                {
+                                                  "type": "string",
+                                                  "format": "date-time",
+                                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                                },
+                                                {
+                                                  "type": "null"
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "type": "object",
+                                              "properties": {
+                                                "latitude": {
+                                                  "type": "number",
+                                                  "minimum": -90,
+                                                  "maximum": 90
+                                                },
+                                                "longitude": {
+                                                  "type": "number",
+                                                  "minimum": -180,
+                                                  "maximum": 180
+                                                },
+                                                "scope": {
+                                                  "type": "string",
+                                                  "const": "district-centre"
+                                                }
+                                              },
+                                              "required": [
+                                                "latitude",
+                                                "longitude",
+                                                "scope"
+                                              ],
+                                              "additionalProperties": false
+                                            },
+                                            "resolutionDescription": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            }
+                                          },
+                                          "required": [
+                                            "provider",
+                                            "product",
+                                            "productVersion",
+                                            "sourceUrl",
+                                            "retrievedAt",
+                                            "forecastIssuedAt",
+                                            "location",
+                                            "resolutionDescription"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      },
+                                      "required": [
+                                        "status",
+                                        "days",
+                                        "provenance"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "status": {
+                                          "type": "string",
+                                          "const": "unavailable"
+                                        },
+                                        "reason": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        },
+                                        "retryable": {
+                                          "type": "boolean"
+                                        }
+                                      },
+                                      "required": [
+                                        "status",
+                                        "reason",
+                                        "retryable"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "limitations": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "schemaVersion",
+                                "farmId",
+                                "farmRevision",
+                                "context",
+                                "ruleVersion",
+                                "createdAt",
+                                "mode",
+                                "basedOnAssessmentId",
+                                "readiness",
+                                "headline",
+                                "reasons",
+                                "actions",
+                                "weather",
+                                "limitations"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "climate": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "version": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "product": {
+                                  "type": "string"
+                                },
+                                "sourceUrl": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "retrievedAt": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                },
+                                "period": {
+                                  "type": "object",
+                                  "properties": {
+                                    "start": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "end": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "label": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "start",
+                                    "end",
+                                    "label"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "baseline": {
+                                  "type": "object",
+                                  "properties": {
+                                    "startYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "endYear": {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "meanMm": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "years": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991
+                                    }
+                                  },
+                                  "required": [
+                                    "startYear",
+                                    "endYear",
+                                    "meanMm",
+                                    "years"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "totalMm": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "departurePct": {
+                                  "type": "number"
+                                },
+                                "location": {
+                                  "type": "object",
+                                  "properties": {
+                                    "latitude": {
+                                      "type": "number"
+                                    },
+                                    "longitude": {
+                                      "type": "number"
+                                    },
+                                    "scope": {
+                                      "type": "string",
+                                      "enum": [
+                                        "district-centre",
+                                        "district-mean"
+                                      ]
+                                    },
+                                    "resolution": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "latitude",
+                                    "longitude",
+                                    "scope",
+                                    "resolution"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "annualTotals": {
+                                  "maxItems": 40,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "year": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "totalMm": {
+                                        "type": "number",
+                                        "minimum": 0
+                                      }
+                                    },
+                                    "required": [
+                                      "year",
+                                      "totalMm"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "completeDays": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "limitations": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "id",
+                                "version",
+                                "provider",
+                                "product",
+                                "sourceUrl",
+                                "retrievedAt",
+                                "period",
+                                "baseline",
+                                "totalMm",
+                                "departurePct",
+                                "location",
+                                "annualTotals",
+                                "completeDays",
+                                "limitations"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "explanation": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "summary": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1200
+                                },
+                                "actionIds": {
+                                  "maxItems": 6,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "model": {
+                                  "type": "object",
+                                  "properties": {
+                                    "provider": {
+                                      "type": "string",
+                                      "const": "google"
+                                    },
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "version": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "generatedAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                    },
+                                    "cached": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "provider",
+                                    "id",
+                                    "version",
+                                    "generatedAt",
+                                    "cached"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "summary",
+                                "actionIds",
+                                "model"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "audio": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "available"
+                                },
+                                "mime": {
+                                  "type": "string",
+                                  "const": "audio/mpeg"
+                                },
+                                "base64": {
+                                  "type": "string",
+                                  "maxLength": 699052
+                                },
+                                "voice": {
+                                  "type": "string"
+                                },
+                                "locale": {
+                                  "type": "string",
+                                  "enum": [
+                                    "en-IN",
+                                    "hi-IN",
+                                    "mr-IN"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "mime",
+                                "base64",
+                                "voice",
+                                "locale"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "const": "unavailable"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "retryable": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "reason",
+                                "retryable"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "demo",
+                        "persisted",
+                        "scenarioId",
+                        "scenarioVersion",
+                        "baseline",
+                        "comparison",
+                        "climate",
+                        "explanation",
+                        "audio"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/transcribe": {
+      "post": {
+        "operationId": "demoTranscribe",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en-IN",
+                "hi-IN",
+                "mr-IN"
+              ]
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "audio/wav": {
+              "schema": {
+                "type": "string",
+                "format": "binary",
+                "description": "PCM16 mono 16kHz, at most 30s / 1 MiB."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "available"
+                            },
+                            "transcript": {
+                              "type": "string",
+                              "maxLength": 1200
+                            },
+                            "proposed": {
+                              "type": "object",
+                              "properties": {
+                                "intent": {
+                                  "type": "string",
+                                  "enum": [
+                                    "change-irrigation",
+                                    "explain-checks",
+                                    "explain-change",
+                                    "confirm",
+                                    "change",
+                                    "unsupported"
+                                  ]
+                                },
+                                "irrigation": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "one",
+                                        "assured"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "intent",
+                                "irrigation"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "needsConfirmation": {
+                              "type": "boolean",
+                              "const": true
+                            },
+                            "locale": {
+                              "type": "string",
+                              "enum": [
+                                "en-IN",
+                                "hi-IN",
+                                "mr-IN"
+                              ]
+                            },
+                            "provider": {
+                              "type": "string",
+                              "const": "google"
+                            },
+                            "audio": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "available"
+                                    },
+                                    "mime": {
+                                      "type": "string",
+                                      "const": "audio/mpeg"
+                                    },
+                                    "base64": {
+                                      "type": "string",
+                                      "maxLength": 699052
+                                    },
+                                    "voice": {
+                                      "type": "string"
+                                    },
+                                    "locale": {
+                                      "type": "string",
+                                      "enum": [
+                                        "en-IN",
+                                        "hi-IN",
+                                        "mr-IN"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "mime",
+                                    "base64",
+                                    "voice",
+                                    "locale"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "const": "unavailable"
+                                    },
+                                    "reason": {
+                                      "type": "string"
+                                    },
+                                    "retryable": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "status",
+                                    "reason",
+                                    "retryable"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "transcript",
+                            "proposed",
+                            "needsConfirmation",
+                            "locale",
+                            "provider",
+                            "audio"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "unavailable"
+                            },
+                            "reason": {
+                              "type": "string"
+                            },
+                            "retryable": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "reason",
+                            "retryable"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/health": {
       "get": {
         "operationId": "health",
@@ -307,7 +3543,10 @@
                         },
                         "ai": {
                           "type": "string",
-                          "const": "unavailable"
+                          "enum": [
+                            "google",
+                            "unavailable"
+                          ]
                         },
                         "conversations": {
                           "type": "boolean",

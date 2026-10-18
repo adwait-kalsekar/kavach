@@ -1,5 +1,7 @@
 # Backend foundation: active batches and review log
 
+**Current update (18 October 2026):** the voice-first public sample, Google adapters and historical rainfall are implemented and locally exercised. See [POC architecture](poc-implementation.md) for the current flow and limits. Earlier batch records below remain historical.
+
 Updated 17 October 2026. This document overrides the earlier migration-first delivery order: the user requested backend/contracts first and UI later. Work branch: `feat/api-foundation`. The earlier research/architecture documentation was published on main as `599ab97`.
 
 ## Scope
@@ -98,3 +100,9 @@ Live acceptance passed on 18 October at 11:07 UTC in [Actions run 39121310296, a
 - Storage readiness: https://kavach-api-62041733238.asia-south1.run.app/readyz
 
 Remaining operations work: budget/uptime/error alerts and registry retention are not provisioned by bootstrap. Vertex AI enablement/runtime grants, model selection and real inference still belong to the model implementation batch. The earlier Google hello revisions are bootstrap placeholders, not known-good application rollback targets; this deployment establishes the first application baseline for future releases.
+
+## Voice-first POC implementation (18 October 2026)
+
+Added strict sample-only demo contracts, a dedicated cookie-free browser transport, deterministic sample comparison service, atomic minute/day paid-inference budgets and bounded WAV ingestion. Google GenAI, STT v2 and TTS adapters live exclusively in the API. Only exact demo path/method pairs bypass private session handling; exact-Origin checks still apply. Existing private guards are retained. Voice proposals require UI confirmation. No recording/transcript is persisted. Text explanations may be cached for fifteen minutes; no audio is cached in Firestore.
+
+The packaged rainfall snapshot uses the documented NASA POWER fallback: Jun–Aug 2026 at the Latur district centre, compared with 1991–2020. It is coarse MERRA-2 grid context, not district mean or field measurement, and never enters agronomic decision rules. Earth Engine API enablement did not establish project registration. Local browser/provider validation now passes; see [POC architecture](poc-implementation.md) for evidence and limitations. This change is not yet deployed. User explicitly requested no new test cases; existing checks and manual validation will be used.

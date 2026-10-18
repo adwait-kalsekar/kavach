@@ -39,6 +39,7 @@ yarn-error.log*
 
 # Local backend state and emulator output
 .data/
+.context/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal

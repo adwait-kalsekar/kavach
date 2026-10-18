@@ -124,7 +124,7 @@ Reviewed 17 October 2026:
 
 ## Eight-hour deadline extension — proposed 18 October 2026
 
-The owner confirmed console access and billing and subsequently authenticated the local setup identity. The [submission sprint](../submission/README.md) adds a proposed **public sample-only demo** to avoid putting the deferred custom domain on the critical path. Until its narrow CORS/contracts/model/quota checks are implemented, default URLs still support health only. Private guest farms/plans retain their current same-site session requirements.
+The owner confirmed console access and billing and subsequently authenticated the local setup identity. The [submission sprint](../submission/README.md) originally proposed a **public sample-only demo**, now implemented and locally validated to avoid putting the deferred custom domain on the critical path. The new demo has not yet been rolled out; the currently deployed default URLs still support the health foundation. See [POC verification](poc-implementation.md). Private guest farms/plans retain their current same-site session requirements.
 
 ```mermaid
 flowchart LR

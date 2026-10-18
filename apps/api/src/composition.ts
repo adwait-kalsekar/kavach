@@ -27,6 +27,20 @@ export async function compose(
     config.weather === "open-meteo"
       ? new OpenMeteoWeather(config.weatherKey)
       : new DisabledWeather();
-  const app = createApp({ config, store, weather });
+  let providers = {};
+  if (config.explanationProvider === "google") {
+    const [{ GoogleCredentials }, { GoogleExplanation }, { GoogleSpeech }] =
+      await Promise.all([
+        import("./adapters/google-credentials.js"),
+        import("./adapters/google-explanation.js"),
+        import("./adapters/google-speech.js"),
+      ]);
+    const credentials = new GoogleCredentials(config);
+    providers = {
+      explanation: new GoogleExplanation(config, credentials),
+      speech: new GoogleSpeech(config, credentials),
+    };
+  }
+  const app = createApp({ config, store, weather, ...providers });
   return { app, config, store };
 }

@@ -19,7 +19,7 @@ export class KavachApiError extends Error {
 }
 export type Options<K extends Operation> = {
   signal?: AbortSignal;
-} & ((typeof endpoints)[K] extends { method: "GET" }
+} & ((typeof endpoints)[K] extends { method: "GET" } | { publicDemo: true }
   ? { csrfToken?: never }
   : { csrfToken: string }) &
   ((typeof endpoints)[K] extends { idempotent: true }
@@ -50,7 +50,7 @@ function apiBase(origin: string) {
 export function createApiClient(fetcher: typeof fetch = fetch, origin = "") {
   const base = apiBase(origin);
   return {
-    async request<K extends Operation>(
+    async request<K extends Exclude<Operation, "demoTranscribe">>(
       operation: K,
       options: Options<K>,
     ): Promise<ResponseBody<K>> {
@@ -63,7 +63,7 @@ export function createApiClient(fetcher: typeof fetch = fetch, origin = "") {
         query.set("limit", String(options.query.limit));
       if (options.query?.cursor) query.set("cursor", options.query.cursor);
       const headers: Record<string, string> = { Accept: "application/json" };
-      if (endpoint.method !== "GET") {
+      if (endpoint.method !== "GET" && !("publicDemo" in endpoint)) {
         if (!options.csrfToken)
           throw new Error(
             "Bootstrap the session and supply a CSRF token before mutating requests.",
@@ -83,7 +83,12 @@ export function createApiClient(fetcher: typeof fetch = fetch, origin = "") {
           method: endpoint.method,
           headers,
           body,
-          credentials: base ? "include" : "same-origin",
+          credentials:
+            "publicDemo" in endpoint
+              ? "omit"
+              : base
+                ? "include"
+                : "same-origin",
           signal: options.signal,
         },
       );
@@ -122,4 +127,68 @@ export async function readRpcResponse<K extends Operation>(
   if (!response.ok)
     throw new KavachApiError(response.status, errorSchema.parse(payload));
   return endpoints[operation].response.parse(payload) as ResponseBody<K>;
+}
+
+/** Public synthetic calculations have no session, bearer token or cookie. */
+export function createDemoClient(
+  origin: string,
+  fetcher: typeof fetch = fetch,
+) {
+  const base = apiBase(origin);
+  async function call<
+    K extends "demoScenarios" | "demoAssess" | "demoExplain" | "demoTranscribe",
+  >(
+    operation: K,
+    body?: BodyInit,
+    locale?: string,
+    signal?: AbortSignal,
+  ): Promise<ResponseBody<K>> {
+    const endpoint = endpoints[operation];
+    const response = await fetcher(
+      base +
+        endpoint.path +
+        (locale ? "?locale=" + encodeURIComponent(locale) : ""),
+      {
+        method: endpoint.method,
+        credentials: "omit",
+        signal,
+        headers: {
+          Accept: "application/json",
+          ...(body
+            ? {
+                "Content-Type":
+                  operation === "demoTranscribe"
+                    ? "audio/wav"
+                    : "application/json",
+              }
+            : {}),
+        },
+        body,
+      },
+    );
+    return readRpcResponse(operation, response);
+  }
+  return {
+    scenarios: (signal?: AbortSignal) =>
+      call("demoScenarios", undefined, undefined, signal),
+    assess: (input: RequestBody<"demoAssess">, signal?: AbortSignal) =>
+      call(
+        "demoAssess",
+        JSON.stringify(endpoints.demoAssess.body.parse(input)),
+        undefined,
+        signal,
+      ),
+    explain: (input: RequestBody<"demoExplain">, signal?: AbortSignal) =>
+      call(
+        "demoExplain",
+        JSON.stringify(endpoints.demoExplain.body.parse(input)),
+        undefined,
+        signal,
+      ),
+    transcribe: (
+      audio: Blob,
+      locale: import("@kavach/contracts").DemoLocale,
+      signal?: AbortSignal,
+    ) => call("demoTranscribe", audio, locale, signal),
+  };
 }

@@ -1,8 +1,6 @@
 # Architecture and implementation entry point
 
-Decision date: 17 October 2026. Status updated 18 October: backend and web/health foundations are deployed on GCP; main-to-Cloud-Run delivery passed its first live rollout. Farmer-facing screens and AI remain pending. See the [live setup log](backend-foundation.md#authorized-live-setup--18-october-2026).
-
-For the current eight-hour submission deadline, start with [the active sprint handoff](../submission/README.md). Its proposed public sample-only surface preserves the private API security boundary and defers custom domains; it is not yet implemented.
+Decision date: 17 October 2026. Updated 18 October: the voice-first public sample is implemented and validated locally. The deployed main release remains the earlier health foundation until the next rollout. See [current POC architecture and verification](poc-implementation.md) for the sample, historical rainfall and Google speech/explanation flow. See the [live infrastructure setup log](backend-foundation.md#authorized-live-setup--18-october-2026) for verified hosting.
 
 Read in order:
 

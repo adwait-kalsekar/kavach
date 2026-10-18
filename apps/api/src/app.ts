@@ -4,6 +4,9 @@ import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { z } from "zod";
 import {
+  demoInputSchema,
+  demoExplainInputSchema,
+  voiceQuerySchema,
   endpoints,
   errorSchema,
   idSchema,
@@ -23,6 +26,13 @@ import {
   equalSecret,
   type Session,
 } from "./services/session.js";
+import { DemoService } from "./services/demo.js";
+import { readVoice } from "./services/voice-upload.js";
+import {
+  DisabledExplanation,
+  type ExplanationProvider,
+} from "./ports/explanation.js";
+import { DisabledSpeech, type SpeechProvider } from "./ports/speech.js";
 import { ResourceService } from "./services/resources.js";
 
 type Bindings = {
@@ -39,6 +49,8 @@ type Dependencies = {
   store: Store;
   weather: WeatherProvider;
   now?: () => Date;
+  explanation?: ExplanationProvider;
+  speech?: SpeechProvider;
 };
 
 async function readBody(c: Ctx): Promise<unknown> {
@@ -95,11 +107,14 @@ export function createApp({
   config,
   store,
   weather,
+  explanation = new DisabledExplanation(),
+  speech = new DisabledSpeech(),
   now = () => new Date(),
 }: Dependencies) {
   const app = new Hono<Bindings>();
   const sessions = new SessionService(store, config, now);
   const resources = new ResourceService(store, weather, now);
+  const demo = new DemoService(store, config, explanation, speech, now);
   const cookieOptions = {
     httpOnly: true,
     secure: config.environment === "production",
@@ -183,6 +198,55 @@ export function createApp({
   });
 
   app.use("/api/v1/*", async (c, next) => {
+    const demoMethods: Record<string, string> = {
+      "/api/v1/demo/scenarios": "GET",
+      "/api/v1/demo/assess": "POST",
+      "/api/v1/demo/explain": "POST",
+      "/api/v1/demo/transcribe": "POST",
+    };
+    const demoMethod = demoMethods[c.req.path];
+    if (
+      demoMethod &&
+      (c.req.method === demoMethod || c.req.method === "OPTIONS")
+    ) {
+      const origin = c.req.header("origin");
+      if (
+        (origin && origin !== config.origin) ||
+        (demoMethod === "POST" && origin !== config.origin)
+      )
+        throw new ServiceError(
+          403,
+          "FORBIDDEN",
+          "The configured application origin is required.",
+        );
+      if (origin === config.origin) {
+        c.header("Access-Control-Allow-Origin", config.origin);
+        c.header(
+          "Access-Control-Expose-Headers",
+          "X-Request-ID, X-Release-SHA",
+        );
+        c.header("Vary", "Origin");
+      }
+      if (c.req.method === "OPTIONS") {
+        const headers = (c.req.header("access-control-request-headers") || "")
+          .toLowerCase()
+          .split(",")
+          .map((h) => h.trim())
+          .filter(Boolean);
+        if (
+          origin !== config.origin ||
+          c.req.header("access-control-request-method") !== demoMethod ||
+          headers.some((h) => h !== "content-type")
+        )
+          throw new ServiceError(403, "FORBIDDEN", "Preflight is not allowed.");
+        c.header("Access-Control-Allow-Methods", demoMethod);
+        c.header("Access-Control-Allow-Headers", "Content-Type");
+        return c.body(null, 204);
+      }
+      await consumeQuota(store, "public-demo-requests", 120, now());
+      await next();
+      return;
+    }
     const origin = c.req.header("origin");
     const healthOnly = [
       "/api/v1/health",
@@ -316,7 +380,44 @@ export function createApp({
     await next();
   };
   const id = (c: Ctx) => idSchema.parse(c.req.param("id"));
+  const voiceQuery: MiddlewareHandler<
+    Bindings,
+    string,
+    {
+      in: { query: z.input<typeof voiceQuerySchema> };
+      out: { query: z.output<typeof voiceQuerySchema> };
+    }
+  > = async (c, next) => {
+    c.req.addValidatedData("query", voiceQuerySchema.parse(c.req.query()));
+    await next();
+  };
   const routes = app
+    .get("/api/v1/demo/scenarios", (c) =>
+      respond("demoScenarios", demo.scenarios(), c),
+    )
+    .post("/api/v1/demo/assess", jsonBody(demoInputSchema), (c) =>
+      respond("demoAssess", demo.assess(c.req.valid("json")), c),
+    )
+    .post("/api/v1/demo/explain", jsonBody(demoExplainInputSchema), async (c) =>
+      respond(
+        "demoExplain",
+        await demo.explain(c.req.valid("json"), c.req.raw.signal),
+        c,
+      ),
+    )
+    .post("/api/v1/demo/transcribe", voiceQuery, async (c) => {
+      const { audio, seconds } = await readVoice(c.req.raw);
+      return respond(
+        "demoTranscribe",
+        await demo.transcribe(
+          audio,
+          c.req.valid("query").locale,
+          seconds,
+          c.req.raw.signal,
+        ),
+        c,
+      );
+    })
     .get("/api/v1/health", (c) =>
       respond(
         "health",
@@ -337,7 +438,7 @@ export function createApp({
           environment: config.environment,
           persistence: config.storage,
           weather: config.weather,
-          ai: "unavailable",
+          ai: config.explanationProvider === "google" ? "google" : "unavailable",
           conversations: false,
           supported: [{ district: "Latur", crop: "chickpea" }],
           sources: sourceReferences,

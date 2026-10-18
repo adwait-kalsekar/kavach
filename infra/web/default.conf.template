@@ -6,7 +6,7 @@ server {
   add_header X-Content-Type-Options nosniff always;
   add_header Referrer-Policy strict-origin-when-cross-origin always;
   add_header X-Release-SHA "${RELEASE_SHA}" always;
-  add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src ${API_ORIGIN}; frame-ancestors 'none'; base-uri 'self'; object-src 'none'" always;
+  add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self' blob:; worker-src 'self'; connect-src ${API_ORIGIN}; frame-ancestors 'none'; base-uri 'self'; object-src 'none'" always;
   # Revalidate assets/config to avoid caching a stale API origin.
   add_header Cache-Control "no-cache" always;
   location = /runtime-config.js {

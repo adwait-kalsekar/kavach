@@ -1,0 +1,157 @@
+{
+  "status": "available",
+  "id": "nasa-power-latur-jja-2026",
+  "version": 1,
+  "provider": "NASA POWER",
+  "product": "PRECTOTCORR / MERRA-2 / POWER v2.10.0",
+  "sourceUrl": "https://power.larc.nasa.gov/docs/services/api/temporal/daily/",
+  "retrievedAt": "2026-10-18T11:35:17.118788Z",
+  "period": {
+    "start": "2026-06-01",
+    "end": "2026-08-31",
+    "label": "June\u2013August 2026"
+  },
+  "baseline": {
+    "startYear": 1991,
+    "endYear": 2020,
+    "meanMm": 412.1,
+    "years": 30
+  },
+  "totalMm": 250.53,
+  "departurePct": -39.2,
+  "location": {
+    "latitude": 18.4088,
+    "longitude": 76.5604,
+    "scope": "district-centre",
+    "resolution": "MERRA-2 meteorology grid approximately 0.5\u00b0 latitude \u00d7 0.625\u00b0 longitude"
+  },
+  "annualTotals": [
+    {
+      "year": 1991,
+      "totalMm": 557.0
+    },
+    {
+      "year": 1992,
+      "totalMm": 404.35
+    },
+    {
+      "year": 1993,
+      "totalMm": 477.44
+    },
+    {
+      "year": 1994,
+      "totalMm": 334.53
+    },
+    {
+      "year": 1995,
+      "totalMm": 423.45
+    },
+    {
+      "year": 1996,
+      "totalMm": 427.2
+    },
+    {
+      "year": 1997,
+      "totalMm": 294.35
+    },
+    {
+      "year": 1998,
+      "totalMm": 534.83
+    },
+    {
+      "year": 1999,
+      "totalMm": 281.25
+    },
+    {
+      "year": 2000,
+      "totalMm": 486.07
+    },
+    {
+      "year": 2001,
+      "totalMm": 280.67
+    },
+    {
+      "year": 2002,
+      "totalMm": 407.51
+    },
+    {
+      "year": 2003,
+      "totalMm": 335.23
+    },
+    {
+      "year": 2004,
+      "totalMm": 385.92
+    },
+    {
+      "year": 2005,
+      "totalMm": 597.88
+    },
+    {
+      "year": 2006,
+      "totalMm": 429.04
+    },
+    {
+      "year": 2007,
+      "totalMm": 470.83
+    },
+    {
+      "year": 2008,
+      "totalMm": 366.52
+    },
+    {
+      "year": 2009,
+      "totalMm": 356.41
+    },
+    {
+      "year": 2010,
+      "totalMm": 665.58
+    },
+    {
+      "year": 2011,
+      "totalMm": 439.08
+    },
+    {
+      "year": 2012,
+      "totalMm": 339.7
+    },
+    {
+      "year": 2013,
+      "totalMm": 490.16
+    },
+    {
+      "year": 2014,
+      "totalMm": 391.53
+    },
+    {
+      "year": 2015,
+      "totalMm": 236.47
+    },
+    {
+      "year": 2016,
+      "totalMm": 363.72
+    },
+    {
+      "year": 2017,
+      "totalMm": 418.03
+    },
+    {
+      "year": 2018,
+      "totalMm": 368.34
+    },
+    {
+      "year": 2019,
+      "totalMm": 243.97
+    },
+    {
+      "year": 2020,
+      "totalMm": 555.97
+    }
+  ],
+  "completeDays": 92,
+  "limitations": [
+    "Dated model/reanalysis grid at Latur centre; not measured field rainfall or a district-wide average.",
+    "June\u2013August only, not the full monsoon. Baseline uses the same 92 days in each of 30 years.",
+    "A descriptive comparison, not a crop-loss probability, current soil-moisture measurement or sowing approval.",
+    "NASA POWER was selected because this GCP project is not registered for Earth Engine; this is not CHIRPS."
+  ]
+}

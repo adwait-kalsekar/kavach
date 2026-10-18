@@ -1,4 +1,6 @@
-# Deadline implementation specification (proposed)
+# Deadline implementation specification (original proposal)
+
+**Implementation supersedes this proposal:** see [current POC](../architecture/poc-implementation.md) and [generated OpenAPI](../api/openapi.json). The user subsequently approved bounded voice and English/Hindi/Marathi. No new test cases were written at their request. This document retains the original pre-implementation scope for reference.
 
 This is **work to implement**, not the current OpenAPI. Current routes remain in [API guide](../api/README.md). Target one sample-only, English Latur/chickpea journey. The full product and private saved-plan APIs remain unchanged.
 

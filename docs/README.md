@@ -4,14 +4,16 @@ Start with the [visual product overview](product/overview.html). Download/open i
 
 ## Active submission sprint
 
-[Eight-hour POC handoff](submission/README.md) is the current implementation order for the October 18 deadline. [Build/API specification](submission/build-spec.md), [cloud/model runbook](submission/cloud-and-model.md), [submission checklist](submission/submission-checklist.md) and [deck starter](submission/deck-outline.md) define work still to implement. They do not claim the prototype is already complete.
+[Current POC implementation](architecture/poc-implementation.md) records the locally validated voice-first sample, Google integration, evidence and production limitations. The original sprint/build specifications are historical planning context; subsequent user approval added bounded voice and three languages.
+
+[Eight-hour POC handoff](submission/README.md) is the current implementation order for the October 18 deadline. [Build/API specification](submission/build-spec.md), [cloud/model runbook](submission/cloud-and-model.md), [submission checklist](submission/submission-checklist.md) and [deck starter](submission/deck-outline.md) record the original plan and remaining submission work. The POC code is now implemented locally; rollout/deck/video/upload are separate steps.
 
 ## Index
 
 | Document                                                                     | Purpose                                                                              |
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | [First GCP setup: step-by-step](deployment/gcp-setup.md)                     | Project-specific Cloud Console/Cloud Shell instructions and safe credential options  |
-| [GCP deployment and continuous delivery](architecture/gcp-deployment.md)     | Two-service delivery, ports/domains, container choice, recovery and keyless IAM                 |
+| [GCP deployment and continuous delivery](architecture/gcp-deployment.md)     | Two-service delivery, ports/domains, container choice, recovery and keyless IAM      |
 | [Web and Hono RPC foundation](architecture/web-foundation.md)                | UI/API development, type-only RPC, security boundaries and GCP packaging             |
 | [API integration guide](api/README.md)                                       | Local quickstart, session flow, typed client and current API semantics               |
 | [Generated OpenAPI](api/openapi.json)                                        | Versioned machine-readable request and response contracts                            |

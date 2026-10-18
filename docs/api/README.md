@@ -1,6 +1,6 @@
 # API integration guide
 
-The backend foundation is independent of UI and needs no GCP project in local mode. The React/Vite workspace now calls the typed public health endpoint. See [web/RPC architecture](../architecture/web-foundation.md) for UI setup and browser boundaries.
+The backend foundation is independent of UI and needs no GCP project in local mode. The React/Vite home route uses the public synthetic demo; `/health` calls the typed diagnostic endpoint. See [web/RPC architecture](../architecture/web-foundation.md) for UI setup and browser boundaries.
 
 ## Start locally
 
@@ -20,7 +20,32 @@ The API listens on `http://localhost:8080`. Defaults use a durable `.data/kavach
 - `GET /api/v1/openapi.json`: generated OpenAPI 3.1 contract.
 - [Committed OpenAPI](openapi.json): generated from `packages/contracts`.
 
-## Session and request sequence
+## Public synthetic demo
+
+The exact public sample endpoints use a dedicated `createDemoClient(apiOrigin)` with `credentials: omit`. They never create private farm records. POST requests require the configured exact Origin; no session/CSRF token is used for these four exact route/method pairs. Other routes retain their guards. See [POC architecture](../architecture/poc-implementation.md) for audio bounds, quotas, evidence and provider configuration.
+
+```ts
+import { createDemoClient } from "@kavach/api-client";
+const demo = createDemoClient("http://localhost:8080");
+await demo.scenarios();
+await demo.assess({
+  scenarioId: "latur-chickpea-limited-water",
+  changes: { irrigation: "none" },
+});
+await demo.explain({
+  scenarioId: "latur-chickpea-limited-water",
+  changes: { irrigation: "none" },
+  locale: "en-IN",
+  question: "explain-change",
+  voice: true,
+});
+// A captured PCM16 mono 16 kHz WAV Blob, at most 30 seconds / 1 MiB:
+await demo.transcribe(wavBlob, "en-IN");
+```
+
+`GET /api/v1/demo/scenarios`, `POST /api/v1/demo/assess`, `POST /api/v1/demo/explain` and `POST /api/v1/demo/transcribe?locale=en-IN` are defined in the generated OpenAPI. Model/audio/transcription availability is explicit. A transcribed proposal does not apply changes; the UI requests confirmation. No arbitrary text-to-speech or paid freeform prompt endpoint is exposed.
+
+## Private session and request sequence
 
 There is no account login. Hono issues a guest browser session to isolate records. HTTP-only cookies carry the session token; the frontend never reads or persists it. All requests use the Hono origin. The browser adds Origin to mutating fetches; command-line clients must send the exact configured Origin themselves.
 

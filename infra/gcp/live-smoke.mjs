@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { pathToFileURL } from "node:url";
 
-export async function liveSmoke(origin, sha, apiOrigin) {
+export async function liveSmoke(origin, sha, apiOrigin, provider = "google") {
   const { chromium } = await import("playwright");
   const browser = await chromium.launch();
   try {
@@ -23,7 +23,10 @@ export async function liveSmoke(origin, sha, apiOrigin) {
         { timeout: 20000 },
       );
       const [document, health] = await Promise.all([
-        page.goto(origin, { waitUntil: "domcontentloaded", timeout: 30000 }),
+        page.goto(origin + "/health", {
+          waitUntil: "domcontentloaded",
+          timeout: 30000,
+        }),
         healthPromise,
       ]);
       assert.equal(document.status(), 200);
@@ -36,6 +39,40 @@ export async function liveSmoke(origin, sha, apiOrigin) {
       await page
         .getByRole("heading", { name: "API reachable", exact: true })
         .waitFor({ timeout: 20000 });
+      await page.goto(origin, {
+        waitUntil: "domcontentloaded",
+        timeout: 30000,
+      });
+      await page
+        .getByRole("heading", { name: "Latur, Maharashtra", exact: true })
+        .waitFor();
+      await page
+        .getByRole("button", { name: "Explore water options", exact: true })
+        .click();
+      await page.getByRole("button", { name: /^No irrigation/ }).click();
+      await page
+        .getByRole("button", { name: "Yes, use this", exact: true })
+        .click();
+      await page
+        .getByText("Compared with the sample’s one irrigation", {
+          exact: false,
+        })
+        .waitFor();
+      if (provider === "google" && viewport.width > 1000) {
+        const explanationResponse = page.waitForResponse(
+          (r) => new URL(r.url()).pathname === "/api/v1/demo/explain",
+          { timeout: 40000 },
+        );
+        await page
+          .getByRole("button", { name: "Explain what changed", exact: true })
+          .click();
+        const result = await (await explanationResponse).json();
+        assert.equal(result.data.explanation.status, "available");
+        assert.equal(result.data.explanation.model.provider, "google");
+        assert.ok(result.data.explanation.model.version);
+        assert.equal(result.data.audio.status, "available");
+        await page.locator(".reply-card").waitFor();
+      }
       const ready = await context.request.get(apiOrigin + "/readyz", {
         timeout: 10000,
       });
@@ -50,7 +87,7 @@ export async function liveSmoke(origin, sha, apiOrigin) {
       await context.close();
     }
     console.log(
-      "Live desktop/mobile UI, exact release health and database readiness passed.",
+      "Live desktop/mobile sample comparison, configured Google explanation/audio, exact release health and database readiness passed.",
     );
   } finally {
     await browser.close();

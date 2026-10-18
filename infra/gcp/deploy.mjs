@@ -47,6 +47,10 @@ export async function deployApplication({
         APP_ORIGIN: c.origin,
         FIRESTORE_DATABASE_ID: c.database,
         WEATHER_PROVIDER: "disabled",
+        EXPLANATION_PROVIDER: c.explanationProvider,
+        GOOGLE_MODEL_ID: c.model,
+        GOOGLE_CLOUD_LOCATION: c.modelLocation,
+        SPEECH_LOCATION: c.speechLocation,
         RELEASE_SHA: c.sha,
       },
     },
@@ -182,7 +186,7 @@ export async function deployApplication({
         `--to-revisions=${s.revision}=100`,
       ]);
     }
-    await smoke(c.origin, c.sha, c.apiOrigin);
+    await smoke(c.origin, c.sha, c.apiOrigin, c.explanationProvider);
     const result = {
       status: "deployed",
       origin: c.origin,

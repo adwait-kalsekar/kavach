@@ -8,6 +8,12 @@ if (!file || file.startsWith("--"))
     "Usage: node infra/gcp/configure-github.mjs gcp-bootstrap-output.json [--apply] [--enable]",
   );
 const values = JSON.parse(readFileSync(file, "utf8"));
+const optional = [
+  "EXPLANATION_PROVIDER",
+  "GOOGLE_MODEL_ID",
+  "GOOGLE_CLOUD_LOCATION",
+  "SPEECH_LOCATION",
+];
 const keys = [
   "GCP_PROJECT_ID",
   "GCP_PROJECT_NUMBER",
@@ -24,12 +30,13 @@ const keys = [
   "GCP_WORKLOAD_IDENTITY_PROVIDER",
 ];
 if (
-  Object.keys(values).some((k) => !keys.includes(k)) ||
+  Object.keys(values).some((k) => ![...keys, ...optional].includes(k)) ||
   keys.some((k) => !values[k])
 )
   throw new Error(
     "Only the documented non-secret bootstrap configuration is accepted.",
   );
+keys.push(...optional.filter((k) => values[k]));
 deploymentConfig({
   ...values,
   GITHUB_SHA: "0".repeat(40),

@@ -77,6 +77,18 @@ export function deploymentConfig(env) {
   const database = env.FIRESTORE_DATABASE_ID || "(default)";
   if (!/^(\(default\)|[a-z][a-z0-9-]{2,61}[a-z0-9])$/.test(database))
     throw new Error("Invalid FIRESTORE_DATABASE_ID.");
+  const explanationProvider = env.EXPLANATION_PROVIDER || "google";
+  if (!["disabled", "google"].includes(explanationProvider))
+    throw new Error("Invalid EXPLANATION_PROVIDER.");
+  const model = env.GOOGLE_MODEL_ID || "gemini-3.8-flash";
+  const modelLocation = env.GOOGLE_CLOUD_LOCATION || "global";
+  const speechLocation = env.SPEECH_LOCATION || "us";
+  if (
+    !/^[a-zA-Z0-9._-]{1,100}$/.test(model) ||
+    !/^[a-z0-9-]+$/.test(modelLocation) ||
+    !/^[a-z0-9-]+$/.test(speechLocation)
+  )
+    throw new Error("Invalid Google provider configuration.");
   const sha = required(env, "GITHUB_SHA", /^[a-f0-9]{40}$/);
   const runId = required(env, "GITHUB_RUN_ID", /^\d{1,20}$/);
   const attempt = required(env, "GITHUB_RUN_ATTEMPT", /^\d{1,5}$/);
@@ -95,6 +107,10 @@ export function deploymentConfig(env) {
     runtime,
     origin,
     database,
+    explanationProvider,
+    model,
+    modelLocation,
+    speechLocation,
     sha,
     suffix,
     revision: `${service}-${suffix}`,

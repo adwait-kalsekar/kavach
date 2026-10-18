@@ -1,5 +1,7 @@
 # Cloud and model: first-hour runbook
 
+**Current status (18 October 2026):** Google adapters and the bounded sample journey are implemented and locally exercised. See [current POC architecture](../architecture/poc-implementation.md) for provider IDs, regions, grants, voice flow and verified limits. The new POC release has not yet been deployed.
+
 Project: `kavach-farmers-market-sense`. On 18 October 2026 the owner authenticated the local gcloud CLI and authorized provisioning. Bootstrap completed and GitHub deployment is enabled; first-rollout acceptance is recorded in the [live setup log](../architecture/backend-foundation.md#authorized-live-setup--18-october-2026). No live Google-model response is claimed yet. Never send credentials through chat.
 
 ## 1. Local login and one real model response

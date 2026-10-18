@@ -24,3 +24,6 @@ library-files
 
 **/__pycache__
 **/*.pyc
+
+# Private research, provider probes and local browser captures
+.context

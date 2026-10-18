@@ -1,6 +1,6 @@
 export type Document = Record<string, unknown>;
 export type Collection =
-  "sessions" | "farms" | "assessments" | "plans" | "operations" | "quotas";
+  "sessions" | "farms" | "assessments" | "plans" | "operations" | "quotas" | "demoCache";
 export type PageCursor = { createdAt: string; id: string };
 export interface Transaction {
   get(collection: Collection, id: string): Promise<Document | null>;

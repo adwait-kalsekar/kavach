@@ -1,5 +1,7 @@
 # Eight-hour prototype sprint — start here
 
+**Current implementation update (18 October):** the approved voice-first sample, public API, historical rainfall comparison and Google adapters are now implemented and locally exercised. English/Hindi/Marathi and bounded voice were added by subsequent user approval. See [implemented POC and verification status](../architecture/poc-implementation.md). The original schedule and scope below are historical planning context, not a claim that this new change is deployed.
+
 Updated 18 October 2026. This is the active deadline plan, superseding the broad implementation order for this submission. Budget: **eight elapsed hours from your start**, including deployment and upload. The public site says October 18; confirm the exact time/timezone in your registered entrant dashboard. Do not assume 23:59 IST.
 
 ## Outcome and honest scope
@@ -8,7 +10,7 @@ Ship one working, mobile-friendly **Latur/chickpea planning demonstration** on G
 
 The core differentiator to show is **resource feasibility**, not a generic agricultural chatbot: one irrigation becomes no irrigation; the deterministic checks change, Gemini explains the change and unknown field moisture remains visibly unknown. No invented sowing dates, irrigation doses, yield gains or field measurements.
 
-Already implemented: Hono API; strict Zod/OpenAPI contracts and typed RPC; deterministic planning checks; guest ownership, farms, assessments, comparison and saved plans; SQLite/Firestore adapters; responsive React/Vite health screen; independent web/API container images; GCP provisioning and verified main-to-Cloud-Run deployment. **Not implemented yet:** farmer demo screens, public stateless demo endpoints, model adapter or live AI. The deployed default-URL experience is health only. New routes in [build specification](build-spec.md) are proposals, not working endpoints.
+Already implemented: Hono API; strict Zod/OpenAPI contracts and typed RPC; deterministic planning checks; guest ownership, farms, assessments, comparison and saved plans; SQLite/Firestore adapters; responsive React/Vite health screen; independent web/API container images; GCP provisioning and verified main-to-Cloud-Run deployment. **At the time this sprint plan was written, not yet implemented:** farmer demo screens, public stateless demo endpoints, model adapter or live AI. These now exist locally; see the current implementation update above. The deployed default-URL experience is health only. New routes in [build specification](build-spec.md) are proposals, not working endpoints.
 
 ## The deadline decision: public stateless sample demo
 

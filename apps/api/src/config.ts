@@ -18,6 +18,56 @@ const envSchema = z.object({
     .optional(),
   WEATHER_PROVIDER: z.enum(["disabled", "open-meteo"]).default("disabled"),
   OPEN_METEO_API_KEY: z.string().min(1).optional(),
+  EXPLANATION_PROVIDER: z.enum(["disabled", "google"]).default("disabled"),
+  GOOGLE_CLOUD_LOCATION: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .default("global"),
+  GOOGLE_MODEL_ID: z
+    .string()
+    .regex(/^[a-zA-Z0-9._-]{2,128}$/)
+    .default("gemini-3.8-flash"),
+  SPEECH_LOCATION: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .default("us"),
+  LOCAL_GCLOUD_AUTH: z.enum(["true", "false"]).default("false"),
+  DEMO_AI_REQUESTS_PER_MINUTE: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .default(10),
+  DEMO_AI_REQUESTS_PER_DAY: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(10000)
+    .default(100),
+  DEMO_STT_SECONDS_PER_MINUTE: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(3000)
+    .default(300),
+  DEMO_STT_SECONDS_PER_DAY: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(30000)
+    .default(3000),
+  DEMO_TTS_CHARS_PER_MINUTE: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(100000)
+    .default(12000),
+  DEMO_TTS_CHARS_PER_DAY: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(1000000)
+    .default(120000),
   SESSION_TTL_SECONDS: z.coerce
     .number()
     .int()
@@ -27,6 +77,10 @@ const envSchema = z.object({
 });
 export function loadConfig(env: Record<string, string | undefined>) {
   const c = envSchema.parse(env);
+  if (c.EXPLANATION_PROVIDER === "google" && !c.GOOGLE_CLOUD_PROJECT)
+    throw new Error("Google providers require GOOGLE_CLOUD_PROJECT.");
+  if (c.APP_ENV === "production" && c.LOCAL_GCLOUD_AUTH === "true")
+    throw new Error("Production cannot use a local gcloud identity.");
   if (env.NODE_ENV === "production" && c.APP_ENV !== "production")
     throw new Error(
       "NODE_ENV=production requires explicit APP_ENV=production and cloud configuration.",
@@ -69,6 +123,19 @@ export function loadConfig(env: Record<string, string | undefined>) {
     emulatorHost: c.FIRESTORE_EMULATOR_HOST,
     weather: c.WEATHER_PROVIDER,
     weatherKey: c.OPEN_METEO_API_KEY,
+    explanationProvider: c.EXPLANATION_PROVIDER,
+    model: c.GOOGLE_MODEL_ID,
+    modelLocation: c.GOOGLE_CLOUD_LOCATION,
+    speechLocation: c.SPEECH_LOCATION,
+    localGcloudAuth: c.LOCAL_GCLOUD_AUTH === "true",
+    demoBudgets: {
+      model: [
+        c.DEMO_AI_REQUESTS_PER_MINUTE,
+        c.DEMO_AI_REQUESTS_PER_DAY,
+      ] as const,
+      stt: [c.DEMO_STT_SECONDS_PER_MINUTE, c.DEMO_STT_SECONDS_PER_DAY] as const,
+      tts: [c.DEMO_TTS_CHARS_PER_MINUTE, c.DEMO_TTS_CHARS_PER_DAY] as const,
+    },
     sessionTtlSeconds: c.SESSION_TTL_SECONDS,
     cookieName:
       c.APP_ENV === "production" ? "__Host-kavach_session" : "kavach_session",

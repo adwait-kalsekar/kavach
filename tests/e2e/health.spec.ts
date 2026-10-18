@@ -14,7 +14,7 @@ test("real UI → Hono health request, validated response and manual refresh", a
     (response) =>
       response.url().endsWith("/api/v1/health") && response.status() === 200,
   );
-  await page.goto("/");
+  await page.goto("/health");
   const first = await (await firstResponse).json();
   expect(first.data.service).toBe("kavach-api");
   await expect(
@@ -61,7 +61,7 @@ test("loading and unavailable states recover after the API returns", async ({
     await gate;
     await route.abort("failed");
   });
-  await page.goto("/");
+  await page.goto("/health");
   await expect(
     page.getByRole("heading", { name: "Checking connection" }),
   ).toBeVisible();
@@ -87,7 +87,7 @@ test("an invalid successful payload is never presented as a healthy API", async 
       body: JSON.stringify({ status: "ok" }),
     }),
   );
-  await page.goto("/");
+  await page.goto("/health");
   await expect(
     page.getByRole("heading", { name: "API unreachable" }),
   ).toBeVisible();
@@ -96,7 +96,7 @@ test("an invalid successful payload is never presented as a healthy API", async 
 test("cross-origin guest cookies and CSRF work without exposing cookies to JavaScript", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/health");
   const result = await page.evaluate(async () => {
     const origin = (
       window as Window & { __KAVACH_CONFIG__?: { apiOrigin: string } }
