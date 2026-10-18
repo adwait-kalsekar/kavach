@@ -1960,3 +1960,28 @@
   color: #17618a;
   font-size: 14px;
 }
+
+/* Small, local teaching controls inside immutable evidence cards. */
+.fp-learning { margin-top: 1.35rem; padding-top: 1rem; border-top: 1px solid #d9e3dc; }
+.fp-learning > h3 { font-size: .95rem; margin: 0 0 .7rem; }
+.fp-learning-choices { display: flex; flex-wrap: wrap; gap: .5rem; }
+.fp-learning-choices button { min-height: 44px; padding: .55rem .75rem; border: 1px solid #c9d8cc; border-radius: 12px; background: #f8faf6; color: #275746; font-size: .85rem; text-align: left; }
+.fp-learning-choices button[aria-expanded="true"] { background: #e7efe3; border-color: #5e8164; }
+.fp-learning-panel { margin-top: .8rem; border-radius: 15px; padding: 1rem; background: #f8f4e9; border: 1px solid #e8dfc9; }
+.fp-learning-panel[hidden] { display: none; }
+.fp-learning-panel h4 { margin: 0 0 .65rem; font-size: 1rem; }
+.fp-learning-panel p { margin: .6rem 0; }
+.fp-learning-panel label { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
+.fp-learning-panel select { min-height: 44px; padding: .4rem .6rem; border: 1px solid #b8c9bc; border-radius: 10px; background: white; color: #1c3c33; }
+.fp-learning-values, .fp-learning-limits { margin: .9rem 0; }
+.fp-learning-values > div { display: flex; justify-content: space-between; gap: .6rem; padding: .5rem 0; border-bottom: 1px solid #e6dfcf; }
+.fp-learning-values dt { font-size: .82rem; }
+.fp-learning-values dd { font-weight: 700; margin: 0; white-space: nowrap; }
+.fp-learning-limits > div { margin: .8rem 0; }
+.fp-learning-limits dt { font-weight: 700; margin-bottom: .25rem; }
+.fp-learning-limits dd { margin: 0; font-size: .9rem; line-height: 1.6; }
+.fp-concept-steps { display: grid; gap: .5rem; margin: .9rem 0; }
+.fp-concept-steps button { display: flex; align-items: center; gap: .65rem; min-height: 44px; text-align: left; padding: .6rem; border: 1px solid #ded7c4; border-radius: 11px; background: #fffdf7; color: #2b473b; }
+.fp-concept-steps button[aria-pressed="true"] { border-color: #5e8164; background: #e8efe2; }
+.fp-concept-steps button span { display: grid; place-items: center; width: 27px; height: 27px; flex: 0 0 27px; border-radius: 50%; background: #2f644e; color: white; font-weight: 700; }
+.fp-learning-close { display: block; margin-top: 1rem; min-height: 44px; color: #285c47; background: transparent; border: 0; text-decoration: underline; }

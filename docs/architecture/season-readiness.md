@@ -15,6 +15,7 @@ flowchart LR
   A --> G[Bounded Gemini explanation and view selection]
   A --> V[First-party evidence/action components]
   G --> V
+  V --> L[Local baseline, climate and evidence learning controls]
 ```
 
 Ten locations: Latur, Beed, Nanded, Dharashiv/Osmanabad, Parbhani, Hingoli, Jalna, Chhatrapati Sambhajinagar/Aurangabad, Solapur, Ahilyanagar/Ahmednagar. Crops: gram/chickpea, **rabi** jowar/sorghum, wheat. These are approximate town-centre grid samples, **not district means or field observations**. Regional and crop scope must match exactly in the pure engine.
@@ -52,3 +53,9 @@ The complete thirty district/crop packs each receive applicable general crop rul
 Release review tightened applicability: chickpea two-stage discussion remains `needs-input` for one/limited/unknown supply until both-stage capacity is confirmed. District source conditions not collected by the form are explicit confirmation checks: open-well irrigation for Ahmednagar, source farming situation for Aurangabad/Hingoli. They cannot become reported-context matches solely from soil and well-refill selections. Hindi/Marathi cards include substantive crop guidance and missing-fact labels; experimental indicator copy explicitly says it is not a farm-loss probability estimate.
 
 The Google inference projection excludes raw thirty-year baseline arrays, duplicate crop guidance and legacy water-climate snapshots. The engine still uses the complete baseline, and canonical cards retain the complete validated assessment. Inference receives computed evidence, source scope/limitations, crop-option conditions, missing facts and water calculation; it does not calculate risk from raw history. Seasonal explanation and optional TTS share one 35-second deadline; output-token and paid quotas remain unchanged, with no automatic retry.
+
+## Local educational controls
+
+Each existing model-selected evidence view now offers two or three deterministic learning controls. A matching-baseline explanation includes a year picker using the assessment’s existing totals/departures; it does not recompute climate risk in the browser. The three-step El Niño concept cites [NOAA’s ENSO explanation](https://www.noaa.gov/understanding-el-nino). Other controls distinguish dated regional records from user-reported or unknown current field moisture, historical guidance from current advice, and one hypothetical water application from whole-season demand. Source receipts retain data dates and scope. These authored English/Hindi/Marathi panels are first-party UI content, not generated facts, reviewed agronomic modules, new model topics or an A2UI/AG-UI implementation. Opening them makes no API/model call and changes no confirmed inputs or conversation entries.
+
+The default Google model is now Gemini 3.6 Flash with its supported MINIMAL reasoning level for bounded explanation/classification. Explicit operator overrides to other configured models retain LOW. This follows [Google’s model thinking documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/thinking); it does not promise latency. Compact context, schema/prose validation, shared paid quotas and one bounded deadline remain.

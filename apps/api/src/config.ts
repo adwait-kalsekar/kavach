@@ -26,7 +26,7 @@ const envSchema = z.object({
   GOOGLE_MODEL_ID: z
     .string()
     .regex(/^[a-zA-Z0-9._-]{2,128}$/)
-    .default("gemini-3.8-flash"),
+    .default("gemini-3.6-flash"),
   SPEECH_LOCATION: z
     .string()
     .regex(/^[a-z0-9-]+$/)

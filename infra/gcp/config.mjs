@@ -80,7 +80,7 @@ export function deploymentConfig(env) {
   const explanationProvider = env.EXPLANATION_PROVIDER || "google";
   if (!["disabled", "google"].includes(explanationProvider))
     throw new Error("Invalid EXPLANATION_PROVIDER.");
-  const model = env.GOOGLE_MODEL_ID || "gemini-3.8-flash";
+  const model = env.GOOGLE_MODEL_ID || "gemini-3.6-flash";
   const modelLocation = env.GOOGLE_CLOUD_LOCATION || "global";
   const speechLocation = env.SPEECH_LOCATION || "us";
   if (

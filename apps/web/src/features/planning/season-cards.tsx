@@ -1,3 +1,4 @@
+import { EvidenceLearning } from "./evidence-learning";
 import { CropOptions } from "./crop-options";
 import { localizedAction } from "./season-action-copy";
 import { Link } from "@tanstack/react-router";
@@ -261,6 +262,7 @@ export function SeasonCards({
               </Link>
             </>
           ) : null}
+          <EvidenceLearning assessment={a} view={view} waterPlan={waterPlan} />
         </section>
       ))}
     </div>

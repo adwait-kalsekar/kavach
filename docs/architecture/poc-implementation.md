@@ -69,7 +69,7 @@ Reproduce Latur with `python3 scripts/evidence/export-latur-rainfall.py`; other 
 
 Node 24.15+ and npm 12.2.0. Local SQLite and disabled providers need no GCP account. `EXPLANATION_PROVIDER=google`, project/model/location configuration and ADC enable Google; explicit local-only `LOCAL_GCLOUD_AUTH=true` uses short-lived authenticated CLI tokens. Production rejects that flag, emulator/local storage and localhost origins, using attached identity and Firestore instead. No JSON key is generated.
 
-Current configured model is gemini-3.8-flash/global; STT chirp_3/us; TTS English/Hindi/Marathi Chirp3-HD-Aoede. Provider/data permissions stay on the API runtime identity. Web and CI identities have no provider/data roles. No new IAM or infrastructure service was required for the planning extension. CI must verify and promote exact tested image digests through trusted main; this local change is not production verification.
+Current default model is gemini-3.6-flash/global with minimal reasoning for bounded explanations/classification; STT chirp_3/us; TTS English/Hindi/Marathi Chirp3-HD-Aoede. Provider/data permissions stay on the API runtime identity. Web and CI identities have no provider/data roles. No new IAM or infrastructure service was required for the planning extension. CI must verify and promote exact tested image digests through trusted main; this local change is not production verification.
 
 ## Verification status
 
