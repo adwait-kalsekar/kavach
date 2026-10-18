@@ -2403,3 +2403,12 @@
     margin-top: 12px;
   }
 }
+.planning-app .fp-tour-progress select {
+  width: auto;
+  min-width: 108px;
+  max-width: 140px;
+  padding: 6px 10px;
+  min-height: 40px;
+  margin-left: auto;
+  font-size: 14px;
+}

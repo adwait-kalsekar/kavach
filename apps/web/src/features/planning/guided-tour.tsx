@@ -1,3 +1,4 @@
+import type { DemoLocale } from "@kavach/contracts";
 import { guidedTourCopy } from "./guided-tour-copy";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "@tanstack/react-router";
@@ -29,7 +30,9 @@ export function GuidedTour() {
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     dialog.current
-      ?.querySelector<HTMLButtonElement>("button:not(:disabled)")
+      ?.querySelector<HTMLElement>(
+        "select:not(:disabled), button:not(:disabled)",
+      )
       ?.focus();
     return () => {
       document.body.style.overflow = overflow;
@@ -105,10 +108,9 @@ export function GuidedTour() {
           onKeyDown={(e) => {
             if (e.key === "Escape") finish();
             if (e.key === "Tab") {
-              const buttons =
-                dialog.current?.querySelectorAll<HTMLButtonElement>(
-                  "button:not(:disabled)",
-                );
+              const buttons = dialog.current?.querySelectorAll<HTMLElement>(
+                "select:not(:disabled), button:not(:disabled)",
+              );
               if (!buttons?.length) return;
               const first = buttons[0]!,
                 last = buttons[buttons.length - 1]!;
@@ -155,6 +157,17 @@ export function GuidedTour() {
               <span>
                 {step + 1} / {steps.length}
               </span>
+              <select
+                aria-label="Walkthrough language / भाषा"
+                value={app.locale}
+                onChange={(event) =>
+                  app.setLocale(event.target.value as DemoLocale)
+                }
+              >
+                <option value="en-IN">English</option>
+                <option value="hi-IN">हिन्दी</option>
+                <option value="mr-IN">मराठी</option>
+              </select>
               <button onClick={finish}>{copy.skip}</button>
             </div>
             <h2 id="tour-title">{steps[step]!.title}</h2>

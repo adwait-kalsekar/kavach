@@ -14,11 +14,13 @@ Authority: the user’s original `.context/kavach.md`, also archived in [the pro
 
 Existing water, source-learning, failure-recovery and deployment checks complement these targeted probes. No new automated test cases were added. No Earth Engine compute, new service, quota increase or IAM change was needed for the audit.
 
-## Walkthrough defects corrected
+## Interaction defects corrected
 
 The old walkthrough kept English titles/body after a Hindi/Marathi language switch, mixed navigation labels, and placed the instruction card over highlighted controls on short phones. Its large evidence wrapper could produce a nearly full-screen highlight. Replay could briefly retain old geometry or refer to the wrong season subview.
 
-The correction translates all six steps and controls, highlights the actual selectors/buttons/rainfall values, reveals targets at the start of the scroll region, measures without repeatedly scrolling, clamps the highlight, clears stale geometry and restores the overview before replay. Short screens receive a more compact dialog. Only `done` is accepted as the completion flag; unavailable storage still allows a usable first-visit tour and skip.
+The correction translates all six steps and controls, highlights the actual selectors/buttons/rainfall values, reveals targets at the start of the scroll region, measures without repeatedly scrolling, clamps the highlight, clears stale geometry and restores the overview before replay. Short screens receive a more compact dialog. A language selector is available inside the first-use dialog, with select and button controls included in the focus trap. Only `done` is accepted as the completion flag; unavailable storage still allows a usable first-visit tour and skip.
+
+The final deployed chat inspection also found that a simple-language request could repeat the preceding one-line sentence verbatim, despite correct history and style metadata. Style-specific instructions now ask for different, everyday wording while respecting an explicit change of topic. One-line responses also join sentence boundaries with semicolons while preserving the model’s words. The adapter rejects an unchanged prior answer, including case/punctuation-only changes, for a requested rewrite. Existing numeric/view safety checks and the evidence fallback remain; there is no automatic paid retry. Validation must inspect distinct answer text, not merely the response’s style label.
 
 ## Requirements from the brief
 
